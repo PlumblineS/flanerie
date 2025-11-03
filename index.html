@@ -644,6 +644,207 @@
             transform: translateX(0);
         }
         
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: rgba(15, 15, 15, 0.98);
+            border-radius: 20px;
+            padding: 0;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: auto;
+            border: 2px solid rgba(0, 128, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 128, 255, 0.4);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 128, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            color: #0080ff;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(0, 128, 255, 0.5);
+        }
+        
+        .modal-close {
+            font-size: 2rem;
+            color: #606060;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+        
+        .modal-close:hover {
+            color: #0080ff;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #0080ff;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 128, 255, 0.2);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0080ff;
+            box-shadow: 0 0 10px rgba(0, 128, 255, 0.3);
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0, 128, 255, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-cancel {
+            background: rgba(80, 80, 80, 0.3);
+            color: #a0a0a0;
+            border: 1px solid rgba(80, 80, 80, 0.3);
+        }
+        
+        .modal-btn-cancel:hover {
+            background: rgba(80, 80, 80, 0.5);
+        }
+        
+        .modal-btn-save {
+            background: linear-gradient(135deg, #0066cc, #00aaff);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 128, 255, 0.3);
+        }
+        
+        .modal-btn-save:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 128, 255, 0.5);
+        }
+        
+        .share-link-container {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .share-link-container input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 128, 255, 0.2);
+            border-radius: 8px;
+            color: #0080ff;
+            font-family: monospace;
+        }
+        
+        .copy-btn {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #0066cc, #00aaff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .share-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid rgba(0, 128, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: #0080ff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .share-btn:hover {
+            background: rgba(0, 128, 255, 0.1);
+            border-color: #0080ff;
+        }
+        
         /* Running character styles */
         .path-character {
             display: inline-block;
@@ -874,6 +1075,118 @@
         <span id="toast-message">Action completed successfully!</span>
     </div>
     
+    <!-- Save Route Modal -->
+    <div class="modal" id="saveRouteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Save Your Route</h2>
+                <span class="modal-close" onclick="closeSaveModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="routeName">Route Name *</label>
+                    <input type="text" id="routeName" placeholder="e.g., Morning Coffee Trail" required>
+                </div>
+                <div class="form-group">
+                    <label for="routeDescription">Description</label>
+                    <textarea id="routeDescription" rows="3" placeholder="Describe your route, notable stops, best time to visit..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="routeCategory">Category</label>
+                    <select id="routeCategory">
+                        <option value="food">🍴 Food & Dining</option>
+                        <option value="coffee">☕ Coffee Shops</option>
+                        <option value="shopping">🛍️ Shopping</option>
+                        <option value="art">🎨 Art & Culture</option>
+                        <option value="nature">🌳 Parks & Nature</option>
+                        <option value="fitness">💪 Fitness & Exercise</option>
+                        <option value="nightlife">🌃 Nightlife</option>
+                        <option value="family">👨‍👩‍👧‍👦 Family Friendly</option>
+                        <option value="other">📍 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="routeDifficulty">Difficulty</label>
+                    <select id="routeDifficulty">
+                        <option value="easy">Easy - Flat, short distance</option>
+                        <option value="moderate">Moderate - Some hills, medium distance</option>
+                        <option value="challenging">Challenging - Steep hills, long distance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="routeDuration">Estimated Duration</label>
+                    <input type="text" id="routeDuration" placeholder="e.g., 45 minutes">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSaveModal()">Cancel</button>
+                <button class="modal-btn modal-btn-save" onclick="confirmSaveRoute()">Save Route</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Share Route Modal -->
+    <div class="modal" id="shareRouteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Share Your Route</h2>
+                <span class="modal-close" onclick="closeShareModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Share your route with friends!</p>
+                <div class="share-link-container">
+                    <input type="text" id="shareLink" readonly value="https://plumblines.github.io/pathpals/#route/123">
+                    <button class="copy-btn" onclick="copyShareLink()">📋 Copy</button>
+                </div>
+                <div class="share-buttons">
+                    <button class="share-btn share-facebook">📘 Facebook</button>
+                    <button class="share-btn share-twitter">🐦 Twitter</button>
+                    <button class="share-btn share-email">✉️ Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Swarm Modal -->
+    <div class="modal" id="createSwarmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create a Swarm Event</h2>
+                <span class="modal-close" onclick="closeSwarmModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="swarmName">Event Name *</label>
+                    <input type="text" id="swarmName" placeholder="e.g., Saturday Market Crawl" required>
+                </div>
+                <div class="form-group">
+                    <label for="swarmDescription">Description</label>
+                    <textarea id="swarmDescription" rows="3" placeholder="Describe the event, meeting point, what to bring..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="swarmDate">Date *</label>
+                    <input type="date" id="swarmDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="swarmTime">Time *</label>
+                    <input type="time" id="swarmTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="swarmLocation">Meeting Location *</label>
+                    <input type="text" id="swarmLocation" placeholder="e.g., Downtown Farmers Market entrance" required>
+                </div>
+                <div class="form-group">
+                    <label for="swarmMaxParticipants">Max Participants (optional)</label>
+                    <input type="number" id="swarmMaxParticipants" placeholder="Leave empty for unlimited">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSwarmModal()">Cancel</button>
+                <button class="modal-btn modal-btn-save" onclick="confirmCreateSwarm()">Create Swarm</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -1004,9 +1317,54 @@
                 return;
             }
             
-            // Simulate saving
-            showToast('Route saved successfully!');
-            console.log('Saved route:', routeCoordinates);
+            // Show the save modal
+            document.getElementById('saveRouteModal').classList.add('show');
+        }
+        
+        // Close save modal
+        function closeSaveModal() {
+            document.getElementById('saveRouteModal').classList.remove('show');
+            // Clear form
+            document.getElementById('routeName').value = '';
+            document.getElementById('routeDescription').value = '';
+            document.getElementById('routeCategory').value = 'food';
+            document.getElementById('routeDifficulty').value = 'easy';
+            document.getElementById('routeDuration').value = '';
+        }
+        
+        // Confirm save route
+        function confirmSaveRoute() {
+            const routeName = document.getElementById('routeName').value;
+            const routeDescription = document.getElementById('routeDescription').value;
+            const routeCategory = document.getElementById('routeCategory').value;
+            const routeDifficulty = document.getElementById('routeDifficulty').value;
+            const routeDuration = document.getElementById('routeDuration').value;
+            
+            if (!routeName) {
+                showToast('Please enter a route name!');
+                return;
+            }
+            
+            // Create route object
+            const routeData = {
+                name: routeName,
+                description: routeDescription,
+                category: routeCategory,
+                difficulty: routeDifficulty,
+                duration: routeDuration,
+                waypoints: routeCoordinates,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to localStorage (in real app, would save to backend)
+            const savedRoutes = JSON.parse(localStorage.getItem('pathPalsRoutes') || '[]');
+            savedRoutes.push(routeData);
+            localStorage.setItem('pathPalsRoutes', JSON.stringify(savedRoutes));
+            
+            console.log('Saved route:', routeData);
+            
+            closeSaveModal();
+            showToast(`Route "${routeName}" saved successfully!`);
         }
         
         // Share route
@@ -1016,9 +1374,31 @@
                 return;
             }
             
-            // Simulate sharing
-            showToast('Share link copied to clipboard!');
-            console.log('Sharing route:', routeCoordinates);
+            // Show the share modal
+            document.getElementById('shareRouteModal').classList.add('show');
+            
+            // Generate a unique link (in real app, would create actual shareable link)
+            const routeId = Date.now();
+            document.getElementById('shareLink').value = `https://plumblines.github.io/pathpals/#route/${routeId}`;
+        }
+        
+        // Close share modal
+        function closeShareModal() {
+            document.getElementById('shareRouteModal').classList.remove('show');
+        }
+        
+        // Copy share link
+        function copyShareLink() {
+            const shareLink = document.getElementById('shareLink');
+            shareLink.select();
+            shareLink.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                showToast('Link copied to clipboard!');
+            } catch (err) {
+                showToast('Failed to copy link');
+            }
         }
         
         // Search routes
@@ -1083,7 +1463,51 @@
         
         // Create new swarm
         function createSwarm() {
-            showToast('Swarm creation feature coming soon!');
+            document.getElementById('createSwarmModal').classList.add('show');
+        }
+        
+        // Close create swarm modal
+        function closeSwarmModal() {
+            document.getElementById('createSwarmModal').classList.remove('show');
+            // Clear form
+            document.getElementById('swarmName').value = '';
+            document.getElementById('swarmDescription').value = '';
+            document.getElementById('swarmDate').value = '';
+            document.getElementById('swarmTime').value = '';
+            document.getElementById('swarmLocation').value = '';
+            document.getElementById('swarmMaxParticipants').value = '';
+        }
+        
+        // Confirm create swarm
+        function confirmCreateSwarm() {
+            const swarmName = document.getElementById('swarmName').value;
+            const swarmDate = document.getElementById('swarmDate').value;
+            const swarmTime = document.getElementById('swarmTime').value;
+            const swarmLocation = document.getElementById('swarmLocation').value;
+            
+            if (!swarmName || !swarmDate || !swarmTime || !swarmLocation) {
+                showToast('Please fill in all required fields!');
+                return;
+            }
+            
+            // Create swarm object
+            const swarmData = {
+                name: swarmName,
+                description: document.getElementById('swarmDescription').value,
+                date: swarmDate,
+                time: swarmTime,
+                location: swarmLocation,
+                maxParticipants: document.getElementById('swarmMaxParticipants').value || 'Unlimited',
+                participants: 1, // Creator is first participant
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('Created swarm:', swarmData);
+            
+            closeSwarmModal();
+            showToast(`Swarm "${swarmName}" created successfully!`);
+            
+            // In a real app, this would update the swarm list dynamically
         }
         
         // Show toast notification

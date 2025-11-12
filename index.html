@@ -502,6 +502,28 @@
             font-weight: 500;
         }
         
+        /* Carousel for Upcoming Swarms */
+        .swarm-carousel {
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .carousel-item {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            text-align: center;
+            width: 100%;
+            padding: 0 2rem;
+        }
+        
+        .carousel-item.active {
+            opacity: 1;
+        }
+        
         /* Info Section */
         .info-section {
             text-align: center;
@@ -937,6 +959,29 @@
                 </p>
             </section>
             
+            <!-- Upcoming Shopping Swarms -->
+            <section class="info-section" style="background: linear-gradient(135deg, #ee6f57, #f7a399); color: white; padding: 3rem 2rem; border-radius: 20px; margin: 2rem 0; box-shadow: 0 10px 40px rgba(238, 111, 87, 0.3);">
+                <h2 style="color: white; margin-bottom: 1.5rem;">🛍️ Upcoming Shopping Swarms</h2>
+                <div class="swarm-carousel" id="upcomingSwarms">
+                    <div class="carousel-item active">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Saturday Market Crawl</h3>
+                        <p style="font-size: 1.1rem; opacity: 0.95;">📅 This Saturday, 10 AM | 📍 Downtown Farmers Market</p>
+                        <p style="margin-top: 1rem;">👥 23 locals joining • Support local vendors and artisans!</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Art Gallery Night Walk</h3>
+                        <p style="font-size: 1.1rem; opacity: 0.95;">📅 Friday, 6 PM | 📍 Arts District</p>
+                        <p style="margin-top: 1rem;">👥 15 locals joining • Explore galleries and meet artists!</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Coffee Shop Marathon</h3>
+                        <p style="font-size: 1.1rem; opacity: 0.95;">📅 Sunday, 9 AM | 📍 Various Locations</p>
+                        <p style="margin-top: 1rem;">👥 31 locals joining • Taste the best brews in town!</p>
+                    </div>
+                </div>
+                <button class="feature-btn" style="margin-top: 1.5rem; background: white; color: #ee6f57;" onclick="toggleSection('swarms')">View All Shopping Swarms</button>
+            </section>
+            
             <!-- Feature Cards -->
             <section class="features">
                 <div class="feature-card" onclick="toggleSection('journey-map')">
@@ -954,10 +999,10 @@
                 </div>
                 
                 <div class="feature-card" onclick="toggleSection('swarms')">
-                    <div class="feature-icon">👥</div>
-                    <h3>Join Swarms</h3>
-                    <p>Organize group shopping trips and flash mob-style events. Experience the power of community exploration.</p>
-                    <button class="feature-btn">View Swarms</button>
+                    <div class="feature-icon">🛍️</div>
+                    <h3>Shopping Swarms</h3>
+                    <p>Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
+                    <button class="feature-btn">View Shopping Swarms</button>
                 </div>
             </section>
             
@@ -987,11 +1032,44 @@
                 </div>
             </section>
             
-            <!-- Swarms Section -->
+            <!-- Shopping Swarms Section -->
             <section class="swarms-section" id="swarms">
-                <h2>Active Swarms</h2>
-                <p>Join group events and explore together!</p>
-                <button class="feature-btn" style="margin-bottom: 1rem;" onclick="createSwarm()">Create New Swarm</button>
+                <h2>Shopping Swarms</h2>
+                <p>Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
+                <button class="feature-btn" style="margin-bottom: 1rem;" onclick="createSwarm()">Create Shopping Swarm</button>
+                
+                <!-- Search Near Me -->
+                <div style="background: white; padding: 1.5rem; border-radius: 15px; margin: 1.5rem 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 1rem; color: #ee6f57;">🔍 Search Near Me</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">State</label>
+                            <select id="swarmState" style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                                <option value="">Select State</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CA">California</option>
+                                <option value="NY">New York</option>
+                                <option value="TX">Texas</option>
+                                <option value="FL">Florida</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">City</label>
+                            <select id="swarmCity" style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                                <option value="">Select City</option>
+                                <option value="denver">Denver</option>
+                                <option value="boulder">Boulder</option>
+                                <option value="colorado-springs">Colorado Springs</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="feature-btn" style="margin-top: 1rem;" onclick="searchNearbySwarms()">Search</button>
+                </div>
+                
+                <!-- Map for Shopping Swarms -->
+                <div id="swarm-map" style="height: 400px; border-radius: 15px; overflow: hidden; margin: 1.5rem 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"></div>
+                
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Active Shopping Swarms</h3>
                 <div class="swarm-list">
                     <div class="swarm-card">
                         <div class="swarm-title">Saturday Market Crawl</div>
@@ -1140,7 +1218,7 @@
     <div class="modal" id="createSwarmModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Create a Swarm Event</h2>
+                <h2>Create a Shopping Swarm</h2>
                 <span class="modal-close" onclick="closeSwarmModal()">&times;</span>
             </div>
             <div class="modal-body">
@@ -1183,6 +1261,7 @@
         // Initialize variables
         let journeyMap = null;
         let searchMap = null;
+        let swarmMap = null;
         let routeMarkers = [];
         let routePath = null;
         let routeCoordinates = [];
@@ -1212,6 +1291,8 @@
                             initJourneyMap();
                         } else if (id === 'search' && !searchMap) {
                             initSearchMap();
+                        } else if (id === 'swarms' && !swarmMap) {
+                            initSwarmMap();
                         }
                     }
                 } else {
@@ -1498,6 +1579,63 @@
             
             // In a real app, this would update the swarm list dynamically
         }
+        
+        // Initialize Swarm Map
+        function initSwarmMap() {
+            swarmMap = L.map('swarm-map').setView([39.7392, -104.9903], 13); // Denver coordinates
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(swarmMap);
+            
+            // Add sample swarm markers
+            const swarmLocations = [
+                { lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', date: 'This Saturday, 10 AM', participants: 23 },
+                { lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', date: 'Friday, 6 PM', participants: 15 },
+                { lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', date: 'Sunday, 9 AM', participants: 31 },
+                { lat: 39.7380, lng: -104.9920, name: 'Boutique Shopping Spree', date: 'Next Tuesday, 2 PM', participants: 12 }
+            ];
+            
+            swarmLocations.forEach(swarm => {
+                const marker = L.marker([swarm.lat, swarm.lng]).addTo(swarmMap);
+                marker.bindPopup(`
+                    <strong>${swarm.name}</strong><br>
+                    ${swarm.date}<br>
+                    👥 ${swarm.participants} people joined
+                `);
+            });
+        }
+        
+        // Search nearby swarms
+        function searchNearbySwarms() {
+            const state = document.getElementById('swarmState').value;
+            const city = document.getElementById('swarmCity').value;
+            
+            if (!state || !city) {
+                showToast('Please select both state and city!');
+                return;
+            }
+            
+            showToast(`Searching for swarms in ${city}, ${state}...`);
+            
+            // In a real app, this would filter the swarms based on location
+            // For now, we'll just show a message
+        }
+        
+        // Carousel for upcoming swarms
+        let currentSwarmIndex = 0;
+        
+        function rotateSwarms() {
+            const items = document.querySelectorAll('.carousel-item');
+            if (items.length === 0) return;
+            
+            items[currentSwarmIndex].classList.remove('active');
+            currentSwarmIndex = (currentSwarmIndex + 1) % items.length;
+            items[currentSwarmIndex].classList.add('active');
+        }
+        
+        // Start carousel rotation
+        setInterval(rotateSwarms, 4000); // Change every 4 seconds
         
         // Show toast notification
         function showToast(message) {

@@ -1,1443 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flânerie - The Art of Urban Wandering</title>
-    
-    <!-- Leaflet CSS for interactive maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            overflow-x: hidden;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            --accent-color: #6B9B9E;
-            --accent-light: #8DBCC0;
-        }
-        
-        /* Background with rotating images - FIXED POSITION */
-        .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            background: #0a0a0a;
-        }
-        
-        .bg-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            object-fit: cover;
-            object-position: center center;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-        }
-        
-        .bg-image.active {
-            opacity: 0.45;
-        }
-        
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(238, 111, 87, 0.3);
-            border-bottom: 2px solid var(--accent-color);
-        }
-        
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--accent-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #d4d4d4;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent-color);
-        }
-        
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 2rem;
-            padding-top: 100px;
-        }
-        
-        .hero-content {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(10, 10, 10, 0.5);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            max-width: 700px;
-            border: 2px solid rgba(238, 111, 87, 0.4);
-        }
-        
-        .hero-logo {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 2rem;
-            position: relative;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .hero-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center center;
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .tagline {
-            font-size: 1.3rem;
-            color: #d4d4d4;
-            margin-bottom: 1.5rem;
-            font-weight: 300;
-        }
-        
-        .rotating-text {
-            height: 40px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-        
-        .rotating-text span {
-            display: block;
-            animation: rotate 18s infinite;
-            color: var(--accent-light);
-            font-style: italic;
-            font-weight: 400;
-            line-height: 40px;
-        }
-        
-        @keyframes rotate {
-            0%, 14% { transform: translateY(0); opacity: 1; }
-            16%, 30% { transform: translateY(-40px); opacity: 1; }
-            32%, 46% { transform: translateY(-80px); opacity: 1; }
-            48%, 62% { transform: translateY(-120px); opacity: 1; }
-            64%, 78% { transform: translateY(-160px); opacity: 1; }
-            80%, 94% { transform: translateY(-200px); opacity: 1; }
-            96%, 100% { transform: translateY(-240px); opacity: 0; }
-        }
-        
-        /* Main Content */
-        .main-content {
-            position: relative;
-            background: rgba(10, 10, 10, 0.92);
-            margin-top: -50px;
-            border-radius: 30px 30px 0 0;
-            padding: 4rem 2rem;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Info Section */
-        .info-section {
-            text-align: center;
-            padding: 1rem 0 3rem;
-            max-width: 900px;
-            margin: 0 auto 4rem;
-        }
-        
-        .pronunciation {
-            font-style: italic;
-            color: #999;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--accent-light);
-            margin-bottom: 2rem;
-            font-weight: 500;
-        }
-        
-        .definition-box {
-            text-align: left;
-            background: rgba(30, 30, 30, 0.8);
-            padding: 2rem;
-            border-radius: 15px;
-            border-left: 4px solid var(--accent-color);
-            margin: 2rem 0;
-        }
-        
-        .definition-box p {
-            color: #d4d4d4;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-        
-        .definition-box ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .definition-box li {
-            color: #d4d4d4;
-            line-height: 2.2;
-            margin-bottom: 0.5rem;
-        }
-        
-        .welcome-text {
-            color: #d4d4d4;
-            line-height: 1.8;
-            margin: 1.5rem 0;
-        }
-        
-        /* Layout with Sidebar */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 2.5rem;
-            margin: 3rem 0;
-            align-items: start;
-        }
-        
-        @media (max-width: 1024px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                position: relative !important;
-                top: 0 !important;
-                max-height: none !important;
-            }
-        }
-        
-        /* Main Features - Prominent */
-        .main-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .main-features {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Secondary Features */
-        .secondary-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .secondary-features {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Feature Cards */
-        .feature-card {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(238, 111, 87, 0.3);
-            border-color: var(--accent-color);
-        }
-        
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card h3 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .feature-card p {
-            color: #d4d4d4;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        
-        .feature-btn {
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(238, 111, 87, 0.3);
-        }
-        
-        .feature-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(238, 111, 87, 0.4);
-        }
-        
-        /* Sidebar - Upcoming Swarms - FIXED */
-        .sidebar {
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-            padding-bottom: 2rem;
-        }
-        
-        .sidebar::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(40, 40, 40, 0.5);
-            border-radius: 10px;
-        }
-        
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 10px;
-        }
-        
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-        
-        .swarms-sidebar {
-            background: linear-gradient(135deg, rgba(107, 155, 158, 0.95), rgba(141, 188, 192, 0.95));
-            color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(107, 155, 158, 0.3);
-            margin-bottom: 2rem;
-        }
-        
-        .swarms-sidebar h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .swarm-carousel {
-            position: relative;
-            min-height: 200px;
-        }
-        
-        .carousel-item {
-            position: absolute;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            width: 100%;
-        }
-        
-        .carousel-item.active {
-            opacity: 1;
-        }
-        
-        .carousel-item h4 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .carousel-item p {
-            opacity: 0.95;
-            line-height: 1.6;
-        }
-        
-        /* Map Sections */
-        .map-container {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .map-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .map-container h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .map-container p {
-            color: #d4d4d4;
-            margin-bottom: 1.5rem;
-        }
-        
-        #map, #search-map, #swarm-map {
-            height: 500px;
-            border-radius: 15px;
-            margin: 1rem 0;
-        }
-        
-        /* Search Section */
-        .search-section {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .search-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .search-section h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .search-box {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-            border-radius: 15px;
-            background: rgba(40, 40, 40, 0.9);
-            color: #e0e0e0;
-            font-size: 1rem;
-        }
-        
-        /* Swarms & Events Sections */
-        .swarms-section, .events-section {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .swarms-section.active, .events-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .swarms-section h2, .events-section h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .swarm-card, .event-card {
-            background: rgba(40, 40, 40, 0.8);
-            padding: 1.5rem;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(238, 111, 87, 0.1);
-        }
-        
-        .swarm-card:hover, .event-card:hover {
-            transform: scale(1.02);
-            border-color: var(--accent-color);
-        }
-        
-        .swarm-card h4, .event-card h4 {
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-        
-        .card-details {
-            color: #d4d4d4;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-        
-        .event-type {
-            display: inline-block;
-            background: var(--accent-light);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-        
-        /* Footer */
-        footer {
-            background: rgba(10, 10, 10, 0.98);
-            color: #d4d4d4;
-            padding: 3rem 2rem 2rem;
-            border-top: 2px solid rgba(238, 111, 87, 0.3);
-        }
-        
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .footer-section h4 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .footer-section ul {
-            list-style: none;
-        }
-        
-        .footer-section a {
-            color: #d4d4d4;
-            text-decoration: none;
-            line-height: 2;
-            transition: color 0.3s;
-        }
-        
-        .footer-section a:hover {
-            color: var(--accent-color);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(238, 111, 87, 0.2);
-            color: #999;
-        }
-        
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background: rgba(25, 25, 25, 0.98);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .modal-header h2 {
-            color: var(--accent-color);
-        }
-        
-        .modal-close {
-            font-size: 2rem;
-            color: #d4d4d4;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .modal-close:hover {
-            color: var(--accent-color);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #d4d4d4;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-            border-radius: 10px;
-            background: rgba(40, 40, 40, 0.9);
-            color: #e0e0e0;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-        
-        .modal-btn {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-btn-cancel {
-            background: rgba(60, 60, 60, 0.9);
-            color: #d4d4d4;
-        }
-        
-        .modal-btn-save {
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
-            color: white;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(238, 111, 87, 0.95);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 3000;
-        }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flânerie – The Art of Urban Wandering</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* THEME COLORS */
+:root {
+    --accent: #6B9B9E;
+    --accent-light: #88bfc2;
+    --text-light: #e8e8e8;
+}
+
+/* GLOBAL */
+body {
+    font-family: "Poppins", sans-serif;
+    background: #0a0a0a;
+    overflow-x: hidden;
+    color: var(--text-light);
+}
+
+/* BACKGROUND ROTATION */
+.bg-rotator {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+.bg-rotator img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 2s linear;
+}
+
+.bg-rotator img.active {
+    opacity: 0.45;
+}
+
+/* NAVIGATION */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 3rem;
+    backdrop-filter: blur(12px);
+    background: rgba(10, 10, 10, 0.5);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-inner {
+    max-width: 1300px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+/* HERO SECTION */
+.hero {
+    text-align: center;
+    height: 60vh;
+    padding-top: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-logo {
+    width: 150px;
+    height: 150px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-logo img {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 4rem;
+    color: var(--accent);
+}
+
+.hero-tag {
+    margin-top: 0.4rem;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.rotating-lines {
+    margin-top: 1.3rem;
+    height: 40px;
+    overflow: hidden;
+    font-style: italic;
+    color: var(--accent-light);
+}
+
+.rotating-lines span {
+    display: block;
+    animation: rotateText 18s infinite;
+    line-height: 40px;
+}
+
+@keyframes rotateText {
+    0%, 12%   { transform: translateY(0px); }
+    14%, 26%  { transform: translateY(-40px); }
+    28%, 40%  { transform: translateY(-80px); }
+    42%, 54%  { transform: translateY(-120px); }
+    56%, 68%  { transform: translateY(-160px); }
+    70%, 82%  { transform: translateY(-200px); }
+    84%, 100% { transform: translateY(-240px); opacity: 0; }
+}
+
+/* MAIN CONTENT WRAPPER */
+.main-wrap {
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(12px);
+    padding: 4rem 2rem;
+    margin-top: 3rem;
+    border-radius: 35px 35px 0 0;
+}
+
+.section {
+    max-width: 1100px;
+    margin: auto;
+    margin-bottom: 4rem;
+}
+
+/* DICTIONARY STYLE DEFINITION */
+.dictionary-block {
+    text-align: left;
+    margin: auto;
+    max-width: 700px;
+}
+
+.dictionary-block h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 4rem;
+    font-weight: 400;
+}
+
+.dictionary-pron {
+    color: #cfcfcf;
+    margin-bottom: 0.3rem;
+}
+
+.dictionary-line {
+    width: 70px;
+    height: 2px;
+    background: #666;
+    margin: 1rem 0;
+}
+
+.dictionary-meaning {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: #e8e8e8;
+}
+
+/* FEATURE GRID */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-box {
+    background: rgba(255,255,255,0.06);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: 0.3s;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-light);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.feature-box p {
+    line-height: 1.6;
+}
+
+/* SECTION HEADERS */
+.section h3 {
+    font-family: "Playfair Display", serif;
+    color: var(--accent-light);
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* FOOTER */
+footer {
+    margin-top: 4rem;
+    padding: 2rem;
+    text-align: center;
+    background: rgba(10,10,10,0.9);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+    color: #aaa;
+}
+</style>
 </head>
+
 <body>
-    <!-- Background Images -->
-    <div class="bg-container">
-        <img src="character-bg.png" class="bg-image active" alt="">
-        <img src="character-bg2.png" class="bg-image" alt="">
-        <img src="character-bg3.png" class="bg-image" alt="">
-        <img src="character-bg4.png" class="bg-image" alt="">
-        <img src="character-bg5.png" class="bg-image" alt="">
-        <img src="character-bg6.png" class="bg-image" alt="">
-        <img src="character-bg7.png" class="bg-image" alt="">
-        <img src="character-bg8.png" class="bg-image" alt="">
-    </div>
-    
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">Flânerie</a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#business">For Businesses</a></li>
-            </ul>
+
+<!-- BACKGROUND ROTATION -->
+<div class="bg-rotator">
+    <img src="character-bg.png" class="active">
+    <img src="character-bg2.png">
+    <img src="character-bg3.png">
+    <img src="character-bg4.png">
+    <img src="character-bg5.png">
+    <img src="character-bg6.png">
+    <img src="character-bg7.png">
+    <img src="character-bg8.png">
+</div>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="logo">Flânerie</a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#routes">Routes</a>
+            <a href="#swarms">Swarms</a>
+            <a href="#events">Events</a>
+            <a href="#business">For Businesses</a>
         </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-logo">
-                <img src="character-logo.png" alt="Flânerie Character">
-            </div>
-            <h1>Flânerie</h1>
-            <p class="tagline">The Art of Urban Wandering</p>
-            <div class="rotating-text">
-                <span>Wander well.<br>
-                Walk kindly.<br>
-                Support local business.<br>
-                Discover hidden gems in your neighborhood.<br>
-                Turn ordinary walks into extraordinary adventures.<br>
-                Connect with your community, one step at a time.</span>
-            </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-logo">
+        <img src="character-logo.png" alt="Logo">
+    </div>
+
+    <h1>Flânerie</h1>
+    <p class="hero-tag">The Art of Urban Wandering</p>
+
+    <div class="rotating-lines">
+        <span>
+            Wander well.<br>
+            Walk kindly.<br>
+            Support local business.<br>
+            Discover hidden gems.<br>
+            Slow down. Notice more.<br>
+            Explore like a local.
+        </span>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+
+    <!-- DICTIONARY BLOCK -->
+    <section class="section" id="about">
+        <div class="dictionary-block">
+            <h2>flânerie</h2>
+            <p class="dictionary-pron">| ˈflɑːnəri | <i>noun</i></p>
+            <div class="dictionary-line"></div>
+            <p class="dictionary-meaning">
+                The art of leisurely urban exploration; mindful wandering through city streets with curiosity and intention.
+            </p>
         </div>
     </section>
-    
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Info Section -->
-            <section class="info-section">
-                <!-- Dictionary-style definition -->
-                <div style="margin-bottom: 2rem; text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
-                    <h2 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 400; color: #e0e0e0; margin-bottom: 0.5rem; letter-spacing: 0;">
-                        flânerie
-                    </h2>
-                    <p style="font-size: 1rem; color: #999; margin-bottom: 0.3rem;">
-                        | ˈflɑːnəri | <span style="font-style: italic;">noun</span>
-                    </p>
-                    <div style="width: 60px; height: 1px; background: #555; margin: 1rem 0;"></div>
-                    <p style="font-size: 1.3rem; color: #d4d4d4; line-height: 1.7; font-weight: 400;">
-                        The art of leisurely urban exploration; mindful wandering through city streets with intention and curiosity.
-                    </p>
-                </div>
-                
-                <!-- Welcome and concepts woven together -->
-                <div style="text-align: left; max-width: 800px; margin: 0 auto 3rem;">
-                    <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 2.2rem; margin-bottom: 2rem; font-weight: 600;">Welcome to Flânerie</h3>
-                    
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color: var(--accent-color);">the art of strolling</strong> — observing city life with intention rather than rushing past it.
-                    </p>
-                    
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        Through <strong style="color: var(--accent-color);">urban exploration</strong>, discover neighborhoods at your own pace. From cozy cafés and local markets to boutique shops, art galleries, and hidden parks, our routes are designed for <strong style="color: var(--accent-color);">mindful wandering</strong> — purposeful aimlessness with open eyes, where every corner holds possibility.
-                    </p>
-                    
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        This practice of <strong style="color: var(--accent-color);">cultural appreciation</strong> — slowing down to absorb the beauty and life around you — helps you rediscover the magic in the everyday. Our routes highlight local businesses, parks, cultural gems, and unique urban spaces, designed to help you wander well and walk kindly.
-                    </p>
-                    
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9;">
-                        Join a <strong style="color: var(--accent-color);">Shopping Swarm</strong> to explore local businesses with your neighbors, or discover <strong style="color: var(--accent-light);">Local Events</strong> like neighborhood block parties, sidewalk sales, art walks, and community celebrations.
-                    </p>
-                </div>
-                
-                <!-- Tagline -->
-                <p style="margin-top: 3rem; font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent-color); font-style: italic; font-weight: 500; text-align: center;">
-                    Share your journey. Retrace theirs.
-                </p>
-            </section>
-            
-            <!-- Content Grid with Sidebar -->
-            <div class="content-grid">
-                <!-- Main Features Column -->
-                <div>
-                    <!-- Primary Features - Large and Prominent -->
-                    <div class="main-features">
-                        <div class="feature-card" onclick="toggleSection('journey-map')">
-                            <div class="feature-icon">📍</div>
-                            <h3>Share Your Journey</h3>
-                            <p>Plot your favorite routes on our interactive map and share your urban discoveries with the community.</p>
-                            <button class="feature-btn">Start Mapping</button>
-                        </div>
-                        
-                        <div class="feature-card" onclick="toggleSection('search')">
-                            <div class="feature-icon">🔍</div>
-                            <h3>Search Routes</h3>
-                            <p>Discover curated paths tailored to your interests. Find the perfect walk for any mood or occasion.</p>
-                            <button class="feature-btn">Explore Routes</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Secondary Features - Smaller -->
-                    <div class="secondary-features">
-                        <div class="feature-card" onclick="toggleSection('swarms')">
-                            <div class="feature-icon">🛍️</div>
-                            <h3>Shopping Swarms</h3>
-                            <p>Organize or join community walks where locals explore, shop, and support businesses together.</p>
-                            <button class="feature-btn">View Swarms</button>
-                        </div>
-                        
-                        <div class="feature-card" onclick="toggleSection('events')">
-                            <div class="feature-icon">🎉</div>
-                            <h3>Local Events</h3>
-                            <p>Discover neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                            <button class="feature-btn">Browse Events</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Sidebar - Upcoming Shopping Swarms -->
-                <aside class="sidebar">
-                    <div class="swarms-sidebar">
-                        <h3>🛍️ Upcoming Swarms</h3>
-                        <div class="swarm-carousel">
-                            <div class="carousel-item active">
-                                <h4>Saturday Market Crawl</h4>
-                                <p style="margin: 0.5rem 0;">📅 This Saturday, 10 AM</p>
-                                <p style="margin: 0.5rem 0;">📍 Downtown Farmers Market</p>
-                                <p style="margin-top: 1rem;">👥 23 locals joining</p>
-                                <p style="opacity: 0.9;">Support local vendors and artisans!</p>
-                            </div>
-                            <div class="carousel-item">
-                                <h4>Art Gallery Night Walk</h4>
-                                <p style="margin: 0.5rem 0;">📅 Friday, 6 PM</p>
-                                <p style="margin: 0.5rem 0;">📍 Arts District</p>
-                                <p style="margin-top: 1rem;">👥 15 locals joining</p>
-                                <p style="opacity: 0.9;">Explore galleries and meet artists!</p>
-                            </div>
-                            <div class="carousel-item">
-                                <h4>Coffee Shop Marathon</h4>
-                                <p style="margin: 0.5rem 0;">📅 Sunday, 9 AM</p>
-                                <p style="margin: 0.5rem 0;">📍 Various Locations</p>
-                                <p style="margin-top: 1rem;">👥 31 locals joining</p>
-                                <p style="opacity: 0.9;">Taste the best brews in town!</p>
-                            </div>
-                        </div>
-                        <button class="feature-btn" style="margin-top: 1.5rem; background: white; color: var(--accent-color); width: 100%;" onclick="toggleSection('swarms')">View All Swarms</button>
-                    </div>
-                    
-                    <!-- Upcoming Events Sidebar -->
-                    <div class="swarms-sidebar" style="background: linear-gradient(135deg, rgba(88, 145, 148, 0.95), rgba(110, 175, 178, 0.95));">
-                        <h3>🎉 Upcoming Events</h3>
-                        <div class="event-carousel">
-                            <div class="carousel-item active">
-                                <h4>Highland Street Festival</h4>
-                                <p style="margin: 0.5rem 0;">📅 Saturday, June 15, 12-6 PM</p>
-                                <p style="margin: 0.5rem 0;">📍 Highland Neighborhood</p>
-                                <p style="margin-top: 1rem; opacity: 0.9;">Live music, local vendors, food trucks</p>
-                                <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">Organized by Highland Merchants</p>
-                            </div>
-                            <div class="carousel-item">
-                                <h4>First Friday Gallery Stroll</h4>
-                                <p style="margin: 0.5rem 0;">📅 First Friday, 6-9 PM</p>
-                                <p style="margin: 0.5rem 0;">📍 Santa Fe Arts District</p>
-                                <p style="margin-top: 1rem; opacity: 0.9;">Free gallery openings, artist demos</p>
-                                <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">Organized by Arts District Alliance</p>
-                            </div>
-                            <div class="carousel-item">
-                                <h4>Pearl Street Summer Sale</h4>
-                                <p style="margin: 0.5rem 0;">📅 July 20-22, 10 AM-7 PM</p>
-                                <p style="margin: 0.5rem 0;">📍 Pearl Street Mall</p>
-                                <p style="margin-top: 1rem; opacity: 0.9;">Special discounts, outdoor displays</p>
-                                <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">Organized by Pearl Street Association</p>
-                            </div>
-                        </div>
-                        <button class="feature-btn" style="margin-top: 1.5rem; background: white; color: var(--accent-color); width: 100%;" onclick="toggleSection('events')">View All Events</button>
-                    </div>
-                </aside>
+
+    <!-- EDITORIAL INTRO -->
+    <section class="section">
+        <h3>Welcome to Flânerie</h3>
+        <p style="font-size:1.2rem; line-height:1.8; margin-bottom:1.5rem;">
+            We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates 
+            <strong style="color:var(--accent);">the art of strolling</strong> — slowing down and observing the character of a city.
+        </p>
+
+        <p style="font-size:1.2rem; line-height:1.8; margin-bottom:1.5rem;">
+            Explore cafés, markets, boutiques, small streets, and hidden urban spaces. Whether you wander with intention 
+            or for the joy of aimless curiosity, every corner holds possibility.
+        </p>
+
+        <p style="font-size:1.2rem; line-height:1.8;">
+            Join <strong style="color:var(--accent);">Shopping Swarms</strong>, discover <strong style="color:var(--accent-light);">local events</strong>,
+            or share your favorite walking routes with your community.
+        </p>
+
+        <p style="margin-top:2rem; font-family:'Playfair Display'; font-size:1.5rem; color:var(--accent-light); font-style:italic;">
+            Share your journey. Retrace theirs.
+        </p>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section">
+
+        <h3>Explore the Features</h3>
+
+        <div class="features-grid">
+
+            <div class="feature-box">
+                <div class="feature-icon">📍</div>
+                <div class="feature-title">Share Your Journey</div>
+                <p>Map your favorite paths and help others explore your neighborhood discoveries.</p>
             </div>
-            
-            <!-- Journey Map Section -->
-            <section class="map-container" id="journey-map">
-                <h2>Share Your Journey</h2>
-                <p>Click on the map to add waypoints and create your custom route. Share your favorite paths with the Flânerie community!</p>
-                <div id="map"></div>
-                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                    <button class="feature-btn" onclick="saveRoute()">Save Route</button>
-                    <button class="feature-btn" onclick="clearRoute()">Clear Route</button>
-                    <button class="feature-btn" onclick="shareRoute()">Share Route</button>
-                </div>
-            </section>
-            
-            <!-- Search Section -->
-            <section class="search-section" id="search">
-                <h2>Search Routes</h2>
-                <p>Find the perfect route for your next adventure</p>
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search by interest, location, or mood...">
-                    <button class="feature-btn" onclick="searchRoutes()">Search</button>
-                </div>
-                <div id="search-map"></div>
-                <div id="search-results" style="margin-top: 2rem; color: #d4d4d4;"></div>
-            </section>
-            
-            <!-- Shopping Swarms Section -->
-            <section class="swarms-section" id="swarms">
-                <h2>Shopping Swarms</h2>
-                <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
-                <button class="feature-btn" onclick="createSwarm()">Create Shopping Swarm</button>
-                
-                <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
-                    <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">State</label>
-                            <select id="swarmState" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select State</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CA">California</option>
-                                <option value="NY">New York</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">City</label>
-                            <select id="swarmCity" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select City</option>
-                                <option value="denver">Denver</option>
-                                <option value="boulder">Boulder</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="feature-btn" style="margin-top: 1rem;" onclick="searchSwarms()">Search</button>
-                </div>
-                
-                <div id="swarm-map"></div>
-                
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Active Shopping Swarms</h3>
-                <div class="card-grid">
-                    <div class="swarm-card">
-                        <h4>Saturday Market Crawl</h4>
-                        <p class="card-details">📅 This Saturday, 10 AM<br>📍 Downtown Farmers Market</p>
-                        <p style="color: var(--accent-light);">👥 23 people joined</p>
-                    </div>
-                    <div class="swarm-card">
-                        <h4>Art Gallery Night Walk</h4>
-                        <p class="card-details">📅 Friday, 6 PM<br>📍 Arts District</p>
-                        <p style="color: var(--accent-light);">👥 15 people joined</p>
-                    </div>
-                    <div class="swarm-card">
-                        <h4>Coffee Shop Marathon</h4>
-                        <p class="card-details">📅 Sunday, 9 AM<br>📍 Various Locations</p>
-                        <p style="color: var(--accent-light);">👥 31 people joined</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Events Section -->
-            <section class="events-section" id="events">
-                <h2>Local Events</h2>
-                <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                <button class="feature-btn" onclick="createEvent()">Promote Your Event</button>
-                
-                <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
-                    <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">State</label>
-                            <select id="eventState" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select State</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CA">California</option>
-                                <option value="NY">New York</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">City</label>
-                            <select id="eventCity" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select City</option>
-                                <option value="denver">Denver</option>
-                                <option value="boulder">Boulder</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="feature-btn" style="margin-top: 1rem;" onclick="searchEvents()">Search Events</button>
-                </div>
-                
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Upcoming Events</h3>
-                <div class="card-grid">
-                    <div class="event-card">
-                        <span class="event-type">Block Party</span>
-                        <h4>Highland Street Festival</h4>
-                        <p class="card-details">📅 Saturday, June 15, 12-6 PM<br>📍 Highland Neighborhood<br>🎵 Live music, local vendors, food trucks</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Highland Merchants</p>
-                    </div>
-                    <div class="event-card">
-                        <span class="event-type">Art Walk</span>
-                        <h4>First Friday Gallery Stroll</h4>
-                        <p class="card-details">📅 First Friday, 6-9 PM<br>📍 Santa Fe Arts District<br>🎨 Free gallery openings, artist demos</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Arts District Alliance</p>
-                    </div>
-                    <div class="event-card">
-                        <span class="event-type">Sidewalk Sale</span>
-                        <h4>Pearl Street Summer Sale</h4>
-                        <p class="card-details">📅 July 20-22, 10 AM-7 PM<br>📍 Pearl Street Mall<br>🛍️ Special discounts, outdoor displays</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Pearl Street Association</p>
-                    </div>
-                </div>
-            </section>
+
+            <div class="feature-box">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Search Routes</div>
+                <p>Find curated walking routes tailored to cafés, parks, shops, art, and more.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🛍️</div>
+                <div class="feature-title">Shopping Swarms</div>
+                <p>Join or create group strolls that support local stores and community culture.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🎉</div>
+                <div class="feature-title">Local Events</div>
+                <p>Block parties, sidewalk sales, gallery nights — explore what's happening nearby.</p>
+            </div>
+
         </div>
-    </main>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Flânerie</h4>
-                <p>The art of urban wandering.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="#business">For Businesses</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#stories">Stories</a></li>
-                    <li><a href="#events">Events</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Connect</h4>
-                <ul>
-                    <li><a href="#instagram">Instagram</a></li>
-                    <li><a href="#twitter">Twitter</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Flânerie. All rights reserved. Made with ❤️ for urban explorers.</p>
-        </div>
-    </footer>
-    
-    <!-- Modals -->
-    <div class="modal" id="saveRouteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Save Your Route</h2>
-                <span class="modal-close" onclick="closeModal('saveRouteModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Route Name *</label>
-                    <input type="text" id="routeName" placeholder="e.g., Morning Coffee Trail">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="routeDescription" rows="3" placeholder="Describe your route..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="routeCategory">
-                        <option value="food">🍴 Food & Dining</option>
-                        <option value="coffee">☕ Coffee Shops</option>
-                        <option value="shopping">🛍️ Shopping</option>
-                        <option value="art">🎨 Art & Culture</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('saveRouteModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmSaveRoute()">Save Route</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal" id="createSwarmModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create Shopping Swarm</h2>
-                <span class="modal-close" onclick="closeModal('createSwarmModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Event Name *</label>
-                    <input type="text" id="swarmName" placeholder="e.g., Saturday Market Crawl">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="swarmDescription" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Date *</label>
-                    <input type="date" id="swarmDate">
-                </div>
-                <div class="form-group">
-                    <label>Time *</label>
-                    <input type="time" id="swarmTime">
-                </div>
-                <div class="form-group">
-                    <label>Location *</label>
-                    <input type="text" id="swarmLocation" placeholder="Meeting point">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('createSwarmModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmCreateSwarm()">Create Swarm</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal" id="createEventModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Promote Your Event</h2>
-                <span class="modal-close" onclick="closeModal('createEventModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Event Name *</label>
-                    <input type="text" id="eventName" placeholder="e.g., Highland Street Festival">
-                </div>
-                <div class="form-group">
-                    <label>Event Type *</label>
-                    <select id="eventType">
-                        <option value="block-party">Block Party</option>
-                        <option value="art-walk">Art Walk</option>
-                        <option value="sidewalk-sale">Sidewalk Sale</option>
-                        <option value="food-festival">Food Festival</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="eventDescription" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Date *</label>
-                    <input type="date" id="eventDate">
-                </div>
-                <div class="form-group">
-                    <label>Location *</label>
-                    <input type="text" id="eventLocation">
-                </div>
-                <div class="form-group">
-                    <label>Organizer/Business Name *</label>
-                    <input type="text" id="eventOrganizer">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('createEventModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmCreateEvent()">Submit Event</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <span id="toast-message"></span>
-    </div>
-    
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <script>
-        // Background Image Rotation
-        let currentBgIndex = 0;
-        const bgImages = document.querySelectorAll('.bg-image');
-        
-        function rotateBgImages() {
-            bgImages[currentBgIndex].classList.remove('active');
-            currentBgIndex = (currentBgIndex + 1) % bgImages.length;
-            bgImages[currentBgIndex].classList.add('active');
-        }
-        
-        setInterval(rotateBgImages, 4000);
-        
-        // Carousel Rotation for Swarms
-        let currentSwarmCarouselIndex = 0;
-        const swarmCarouselItems = document.querySelectorAll('.swarm-carousel .carousel-item');
-        
-        function rotateSwarmCarousel() {
-            if (swarmCarouselItems.length === 0) return;
-            swarmCarouselItems[currentSwarmCarouselIndex].classList.remove('active');
-            currentSwarmCarouselIndex = (currentSwarmCarouselIndex + 1) % swarmCarouselItems.length;
-            swarmCarouselItems[currentSwarmCarouselIndex].classList.add('active');
-        }
-        
-        setInterval(rotateSwarmCarousel, 4000);
-        
-        // Carousel Rotation for Events
-        let currentEventCarouselIndex = 0;
-        const eventCarouselItems = document.querySelectorAll('.event-carousel .carousel-item');
-        
-        function rotateEventCarousel() {
-            if (eventCarouselItems.length === 0) return;
-            eventCarouselItems[currentEventCarouselIndex].classList.remove('active');
-            currentEventCarouselIndex = (currentEventCarouselIndex + 1) % eventCarouselItems.length;
-            eventCarouselItems[currentEventCarouselIndex].classList.add('active');
-        }
-        
-        setInterval(rotateEventCarousel, 4500); // Slightly different timing so they don't sync
-        
-        // Initialize Variables
-        let journeyMap = null;
-        let searchMap = null;
-        let swarmMap = null;
-        let routeMarkers = [];
-        let routePath = null;
-        let routeCoordinates = [];
-        
-        // Toggle Sections
-        function toggleSection(sectionId) {
-            const sections = ['journey-map', 'search', 'swarms', 'events'];
-            
-            sections.forEach(id => {
-                const section = document.getElementById(id);
-                if (id === sectionId) {
-                    section.classList.toggle('active');
-                    
-                    if (section.classList.contains('active')) {
-                        if (id === 'journey-map' && !journeyMap) {
-                            initJourneyMap();
-                        } else if (id === 'search' && !searchMap) {
-                            initSearchMap();
-                        } else if (id === 'swarms' && !swarmMap) {
-                            initSwarmMap();
-                        }
-                        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                } else {
-                    section.classList.remove('active');
-                }
-            });
-        }
-        
-        // Initialize Maps
-        function initJourneyMap() {
-            journeyMap = L.map('map').setView([39.7392, -104.9903], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(journeyMap);
-            
-            journeyMap.on('click', function(e) {
-                addWaypoint(e.latlng);
-            });
-        }
-        
-        function initSearchMap() {
-            searchMap = L.map('search-map').setView([39.7392, -104.9903], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(searchMap);
-        }
-        
-        function initSwarmMap() {
-            swarmMap = L.map('swarm-map').setView([39.7392, -104.9903], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(swarmMap);
-            
-            // Add sample markers
-            const swarms = [
-                { lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', participants: 23 },
-                { lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', participants: 15 },
-                { lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', participants: 31 }
-            ];
-            
-            swarms.forEach(swarm => {
-                L.marker([swarm.lat, swarm.lng]).addTo(swarmMap)
-                    .bindPopup(`<strong>${swarm.name}</strong><br>👥 ${swarm.participants} people`);
-            });
-        }
-        
-        function addWaypoint(latlng) {
-            const marker = L.marker(latlng).addTo(journeyMap);
-            routeMarkers.push(marker);
-            routeCoordinates.push([latlng.lat, latlng.lng]);
-            
-            if (routePath) {
-                journeyMap.removeLayer(routePath);
-            }
-            
-            if (routeCoordinates.length > 1) {
-                routePath = L.polyline(routeCoordinates, { color: 'var(--accent-color)', weight: 4 }).addTo(journeyMap);
-            }
-        }
-        
-        function clearRoute() {
-            routeMarkers.forEach(marker => journeyMap.removeLayer(marker));
-            if (routePath) journeyMap.removeLayer(routePath);
-            routeMarkers = [];
-            routeCoordinates = [];
-            routePath = null;
-            showToast('Route cleared!');
-        }
-        
-        // Modal Functions
-        function saveRoute() {
-            if (routeCoordinates.length < 2) {
-                showToast('Please add at least 2 waypoints!');
-                return;
-            }
-            document.getElementById('saveRouteModal').classList.add('show');
-        }
-        
-        function shareRoute() {
-            if (routeCoordinates.length < 2) {
-                showToast('Please create a route first!');
-                return;
-            }
-            showToast('Share link copied to clipboard!');
-        }
-        
-        function createSwarm() {
-            document.getElementById('createSwarmModal').classList.add('show');
-        }
-        
-        function createEvent() {
-            document.getElementById('createEventModal').classList.add('show');
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
-        
-        function confirmSaveRoute() {
-            const name = document.getElementById('routeName').value;
-            if (!name) {
-                showToast('Please enter a route name!');
-                return;
-            }
-            closeModal('saveRouteModal');
-            showToast(`Route "${name}" saved successfully!`);
-        }
-        
-        function confirmCreateSwarm() {
-            const name = document.getElementById('swarmName').value;
-            if (!name) {
-                showToast('Please enter a swarm name!');
-                return;
-            }
-            closeModal('createSwarmModal');
-            showToast(`Swarm "${name}" created successfully!`);
-        }
-        
-        function confirmCreateEvent() {
-            const name = document.getElementById('eventName').value;
-            if (!name) {
-                showToast('Please enter an event name!');
-                return;
-            }
-            closeModal('createEventModal');
-            showToast(`Event "${name}" submitted for review!`);
-        }
-        
-        function searchRoutes() {
-            showToast('Searching routes...');
-        }
-        
-        function searchSwarms() {
-            showToast('Searching swarms...');
-        }
-        
-        function searchEvents() {
-            showToast('Searching events...');
-        }
-        
-        // Toast Notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-    </script>
+    </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 Flânerie — Made for urban explorers.
+</footer>
+
+<script>
+/* BACKGROUND ROTATION SCRIPT */
+let bgIndex = 0;
+const bgImgs = document.querySelectorAll(".bg-rotator img");
+
+setInterval(() => {
+    bgImgs[bgIndex].classList.remove("active");
+    bgIndex = (bgIndex + 1) % bgImgs.length;
+    bgImgs[bgIndex].classList.add("active");
+}, 4000);
+</script>
+
 </body>
 </html>

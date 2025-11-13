@@ -40,10 +40,10 @@
         
         .bg-image {
             position: fixed;
-            top: 100px;
+            top: 120px;
             left: 0;
             width: 100%;
-            height: calc(100vh - 100px);
+            height: calc(100vh - 120px);
             object-fit: cover;
             object-position: center center;
             opacity: 0;
@@ -66,7 +66,7 @@
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(238, 111, 87, 0.3);
             border-bottom: 2px solid var(--accent-color);
-            height: 100px;
+            height: 120px;
             overflow: visible;
         }
         
@@ -897,6 +897,21 @@
             margin-top: 0.2rem;
         }
         
+        /* Choreographed sequential reveal */
+        .hidden-until-ready {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .fade-in-section {
+            opacity: 0;
+            animation: simpleFadeIn 1s ease-in forwards;
+        }
+        
+        @keyframes simpleFadeIn {
+            to { opacity: 1; }
+        }
+        
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             /* Navigation - smaller logo and better spacing */
@@ -1204,7 +1219,7 @@
                 </div>
                 
                 <!-- THE PROBLEM FIRST - Take Back Your Main Street -->
-                <div id="take-back-section" style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
+                <div id="take-back-section" class="hidden-until-ready" style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
                     <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3.2rem; margin-bottom: 2rem; font-weight: 600;">Take Back Your Main Street</h3>
                     
                     <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
@@ -1214,7 +1229,7 @@
                 </div>
                 
                 <!-- THE SOLUTION - Welcome to Flânerie -->
-                <div style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
+                <div id="welcome-section" class="hidden-until-ready" style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
                     <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3.2rem; margin-bottom: 2rem; font-weight: 600;">Welcome to Flânerie</h3>
                     
                     <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
@@ -1238,7 +1253,7 @@
             
             
             <!-- Features Section -->
-            <div class="content-wrapper">
+            <div id="features-content" class="hidden-until-ready content-wrapper">
                 <!-- Primary Features - Large and Prominent -->
                 <div class="main-features">
                     <div class="feature-card" onclick="toggleSection('journey-map')">
@@ -1698,17 +1713,51 @@
         
         setInterval(rotateBgImages, 7000);
         
-        // Scroll to top after epigraph fades
-        setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'instant' });
-        }, 7500);
+        // CHOREOGRAPHED SEQUENCE - Everything happens in order
+        let choreographyStarted = false;
         
-        // Scroll-triggered Typewriter Effect with cursor pauses
-        let typewriterTriggered = false;
+        function startChoreography() {
+            if (choreographyStarted) return;
+            choreographyStarted = true;
+            
+            // Step 1: Definition slides to place (already animated via CSS)
+            // Waits 7.5 seconds for epigraph to fade
+            
+            // Step 2: After definition settles, show "Take Back Your Main Street" header (10 seconds total)
+            setTimeout(() => {
+                const takeBackSection = document.getElementById('take-back-section');
+                takeBackSection.classList.remove('hidden-until-ready');
+                takeBackSection.classList.add('fade-in-section');
+            }, 10000);
+            
+            // Step 3: Start typewriter 2 seconds after header appears (12 seconds total)
+            setTimeout(() => {
+                startTypewriter();
+            }, 12000);
+            
+            // Step 4: After typewriter completes (~17 seconds), wait then show Welcome section
+            // Typewriter takes ~3 seconds to type + 2 sec pause = 5 seconds
+            // So show Welcome at 17 seconds
+            setTimeout(() => {
+                showWelcomeSection();
+            }, 17000);
+            
+            // Step 5: Show rest of content after Welcome paragraph fades in
+            setTimeout(() => {
+                const featuresContent = document.getElementById('features-content');
+                featuresContent.classList.remove('hidden-until-ready');
+                featuresContent.classList.add('fade-in-section');
+            }, 21000);
+        }
+        
+        // Start choreography after epigraph fades
+        setTimeout(startChoreography, 7000);
+        
+        // Typewriter Effect
         const typewriterText = "Every year, 200,000 small businesses close in the U.S. alone.";
         let charIndex = 0;
         
-        function typeWriter() {
+        function startTypewriter() {
             const element = document.querySelector('#typewriter-sentence strong');
             const cursorElement = document.getElementById('typewriter-sentence');
             if (!element) return;
@@ -1721,11 +1770,10 @@
                     if (charIndex < typewriterText.length) {
                         element.textContent += typewriterText.charAt(charIndex);
                         charIndex++;
-                        setTimeout(type, 50); // ~70 WPM
+                        setTimeout(type, 50);
                     } else {
                         // Pause with cursor for 2 seconds after typing
                         setTimeout(() => {
-                            // Hide cursor and fade in rest of paragraph
                             cursorElement.classList.add('cursor-hidden');
                             setTimeout(() => {
                                 document.getElementById('rest-of-paragraph').style.transition = 'opacity 1s ease-in';
@@ -1738,23 +1786,33 @@
             }, 2000);
         }
         
-        // Intersection Observer for scroll trigger
-        document.addEventListener('DOMContentLoaded', function() {
-            const takeBackSection = document.getElementById('take-back-section');
+        // Welcome Section Animation
+        function showWelcomeSection() {
+            const welcomeSection = document.getElementById('welcome-section');
             
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !typewriterTriggered) {
-                        typewriterTriggered = true;
-                        typeWriter();
-                    }
+            // First show the header
+            welcomeSection.classList.remove('hidden-until-ready');
+            welcomeSection.style.opacity = '0';
+            welcomeSection.style.transition = 'opacity 1s ease-in';
+            
+            setTimeout(() => {
+                welcomeSection.style.opacity = '1';
+            }, 100);
+            
+            // Then show paragraphs 2 seconds later
+            setTimeout(() => {
+                const paragraphs = welcomeSection.querySelectorAll('p');
+                paragraphs.forEach((p, index) => {
+                    setTimeout(() => {
+                        p.style.opacity = '0';
+                        p.style.transition = 'opacity 1s ease-in';
+                        setTimeout(() => {
+                            p.style.opacity = '1';
+                        }, 100);
+                    }, index * 500);
                 });
-            }, { threshold: 0.3 });
-            
-            if (takeBackSection) {
-                observer.observe(takeBackSection);
-            }
-        });
+            }, 2000);
+        }
         
         // Initialize Variables
         let journeyMap = null;
@@ -1818,20 +1876,27 @@
                                     // Clear previous timeout
                                     clearTimeout(searchTimeout);
                                     
-                                    if (query.length < 3) {
+                                    if (query.length < 2) {
                                         suggestionsDiv.classList.remove('show');
                                         return;
                                     }
                                     
-                                    // Debounce - wait 300ms after user stops typing
+                                    // Very short debounce - 100ms for faster response
                                     searchTimeout = setTimeout(() => {
-                                        fetchLocationSuggestions(query, suggestionsDiv, journeyMap);
-                                    }, 300);
+                                        fetchLocationSuggestions(query, suggestionsDiv, journeyMap, searchInput);
+                                    }, 100);
                                 });
                                 
                                 searchInput.addEventListener('keypress', function(e) {
                                     if (e.key === 'Enter' && !suggestionsDiv.classList.contains('show')) {
                                         searchLocation(searchInput.value, journeyMap);
+                                    }
+                                });
+                                
+                                // Hide suggestions when clicking outside
+                                document.addEventListener('click', function(e) {
+                                    if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                                        suggestionsDiv.classList.remove('show');
                                     }
                                 });
                             }
@@ -1907,17 +1972,10 @@
             }
         }
         
-        // Fetch location suggestions for autocomplete
-        function fetchLocationSuggestions(query, suggestionsDiv, map) {
-            // Check if it's a US zip code
-            const isZipCode = /^\d/.test(query);
-            
-            let url;
-            if (isZipCode) {
-                url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=5`;
-            } else {
-                url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=5`;
-            }
+        // Fetch location suggestions for autocomplete - FAST
+        function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
+            // Always search in US
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=8`;
             
             fetch(url, {
                 headers: { 'User-Agent': 'Flanerie-App/1.0' }
@@ -1932,7 +1990,8 @@
                         
                         const main = document.createElement('div');
                         main.className = 'suggestion-main';
-                        main.textContent = result.name || result.display_name.split(',')[0];
+                        const name = result.name || result.display_name.split(',')[0];
+                        main.textContent = name;
                         
                         const detail = document.createElement('div');
                         detail.className = 'suggestion-detail';
@@ -1950,7 +2009,8 @@
                                 .bindPopup(`<strong>${result.display_name}</strong>`)
                                 .openPopup();
                             suggestionsDiv.classList.remove('show');
-                            showToast(`Found: ${result.name || result.display_name.split(',')[0]}`);
+                            inputElement.value = result.display_name;
+                            showToast(`Found: ${name}`);
                         });
                         
                         suggestionsDiv.appendChild(item);

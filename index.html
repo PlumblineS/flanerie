@@ -897,7 +897,7 @@
             align-items: center;
             justify-content: center;
             opacity: 1;
-            animation: epigraphSequence 5s ease-in-out forwards;
+            animation: epigraphSequence 7s ease-in-out forwards;
         }
         
         .epigraph-content {
@@ -905,7 +905,7 @@
             padding: 2rem;
             max-width: 800px;
             opacity: 0;
-            animation: epigraphFadeIn 1s ease-in forwards;
+            animation: epigraphFadeIn 2s ease-in forwards, epigraphBreath 3s ease-in-out infinite 2s;
         }
         
         .epigraph-content h2 {
@@ -933,13 +933,18 @@
         
         @keyframes epigraphSequence {
             0% { opacity: 1; }
-            80% { opacity: 1; }
+            71% { opacity: 1; }
             100% { opacity: 0; pointer-events: none; }
         }
         
         @keyframes epigraphFadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
+        }
+        
+        @keyframes epigraphBreath {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
         
         /* Mobile epigraph */

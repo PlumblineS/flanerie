@@ -27,6 +27,11 @@
             --accent-light: #8DBCC0;
         }
         
+        body.choreography-active {
+            overflow: hidden;
+            height: 100vh;
+        }
+        
         /* Background with rotating images - FIXED POSITION */
         .bg-container {
             position: fixed;
@@ -1713,49 +1718,31 @@
         
         setInterval(rotateBgImages, 7000);
         
-        // CHOREOGRAPHED SEQUENCE - Everything happens in order
+        // Lock scrolling during choreography
+        document.body.classList.add('choreography-active');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        
+        // CHOREOGRAPHED SEQUENCE - Nothing is scrollable until complete
         let choreographyStarted = false;
         
         function startChoreography() {
             if (choreographyStarted) return;
             choreographyStarted = true;
             
-            // Ensure page is at top
+            // Keep page at top
             window.scrollTo({ top: 0, behavior: 'instant' });
             
-            // Step 1: Definition slides to place (already animated via CSS at 7.5 seconds)
-            
-            // Step 2: Show "Take Back Your Main Street" header right after definition settles (8 seconds)
+            // After definition slides to place (completes at ~7s), show Take Back header
             setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'instant' });
                 const takeBackSection = document.getElementById('take-back-section');
                 takeBackSection.classList.remove('hidden-until-ready');
                 takeBackSection.classList.add('fade-in-section');
-            }, 8000);
-            
-            // Step 3: Start typewriter 2 seconds after header appears (10 seconds total)
-            setTimeout(() => {
-                startTypewriter();
-            }, 10000);
-            
-            // Step 4: After typewriter completes (~15 seconds), show Welcome section
-            // Typewriter takes ~3 seconds to type + 2 sec pause before + 2 sec pause after = 7 seconds
-            setTimeout(() => {
-                showWelcomeSection();
-            }, 17000);
-            
-            // Step 5: Show tagline and rest of content after Welcome appears
-            setTimeout(() => {
-                const tagline = document.getElementById('tagline-reveal');
-                if (tagline) {
-                    tagline.classList.remove('hidden-until-ready');
-                    tagline.classList.add('fade-in-section');
-                }
                 
-                const featuresContent = document.getElementById('features-content');
-                featuresContent.classList.remove('hidden-until-ready');
-                featuresContent.classList.add('fade-in-section');
-            }, 21000);
+                // Start typewriter 2 seconds after header appears
+                setTimeout(() => {
+                    startTypewriter();
+                }, 2000);
+            }, 7000);
         }
         
         // Start choreography after epigraph fades
@@ -1770,22 +1757,27 @@
             const cursorElement = document.getElementById('typewriter-sentence');
             if (!element) return;
             
-            // Block cursor already showing via CSS
-            // Wait 2 seconds before typing
+            // Wait 2 seconds before typing starts
             setTimeout(() => {
-                // Start typing
                 function type() {
                     if (charIndex < typewriterText.length) {
                         element.textContent += typewriterText.charAt(charIndex);
                         charIndex++;
                         setTimeout(type, 50);
                     } else {
-                        // Pause with cursor for 2 seconds after typing
+                        // Wait 2 seconds after typing finishes
                         setTimeout(() => {
                             cursorElement.classList.add('cursor-hidden');
+                            
+                            // Fade in paragraph
                             setTimeout(() => {
                                 document.getElementById('rest-of-paragraph').style.transition = 'opacity 1s ease-in';
                                 document.getElementById('rest-of-paragraph').style.opacity = '1';
+                                
+                                // 3 seconds after paragraph, show Welcome section
+                                setTimeout(() => {
+                                    showWelcomeSection();
+                                }, 3000);
                             }, 300);
                         }, 2000);
                     }
@@ -1797,28 +1789,57 @@
         // Welcome Section Animation
         function showWelcomeSection() {
             const welcomeSection = document.getElementById('welcome-section');
-            
-            // First show the header
             welcomeSection.classList.remove('hidden-until-ready');
             welcomeSection.style.opacity = '0';
             welcomeSection.style.transition = 'opacity 1s ease-in';
             
             setTimeout(() => {
                 welcomeSection.style.opacity = '1';
-            }, 100);
-            
-            // Then show paragraphs 2 seconds later
-            setTimeout(() => {
-                const paragraphs = welcomeSection.querySelectorAll('p');
-                paragraphs.forEach((p, index) => {
-                    setTimeout(() => {
-                        p.style.opacity = '0';
-                        p.style.transition = 'opacity 1s ease-in';
+                
+                // 2 seconds later, show Welcome paragraph
+                setTimeout(() => {
+                    const welcomeParagraphs = welcomeSection.querySelectorAll('p');
+                    if (welcomeParagraphs.length > 0) {
+                        welcomeParagraphs[0].style.opacity = '0';
+                        welcomeParagraphs[0].style.transition = 'opacity 1s ease-in';
                         setTimeout(() => {
-                            p.style.opacity = '1';
+                            welcomeParagraphs[0].style.opacity = '1';
+                            
+                            // Continue with remaining paragraphs
+                            for (let i = 1; i < welcomeParagraphs.length; i++) {
+                                setTimeout(() => {
+                                    welcomeParagraphs[i].style.opacity = '0';
+                                    welcomeParagraphs[i].style.transition = 'opacity 1s ease-in';
+                                    setTimeout(() => {
+                                        welcomeParagraphs[i].style.opacity = '1';
+                                    }, 100);
+                                }, i * 500);
+                            }
+                            
+                            // 2 seconds after paragraphs, show tagline
+                            setTimeout(() => {
+                                showTaglineAndUnlock();
+                            }, 2000 + (welcomeParagraphs.length * 500));
                         }, 100);
-                    }, index * 500);
-                });
+                    }
+                }, 2000);
+            }, 100);
+        }
+        
+        // Show tagline and unlock scrolling
+        function showTaglineAndUnlock() {
+            const tagline = document.getElementById('tagline-reveal');
+            tagline.classList.remove('hidden-until-ready');
+            tagline.classList.add('fade-in-section');
+            
+            // After tagline appears, show everything else and unlock scrolling
+            setTimeout(() => {
+                const featuresContent = document.getElementById('features-content');
+                featuresContent.classList.remove('hidden-until-ready');
+                featuresContent.classList.add('fade-in-section');
+                
+                // Unlock scrolling
+                document.body.classList.remove('choreography-active');
             }, 2000);
         }
         

@@ -1750,7 +1750,11 @@ setTimeout(() => {
         
         // Wait for animation to complete before next slide
         setTimeout(() => {
-                            
+             // Hide the paragraph and YOU slides
+            const paragraphSlide = document.getElementById('slide-paragraph');
+            const youSlide = document.getElementById('slide-you');
+            if (paragraphSlide) paragraphSlide.classList.remove('active');
+            if (youSlide) youSlide.classList.remove('active');               
                             setTimeout(() => {
                                 // Slide 5: Welcome + tagline fade in
                                 showSlide('slide-welcome-final', 0, () => {
@@ -1810,13 +1814,12 @@ setTimeout(() => {
                     element.textContent += typewriterText.charAt(charIndex);
                     charIndex++;
                     setTimeout(type, 50);
-              } else {
-    // Pause 3 seconds after typing
+             } else {
+    // Pause 3 seconds after typing (keep cursor blinking)
     setTimeout(() => {
-        element.classList.add('cursor-hidden');
         callback();
     }, 3000);
-}  
+} 
             }
             type();
         }

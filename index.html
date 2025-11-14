@@ -1712,18 +1712,26 @@
         showSlide('slide-typewriter', 2000, () => {
             slideshowTypewriter(() => {
                 
-                // Slide 3: Shortened paragraph (3 seconds)
+               // Slide 3: Shortened paragraph (5 seconds to read)
+setTimeout(() => {
+    showSlide('slide-paragraph', 5000, () => {
+        
+        // Slide 4: YOU (paragraph slides up as YOU comes in and grows - 4 seconds)
+        const paragraphSlide = document.getElementById('slide-paragraph');
+        showSlide('slide-you', 0, () => {
+            // Slide paragraph up
+            if (paragraphSlide) {
+                paragraphSlide.querySelector('.slide-content').style.transition = 'transform 4s ease-out, opacity 4s ease-out';
+                paragraphSlide.querySelector('.slide-content').style.transform = 'translateY(-100px)';
+                paragraphSlide.querySelector('.slide-content').style.opacity = '0';
+            }
+            
+            const youText = document.getElementById('you-text');
+            if (youText) {
                 setTimeout(() => {
-                    showSlide('slide-paragraph', 3000, () => {
-                        
-                        // Slide 4: YOU (grows for 4 seconds)
-                        showSlide('slide-you', 0, () => {
-                            const youText = document.getElementById('you-text');
-                            if (youText) {
-                                setTimeout(() => {
-                                    youText.style.transform = 'scale(1.5)';
-                                }, 100);
-                            }
+                    youText.style.transform = 'scale(1.5)';
+                }, 100);
+            }
                             
                             setTimeout(() => {
                                 // Slide 5: Welcome + tagline fade in

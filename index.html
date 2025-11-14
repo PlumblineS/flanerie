@@ -1699,70 +1699,68 @@
         const typewriterText = "Every year, 200,000 small businesses close in the U.S. alone.";
         let charIndex = 0;
         
-        function startSlideshow() {
-            const slideshowOverlay = document.getElementById('slideshow-overlay');
-            
-            // Start slideshow immediately (definition is first slide)
-            slideshowOverlay.classList.add('active');
-            
-  // Slide 1: Definition (holds)
-showSlide('slide-definition', 4000, () => {
+  function startSlideshow() {
+    const slideshowOverlay = document.getElementById('slideshow-overlay');
     
-    // Slide 2: Typewriter (starts typing)
-    showSlide('slide-typewriter', 2000, () => {
-        slideshowTypewriter(() => {
-            
-            // Slide 3: Shortened paragraph (3 seconds)
-            setTimeout(() => {
-                showSlide('slide-paragraph', 3000, () => {
-                    
-                    // Slide 4: YOU (grows for 4 seconds)
-                    showSlide('slide-you', 0, () => {
-                        const youText = document.getElementById('you-text');
-                        if (youText) {
-                            setTimeout(() => {
-                                youText.style.transform = 'scale(1.5)';
-                            }, 100);
-                        }
+    // Start slideshow immediately (definition is first slide)
+    slideshowOverlay.classList.add('active');
+    
+    // Slide 1: Definition (holds)
+    showSlide('slide-definition', 4000, () => {
+        
+        // Slide 2: Typewriter (starts typing)
+        showSlide('slide-typewriter', 2000, () => {
+            slideshowTypewriter(() => {
+                
+                // Slide 3: Shortened paragraph (3 seconds)
+                setTimeout(() => {
+                    showSlide('slide-paragraph', 3000, () => {
                         
-                        setTimeout(() => {
-                            // Slide 5: Welcome + tagline fade in
-                            showSlide('slide-welcome-final', 0, () => {
-                                const welcomeText = document.getElementById('welcome-text');
-                                const taglineText = document.getElementById('tagline-text');
-                                
-                                // After 2 seconds, slide welcome up and fade in tagline
+                        // Slide 4: YOU (grows for 4 seconds)
+                        showSlide('slide-you', 0, () => {
+                            const youText = document.getElementById('you-text');
+                            if (youText) {
                                 setTimeout(() => {
-                                    if (welcomeText) {
-                                        welcomeText.style.transform = 'translateY(-40px)';
-                                    }
-                                    if (taglineText) {
-                                        taglineText.style.opacity = '1';
-                                    }
-                                }, 2000);
-                                
-                                // After another 2 seconds, fade to site
-                                setTimeout(() => {
-                                            
-                                 slideshowOverlay.style.transition = 'opacity 1s ease-out';
-                                    slideshowOverlay.style.opacity = '0';
+                                    youText.style.transform = 'scale(1.5)';
+                                }, 100);
+                            }
+                            
+                            setTimeout(() => {
+                                // Slide 5: Welcome + tagline fade in
+                                showSlide('slide-welcome-final', 0, () => {
+                                    const welcomeText = document.getElementById('welcome-text');
+                                    const taglineText = document.getElementById('tagline-text');
                                     
+                                    // After 2 seconds, slide welcome up and fade in tagline
                                     setTimeout(() => {
-                                        slideshowOverlay.style.display = 'none';
-                                        document.body.classList.remove('choreography-active');
-                                        window.scrollTo({ top: 0, behavior: 'instant' });
-                                    }, 1000);
-                                }, 4000);
-                            });
-                        }, 4000);
+                                        if (welcomeText) {
+                                            welcomeText.style.transform = 'translateY(-40px)';
+                                        }
+                                        if (taglineText) {
+                                            taglineText.style.opacity = '1';
+                                        }
+                                    }, 2000);
+                                    
+                                    // After another 2 seconds, fade to site
+                                    setTimeout(() => {
+                                        slideshowOverlay.style.transition = 'opacity 1s ease-out';
+                                        slideshowOverlay.style.opacity = '0';
+                                        
+                                        setTimeout(() => {
+                                            slideshowOverlay.style.display = 'none';
+                                            document.body.classList.remove('choreography-active');
+                                            window.scrollTo({ top: 0, behavior: 'instant' });
+                                        }, 1000);
+                                    }, 4000);
+                                });
+                            }, 4000);
+                        });
                     });
                 }, 3000);
             });
         });
     });
-});           
-            });
-        }
+}
         
         function showSlide(slideId, duration, callback) {
             const slides = document.querySelectorAll('.slide');

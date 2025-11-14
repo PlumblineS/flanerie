@@ -30,6 +30,14 @@
         body.choreography-active {
             overflow: hidden;
             height: 100vh;
+            position: fixed;
+            width: 100%;
+        }
+        
+        body.choreography-active .hero,
+        body.choreography-active .main-content,
+        body.choreography-active .bg-container {
+            visibility: hidden;
         }
         
         /* Background with rotating images - FIXED POSITION */
@@ -1924,7 +1932,7 @@ setTimeout(() => {
                     
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
-                        const navHeight = 140; // Height of fixed nav
+                        const navHeight = 180; // Increased offset for fixed nav
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - navHeight;
                         

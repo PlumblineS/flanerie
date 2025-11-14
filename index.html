@@ -1190,18 +1190,9 @@
     </div>
     
     <!-- Cinematic Slideshow -->
-    <div id="slideshow-overlay" class="slideshow-overlay">
-        <!-- Slide 1: Definition (duplicated for slideshow) -->
-        <div class="slide" id="slide-definition">
-            <div class="slide-content">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 400; color: #e0e0e0; margin-bottom: 1rem; letter-spacing: 2px;">flânerie</h2>
-                <p style="font-size: 1.2rem; color: #999; margin-bottom: 2rem; font-style: italic;">| ˈflɑːnəri |</p>
-                <p style="font-size: 1.6rem; color: #d4d4d4; line-height: 1.8; font-weight: 300;">The art of leisurely urban exploration;<br>mindful wandering through city streets<br>with intention and curiosity.</p>
-            </div>
-        </div>
-        
-        <!-- Slide 2: Typewriter sentence -->
-        <div class="slide" id="slide-typewriter">
+        <div id="slideshow-overlay" class="slideshow-overlay">
+        <!-- Slide 1: Typewriter sentence -->
+        <div class="slide active" id="slide-typewriter">
             <div class="slide-content">
                 <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 2.8rem; margin-bottom: 3rem; font-weight: 600;">Take Back Your Main Street</h3>
                 <p id="slideshow-typewriter-sentence" style="font-size: 1.6rem; color: var(--accent-light); font-weight: 600;"></p>
@@ -1323,13 +1314,12 @@
                     </p>
                 </div>
                 
-                <!-- THE PROBLEM FIRST - Take Back Your Main Street -->
+                <!-- THE PROBLEM FIRST - Take Back Your Main Street (NO TYPEWRITER) -->
                 <div id="take-back-section" style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
                     <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3.2rem; margin-bottom: 2rem; font-weight: 600;">Take Back Your Main Street</h3>
                     
                     <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        <span id="typewriter-sentence" style="display: block; font-size: 1.45rem; margin-bottom: 1rem;"><strong style="color: var(--accent-light);"></strong></span>
-                        <span id="rest-of-paragraph" style="opacity: 0; display: block;">Search engines direct you to chains. Online shopping replaces neighborhood stores. <strong style="color: var(--accent-light);">Meanwhile, the café owner who remembers your name can't make rent.</strong> Small businesses don't have marketing budgets or algorithms working for them — they have <strong style="color: var(--accent-color);">you</strong>. Flânerie is crowdsourced discovery. <strong style="color: var(--accent-color);">Your route to that hidden coffee roaster? Someone's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities fight back — one walk, one recommendation, one conscious choice at a time.</span>
+                        <strong style="color: var(--accent-light);">Every year, 200,000 small businesses close in the U.S. alone.</strong> Search engines direct you to chains. Online shopping replaces neighborhood stores. <strong style="color: var(--accent-light);">Meanwhile, the café owner who remembers your name can't make rent.</strong> Small businesses don't have marketing budgets or algorithms working for them — they have <strong style="color: var(--accent-color);">you</strong>. Flânerie is crowdsourced discovery. <strong style="color: var(--accent-color);">Your route to that hidden coffee roaster? Someone's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities fight back — one walk, one recommendation, one conscious choice at a time.
                     </p>
                 </div>
                 
@@ -1829,16 +1819,13 @@
             setTimeout(() => {
                 slideshowOverlay.classList.add('active');
                 
-                // Slide 1: Definition (3 seconds)
-                showSlide('slide-definition', 3000, () => {
-                    
-                    // Slide 2: Typewriter (starts typing immediately)
-                    showSlide('slide-typewriter', 0, () => {
-                        slideshowTypewriter(() => {
-                            
-                            // Slide 3: Paragraph (2 seconds after typing)
-                            setTimeout(() => {
-                                showSlide('slide-paragraph', 5000, () => {
+                // Slide 1: Typewriter (starts typing immediately)
+                showSlide('slide-typewriter', 0, () => {
+                    slideshowTypewriter(() => {
+                        
+                        // Slide 2: Paragraph (2 seconds after typing)
+                        setTimeout(() => {
+                            showSlide('slide-paragraph', 5000, () => {
                                     
                                     // Slide 4: Welcome header (2 seconds)
                                     showSlide('slide-welcome-header', 2000, () => {

@@ -660,7 +660,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 2000;
+            z-index: 10001;
             left: 0;
             top: 0;
             width: 100%;
@@ -1585,11 +1585,23 @@
                 <div class="form-group">
                     <label>Category</label>
                     <select id="routeCategory">
-                        <option value="food">🍴 Food & Dining</option>
+                        <option value="">Select a category...</option>
                         <option value="coffee">☕ Coffee Shops</option>
-                        <option value="shopping">🛍️ Shopping</option>
+                        <option value="tacos">🌮 Tacos & Mexican</option>
+                        <option value="food">🍴 Food & Dining</option>
+                        <option value="bars">🍺 Bars & Nightlife</option>
+                        <option value="bookstores">📚 Bookstores</option>
+                        <option value="shopping">🛍️ Shopping & Boutiques</option>
+                        <option value="clothing">👕 Clothing & Fashion</option>
                         <option value="art">🎨 Art & Culture</option>
+                        <option value="parks">🌳 Parks & Nature</option>
+                        <option value="historic">🏛️ Historic Sites</option>
+                        <option value="other">✨ Other</option>
                     </select>
+                </div>
+                <div class="form-group" id="customCategoryGroup" style="display: none;">
+                    <label>Custom Category Name</label>
+                    <input type="text" id="customCategory" placeholder="Enter your category...">
                 </div>
             </div>
             <div class="modal-footer">
@@ -1841,6 +1853,22 @@ setTimeout(() => {
         document.body.classList.add('choreography-active');
         startSlideshow();
         
+        // Category dropdown - show custom field when "Other" is selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('routeCategory');
+            const customCategoryGroup = document.getElementById('customCategoryGroup');
+            
+            if (categorySelect) {
+                categorySelect.addEventListener('change', function() {
+                    if (this.value === 'other') {
+                        customCategoryGroup.style.display = 'block';
+                    } else {
+                        customCategoryGroup.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
         // Initialize Variables
         let journeyMap = null;
         let searchMap = null;
@@ -1992,7 +2020,30 @@ setTimeout(() => {
         }
         
         function addWaypoint(latlng) {
-            const marker = L.marker(latlng).addTo(journeyMap);
+            // Check distance from last waypoint if there are existing waypoints
+            if (routeCoordinates.length > 0) {
+                const lastCoord = routeCoordinates[routeCoordinates.length - 1];
+                const distance = calculateDistance(lastCoord[0], lastCoord[1], latlng.lat, latlng.lng);
+                
+                // Warn if distance is more than 1 mile (1.6 km)
+                if (distance > 1.6) {
+                    const miles = (distance * 0.621371).toFixed(1);
+                    if (!confirm(`This waypoint is ${miles} miles from your last point. That's far for walking! Add it anyway?`)) {
+                        return; // Cancel adding waypoint
+                    }
+                }
+            }
+            
+            // Create numbered marker
+            const waypointNumber = routeCoordinates.length + 1;
+            const numberIcon = L.divIcon({
+                className: 'numbered-marker',
+                html: `<div style="background: var(--accent-color); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${waypointNumber}</div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+            
+            const marker = L.marker(latlng, { icon: numberIcon }).addTo(journeyMap);
             routeMarkers.push(marker);
             routeCoordinates.push([latlng.lat, latlng.lng]);
             
@@ -2003,6 +2054,20 @@ setTimeout(() => {
             if (routeCoordinates.length > 1) {
                 routePath = L.polyline(routeCoordinates, { color: 'var(--accent-color)', weight: 4 }).addTo(journeyMap);
             }
+            
+            showToast(`Waypoint ${waypointNumber} added!`);
+        }
+        
+        // Calculate distance between two points in kilometers using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
         
         // Fetch location suggestions for autocomplete using Mapbox

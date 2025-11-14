@@ -1149,8 +1149,8 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#features-content">Explore</a></li>
+                <li><a href="#welcome-section">How It Works</a></li>
                 <li><a href="#business">For Businesses</a></li>
             </ul>
         </div>
@@ -1883,8 +1883,10 @@ setTimeout(() => {
                         const mapElement = modal.querySelector('#map');
                         if (mapElement && !journeyMap) {
                             journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '© OpenStreetMap'
+                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                attribution: '© Mapbox © OpenStreetMap',
+                                tileSize: 512,
+                                zoomOffset: -1
                             }).addTo(journeyMap);
                             
                             journeyMap.on('click', function(e) {
@@ -1934,8 +1936,10 @@ setTimeout(() => {
                         const mapElement = modal.querySelector('#search-map');
                         if (mapElement && !searchMap) {
                             searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '© OpenStreetMap'
+                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                attribution: '© Mapbox © OpenStreetMap',
+                                tileSize: 512,
+                                zoomOffset: -1
                             }).addTo(searchMap);
                             
                             // Add search functionality
@@ -1954,8 +1958,10 @@ setTimeout(() => {
                         const mapElement = modal.querySelector('#swarm-map');
                         if (mapElement && !swarmMap) {
                             swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '© OpenStreetMap'
+                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                attribution: '© Mapbox © OpenStreetMap',
+                                tileSize: 512,
+                                zoomOffset: -1
                             }).addTo(swarmMap);
                             
                             const swarms = [
@@ -1999,45 +2005,42 @@ setTimeout(() => {
             }
         }
         
-        // Fetch location suggestions for autocomplete - FAST
+        // Fetch location suggestions for autocomplete using Mapbox
         function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
-            // Always search in US
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=8`;
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=8&types=place,address,poi`;
             
-            fetch(url, {
-                headers: { 'User-Agent': 'Flanerie-App/1.0' }
-            })
+            fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data && data.length > 0) {
+                if (data.features && data.features.length > 0) {
                     suggestionsDiv.innerHTML = '';
-                    data.forEach(result => {
+                    data.features.forEach(result => {
                         const item = document.createElement('div');
                         item.className = 'suggestion-item';
                         
                         const main = document.createElement('div');
                         main.className = 'suggestion-main';
-                        const name = result.name || result.display_name.split(',')[0];
-                        main.textContent = name;
+                        main.textContent = result.text || result.place_name.split(',')[0];
                         
                         const detail = document.createElement('div');
                         detail.className = 'suggestion-detail';
-                        detail.textContent = result.display_name;
+                        detail.textContent = result.place_name;
                         
                         item.appendChild(main);
                         item.appendChild(detail);
                         
                         item.addEventListener('click', function() {
-                            const lat = parseFloat(result.lat);
-                            const lon = parseFloat(result.lon);
+                            const lon = result.center[0];
+                            const lat = result.center[1];
                             map.setView([lat, lon], 15);
                             L.marker([lat, lon])
                                 .addTo(map)
-                                .bindPopup(`<strong>${result.display_name}</strong>`)
+                                .bindPopup(`<strong>${result.place_name}</strong>`)
                                 .openPopup();
                             suggestionsDiv.classList.remove('show');
-                            inputElement.value = result.display_name;
-                            showToast(`Found: ${name}`);
+                            inputElement.value = result.place_name;
+                            showToast(`Found: ${result.text}`);
                         });
                         
                         suggestionsDiv.appendChild(item);
@@ -2053,52 +2056,41 @@ setTimeout(() => {
             });
         }
         
-        // Search location using Nominatim (OpenStreetMap geocoding) with US priority
+        // Search location using Mapbox geocoding
         function searchLocation(query, map) {
             if (!query || query.trim() === '') {
                 showToast('Please enter a location to search');
                 return;
             }
             
-            // Check if it's a US zip code (5 digits)
-            const isZipCode = /^\d{5}$/.test(query.trim());
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=1`;
             
-            // Build URL with US bias and better parameters
-            let url;
-            if (isZipCode) {
-                // For zip codes, specifically search in USA
-                url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=5`;
-            } else {
-                // For other searches, prioritize US but allow international
-                url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ' USA')}&addressdetails=1&limit=5`;
-            }
-            
-            fetch(url, {
-                headers: {
-                    'User-Agent': 'Flanerie-App/1.0'
-                }
-            })
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    if (data && data.length > 0) {
-                        const result = data[0];
-                        const lat = parseFloat(result.lat);
-                        const lon = parseFloat(result.lon);
+                    if (data.features && data.features.length > 0) {
+                        const result = data.features[0];
+                        const lon = result.center[0];
+                        const lat = result.center[1];
                         
-                        // Center map on result with appropriate zoom
+                        // Check if it's a zip code for zoom level
+                        const isZipCode = /^\d{5}$/.test(query.trim());
                         const zoom = isZipCode ? 13 : 12;
+                        
+                        // Center map on result
                         map.setView([lat, lon], zoom);
                         
                         // Add marker
                         L.marker([lat, lon])
                             .addTo(map)
-                            .bindPopup(`<strong>${result.display_name}</strong>`)
+                            .bindPopup(`<strong>${result.place_name}</strong>`)
                             .openPopup();
                         
-                        const locationName = isZipCode ? `Zip ${query}` : result.display_name.split(',')[0];
+                        const locationName = result.text || result.place_name.split(',')[0];
                         showToast(`Found: ${locationName}`);
                     } else {
-                        showToast('Location not found. Try adding city/state (e.g., "Greeley, CO")');
+                        showToast('Location not found. Try being more specific.');
                     }
                 })
                 .catch(error => {

@@ -1749,15 +1749,24 @@ setTimeout(() => {
         }, 100);
         
         // Wait for animation to complete before next slide
+       // Wait for animation to complete before next slide
         setTimeout(() => {
-             // Hide the paragraph and YOU slides
+            // Hide the paragraph and YOU slides completely
             const paragraphSlide = document.getElementById('slide-paragraph');
             const youSlide = document.getElementById('slide-you');
-            if (paragraphSlide) paragraphSlide.classList.remove('active');
-            if (youSlide) youSlide.classList.remove('active');               
-                            setTimeout(() => {
-                                // Slide 5: Welcome + tagline fade in
-                                showSlide('slide-welcome-final', 0, () => {
+            if (paragraphSlide) {
+                paragraphSlide.classList.remove('active');
+                paragraphSlide.style.opacity = '0';
+            }
+            if (youSlide) {
+                youSlide.classList.remove('active');
+                youSlide.style.opacity = '0';
+            }
+            
+            // Small delay to ensure YOU is gone before Welcome appears
+            setTimeout(() => {
+                // Slide 5: Welcome + tagline fade in
+                showSlide('slide-welcome-final', 0, () => {
                                     const welcomeText = document.getElementById('welcome-text');
                                     const taglineText = document.getElementById('tagline-text');
                                     
@@ -1781,12 +1790,12 @@ setTimeout(() => {
                                             document.body.classList.remove('choreography-active');
                                             window.scrollTo({ top: 0, behavior: 'instant' });
                                         }, 1000);
-                                    }, 4000);
-                                });
-                            }, 4000);
-                        });
-                    });
-                }, 3000);
+                                   }, 4000);
+                });
+            }, 500);  // <-- CHANGED: Added delay before Welcome appears
+        }, 4000);
+    });
+}, 3000);
             });
         });
     });

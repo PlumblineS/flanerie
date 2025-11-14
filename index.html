@@ -1101,45 +1101,31 @@
             </div>
         </div>
         
-        <!-- Slide 3: Full paragraph -->
-        <div class="slide" id="slide-paragraph">
-            <div class="slide-content" style="max-width: 900px;">
-                <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9;">
-                    Search engines direct you to chains. Online shopping replaces neighborhood stores. <strong style="color: var(--accent-light);">Meanwhile, the café owner who remembers your name can't make rent.</strong> Small businesses don't have marketing budgets or algorithms working for them — they have <strong style="color: var(--accent-color);">you</strong>. Flânerie is crowdsourced discovery. <strong style="color: var(--accent-color);">Your route to that hidden coffee roaster? Someone's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities fight back — one walk, one recommendation, one conscious choice at a time.
-                </p>
-            </div>
-        </div>
-        
-        <!-- Slide 4: Welcome header -->
-        <div class="slide" id="slide-welcome-header">
-            <div class="slide-content">
-                <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3rem; font-weight: 600;">Welcome to Flânerie</h3>
-            </div>
-        </div>
-        
-        <!-- Slide 5: Welcome paragraphs -->
-        <div class="slide" id="slide-welcome-content">
-            <div class="slide-content" style="max-width: 900px; text-align: left;">
-                <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.5rem;">
-                    We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color: var(--accent-color);">the art of strolling</strong> — observing city life with intention rather than rushing past it.
-                </p>
-                <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.5rem;">
-                    Through <strong style="color: var(--accent-color);">urban exploration</strong>, discover neighborhoods at your own pace. From cozy cafés and local markets to boutique shops, art galleries, and bookstores, our routes are designed for <strong style="color: var(--accent-color);">mindful wandering</strong> — purposeful aimlessness with open eyes, where every corner holds possibility.
-                </p>
-                <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9;">
-                    This practice of <strong style="color: var(--accent-color);">cultural appreciation</strong> — slowing down to absorb the beauty and life around you — helps you rediscover the magic in the everyday. Our routes highlight local businesses, parks, cultural gems, and unique urban spaces, designed to help you wander well and walk kindly.
-                </p>
-            </div>
-        </div>
-        
-        <!-- Slide 6: Final tagline -->
-        <div class="slide" id="slide-tagline">
-            <div class="slide-content">
-                <p style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--accent-color); font-style: italic; font-weight: 700;">
-                    Share your journey.<br>Retrace theirs.
-                </p>
-            </div>
-        </div>
+     <!-- Slide 3: Shortened paragraph -->
+<div class="slide" id="slide-paragraph">
+    <div class="slide-content" style="max-width: 900px;">
+        <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9;">
+            Search engines direct you to chains. Online shopping replaces neighborhood stores. Meanwhile, the café owner who remembers your name can't make rent. Small businesses don't have marketing budgets or algorithms working for them — they have...
+        </p>
+    </div>
+</div>
+
+<!-- Slide 4: YOU - grows in size -->
+<div class="slide" id="slide-you">
+    <div class="slide-content">
+        <h2 id="you-text" style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 4rem; font-weight: 700; transform: scale(1); transition: transform 4s ease-out;">YOU</h2>
+    </div>
+</div>
+
+<!-- Slide 5: Welcome with tagline fade in -->
+<div class="slide" id="slide-welcome-final">
+    <div class="slide-content">
+        <h3 id="welcome-text" style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3rem; font-weight: 600; transition: transform 2s ease-out;">Welcome to Flânerie</h3>
+        <p id="tagline-text" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent-color); font-style: italic; font-weight: 700; opacity: 0; margin-top: 2rem; transition: opacity 1s ease-in;">
+            Share your journey.<br>Retrace theirs.
+        </p>
+    </div>
+</div>   
     </div>
     
     <!-- Background Images -->
@@ -1719,44 +1705,62 @@
             // Start slideshow immediately (definition is first slide)
             slideshowOverlay.classList.add('active');
             
-           // Slide 1: Definition (4 seconds)
+  // Slide 1: Definition (holds)
 showSlide('slide-definition', 4000, () => {
     
-    // Slide 2: Typewriter header (2 seconds)
+    // Slide 2: Typewriter (starts typing)
     showSlide('slide-typewriter', 2000, () => {
         slideshowTypewriter(() => {
             
-            // Slide 3: Paragraph (holds 3 seconds after typing, then shows for 4 seconds)
+            // Slide 3: Shortened paragraph (3 seconds)
             setTimeout(() => {
-                showSlide('slide-paragraph', 5000, () => {
+                showSlide('slide-paragraph', 3000, () => {
                     
-                    // Slide 4: Welcome header (4 seconds)
-                    showSlide('slide-welcome-header', 4000, () => {
+                    // Slide 4: YOU (grows for 4 seconds)
+                    showSlide('slide-you', 0, () => {
+                        const youText = document.getElementById('you-text');
+                        if (youText) {
+                            setTimeout(() => {
+                                youText.style.transform = 'scale(1.5)';
+                            }, 100);
+                        }
                         
-                        // Slide 5: Welcome content (4 seconds)
-                        showSlide('slide-welcome-content', 4000, () => {
-                            
-                            // Slide 6: Tagline (4 seconds)
-                            showSlide('slide-tagline', 4000, () => { 
+                        setTimeout(() => {
+                            // Slide 5: Welcome + tagline fade in
+                            showSlide('slide-welcome-final', 0, () => {
+                                const welcomeText = document.getElementById('welcome-text');
+                                const taglineText = document.getElementById('tagline-text');
+                                
+                                // After 2 seconds, slide welcome up and fade in tagline
+                                setTimeout(() => {
+                                    if (welcomeText) {
+                                        welcomeText.style.transform = 'translateY(-40px)';
+                                    }
+                                    if (taglineText) {
+                                        taglineText.style.opacity = '1';
+                                    }
+                                }, 2000);
+                                
+                                // After another 2 seconds, fade to site
+                                setTimeout(() => {
                                             
-                                            // Fade out slideshow and reveal site
-                                            setTimeout(() => {
-                                                slideshowOverlay.style.transition = 'opacity 1s ease-out';
-                                                slideshowOverlay.style.opacity = '0';
-                                                
-                                                setTimeout(() => {
-                                                    slideshowOverlay.style.display = 'none';
-                                                    document.body.classList.remove('choreography-active');
-                                                    window.scrollTo({ top: 0, behavior: 'instant' });
-                                                }, 1000);
-                                            }, 500);
-                                        });
-                                    });
-                                });
+                                 slideshowOverlay.style.transition = 'opacity 1s ease-out';
+                                    slideshowOverlay.style.opacity = '0';
+                                    
+                                    setTimeout(() => {
+                                        slideshowOverlay.style.display = 'none';
+                                        document.body.classList.remove('choreography-active');
+                                        window.scrollTo({ top: 0, behavior: 'instant' });
+                                    }, 1000);
+                                }, 4000);
                             });
-                        }, 2000);
+                        }, 4000);
                     });
-                });
+                }, 3000);
+            });
+        });
+    });
+});           
             });
         }
         

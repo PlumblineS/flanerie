@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flânerie - For Businesses</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            --accent-color: #6B9B9E;
+            --accent-light: #8DBCC0;
+        }
+        
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.1), rgba(10, 10, 10, 0.9));
+        }
+        
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.5rem;
+            color: #d4d4d4;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #f7a399);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(107, 155, 158, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--accent-color);
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 968px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .feature-card {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid rgba(107, 155, 158, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(107, 155, 158, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            color: var(--accent-light);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #d4d4d4;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            margin-top: 1rem;
+            padding: 0;
+        }
+        
+        .feature-card li {
+            color: #d4d4d4;
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .pricing-section {
+            background: rgba(20, 20, 20, 0.8);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 968px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .pricing-card {
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid rgba(107, 155, 158, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            border-color: var(--accent-color);
+            transform: scale(1.02);
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--accent-color);
+            background: rgba(107, 155, 158, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .pricing-card h3 {
+            color: var(--accent-light);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .price {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin: 1.5rem 0;
+        }
+        
+        .price span {
+            font-size: 1.2rem;
+            color: #999;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 2rem 0;
+        }
+        
+        .pricing-card li {
+            padding: 0.8rem 0;
+            color: #d4d4d4;
+            border-bottom: 1px solid rgba(107, 155, 158, 0.1);
+        }
+        
+        .testimonial-section {
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.05), rgba(10, 10, 10, 0.9));
+            padding: 4rem 2rem;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .testimonial-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .testimonial-quote {
+            font-size: 1.1rem;
+            color: #d4d4d4;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+        
+        .testimonial-business {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .final-cta {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .final-cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .final-cta p {
+            font-size: 1.3rem;
+            color: #d4d4d4;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your customers are walking<br>right past you.</h1>
+            <p>Stop competing with chains on Google. Get discovered by locals who actually walk your street.</p>
+            <div class="cta-buttons">
+                <a href="#pricing" class="btn-primary">Get Started Free</a>
+                <a href="#features" class="btn-secondary">See How It Works</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="container">
+        <h2 class="section-title">Three Ways to Grow Your Foot Traffic</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3>Get on the Map</h3>
+                <p>Be featured on walking routes that locals actually follow. When someone plans their Saturday stroll, your shop is on the path.</p>
+                <ul>
+                    <li>Free basic business listing</li>
+                    <li>Appear on curated walking routes</li>
+                    <li>Photos, hours, and special offers</li>
+                    <li>No ads, no algorithms—just discovery</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🛍️</div>
+                <h3>Host a Shopping Swarm</h3>
+                <p>Bring 20-50 locals to your door in a single afternoon. Shopping Swarms are organized group walks that support local businesses.</p>
+                <ul>
+                    <li>Create and promote your swarm</li>
+                    <li>Featured placement for paid accounts</li>
+                    <li>Custom landing page with your branding</li>
+                    <li>Collect emails for follow-up (with consent)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Promote Your Events</h3>
+                <p>Sidewalk sales, tastings, workshops, live music—get your events in front of people who love exploring local.</p>
+                <ul>
+                    <li>Community event calendar</li>
+                    <li>Automatic route suggestions to your event</li>
+                    <li>Share across all Flânerie users</li>
+                    <li>Turn one-time visitors into regulars</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <h2 class="section-title">Simple, Honest Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="price">$0<span>/month</span></div>
+                <ul>
+                    <li>✓ Basic business listing</li>
+                    <li>✓ Appear on walking routes</li>
+                    <li>✓ Photos & hours</li>
+                    <li>✓ Create shopping swarms</li>
+                    <li>✓ Post events</li>
+                </ul>
+                <button class="btn-secondary" style="margin-top: 2rem; width: 100%;">Start Free</button>
+            </div>
+            
+            <div class="pricing-card featured">
+                <h3>Pro</h3>
+                <div class="price">$29<span>/month</span></div>
+                <ul>
+                    <li>✓ Everything in Free</li>
+                    <li>✓ Featured swarm placement</li>
+                    <li>✓ Custom swarm landing page</li>
+                    <li>✓ Post-swarm analytics</li>
+                    <li>✓ Collect participant emails</li>
+                    <li>✓ Priority event placement</li>
+                    <li>✓ Route inclusion requests</li>
+                </ul>
+                <button class="btn-primary" style="margin-top: 2rem; width: 100%;">Start 30-Day Trial</button>
+            </div>
+            
+            <div class="pricing-card">
+                <h3>Neighborhood</h3>
+                <div class="price">$99<span>/month</span></div>
+                <ul>
+                    <li>✓ Everything in Pro</li>
+                    <li>✓ Up to 5 locations</li>
+                    <li>✓ Co-op swarms with other businesses</li>
+                    <li>✓ Neighborhood route analytics</li>
+                    <li>✓ Custom route creation</li>
+                    <li>✓ Quarterly merchant meetups</li>
+                    <li>✓ Priority support</li>
+                </ul>
+                <button class="btn-secondary" style="margin-top: 2rem; width: 100%;">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonial-section">
+        <h2 class="section-title">What Local Merchants Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-quote">"We hosted a Saturday morning swarm and had 34 people show up. Made more that morning than the entire week before. This is exactly what small businesses need."</p>
+                <p class="testimonial-author">Maria Rodriguez</p>
+                <p class="testimonial-business">Luna Coffee Roasters • Denver, CO</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-quote">"Being on these walking routes has brought us so many new customers. People actually stop in because they're following a route, not rushing to a destination."</p>
+                <p class="testimonial-author">James Chen</p>
+                <p class="testimonial-business">Binding & Spine Books • Boulder, CO</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-quote">"I love that it's not about gaming an algorithm or paying for ads. Real people find us because they're actually walking by. That's how neighborhoods should work."</p>
+                <p class="testimonial-author">Sarah Martinez</p>
+                <p class="testimonial-business">Verde Vintage • Austin, TX</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-quote">"The Pro account paid for itself after one swarm. The email list alone was worth it—we now have a way to stay in touch with our most engaged customers."</p>
+                <p class="testimonial-author">David Kim</p>
+                <p class="testimonial-business">Craft & Draft Brewery • Portland, OR</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to be discovered?</h2>
+        <p>Join hundreds of local businesses bringing their neighborhoods back to life.</p>
+        <div class="cta-buttons">
+            <a href="#" class="btn-primary">Claim Your Free Listing</a>
+            <a href="#" class="btn-secondary">Schedule a Demo</a>
+        </div>
+    </section>
+</body>
+</html>

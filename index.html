@@ -963,14 +963,15 @@
                 font-size: 2.5rem;
             }
             
-            .rotating-text {
-                height: 140px;
-            }
-            
-            .rotating-text span {
-                font-size: 1rem;
-                padding: 0 1rem;
-            }
+ .rotating-text {
+    height: 180px;
+}
+
+.rotating-text span {
+    font-size: 1rem;
+    padding: 0 1rem;
+    line-height: 1.5;
+}
             
             .info-section h2 {
                 font-size: 2.5rem !important;
@@ -1073,19 +1074,21 @@
             color: #0a0a0a;
         }
         
-        @media (max-width: 768px) {
-            .slideshow-controls {
-                bottom: 1rem;
-                right: 1rem;
-                gap: 0.5rem;
-            }
-            
-            .slideshow-controls button {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-        }
+@media (max-width: 768px) {
+    .slideshow-controls {
+        bottom: 1rem;
+        right: 1rem;
+        gap: 0.5rem;
+        z-index: 10002;
+    }
+    
+    .slideshow-controls button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+        background: rgba(107, 155, 158, 0.8);
+    }
+}
         
         /* Slideshow Overlay - Combined with Epigraph */
         .slideshow-overlay {

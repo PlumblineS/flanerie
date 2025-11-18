@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Flânerie</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            --accent-color: #6B9B9E;
+            --accent-light: #8DBCC0;
+        }
+        
+        /* Navigation */
+        nav {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(107, 155, 158, 0.3);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.1), rgba(10, 10, 10, 0.9));
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            color: #d4d4d4;
+            font-style: italic;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .story-section {
+            margin-bottom: 4rem;
+        }
+        
+        .story-section h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .story-section p {
+            color: #d4d4d4;
+            line-height: 2;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .pull-quote {
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.15), rgba(141, 188, 192, 0.15));
+            border-left: 4px solid var(--accent-color);
+            padding: 2rem 2.5rem;
+            margin: 3rem 0;
+            border-radius: 10px;
+        }
+        
+        .pull-quote p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            font-style: italic;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .mission-box {
+            background: rgba(30, 30, 30, 0.9);
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .mission-box h3 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mission-box p {
+            color: #d4d4d4;
+            line-height: 2;
+            font-size: 1.1rem;
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(107, 155, 158, 0.3);
+        }
+        
+        .signature p {
+            color: var(--accent-light);
+            font-size: 1.3rem;
+            font-style: italic;
+            margin: 0;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.1), rgba(10, 10, 10, 0.9));
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #f7a399);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(107, 155, 158, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .pull-quote p {
+                font-size: 1.3rem;
+            }
+            
+            .content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="character-logo.png" alt="Flânerie" style="height: 60px; width: 60px; object-fit: contain;">
+                Flânerie
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features-content">Explore</a></li>
+                <li><a href="for-businesses.html">For Businesses</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div>
+            <h1>About Flânerie</h1>
+            <p>One person. One mission. Bring neighborhoods back to life.</p>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <section class="story-section">
+            <h2>The Story</h2>
+            <p>Growing up, I didn't have much. But I had a bus pass.</p>
+            
+            <p>When I had a few dollars for public transportation, I'd ride to neighborhoods I'd never been to and just walk. No plan, no destination—just curious wandering. I'd discover corner stores with handwritten signs, alleys with murals, bakeries that smelled like home even though I'd never been there before.</p>
+            
+            <p>That wandering became a lifelong habit. Even as an adult, I'd take the long way home just to see what was there. Coffee shops with mismatched furniture. Bookstores with cats sleeping on the counter. Taquerías where the menu was all in Spanish and the salsa was perfect.</p>
+            
+            <p>But something's changed.</p>
+            
+            <p>Neighborhoods—real, walkable, lived-in neighborhoods—are falling apart. Downtown areas feel hollow. The small lights that used to glow on every block are going dark. I miss the old walks past houses lit up with Christmas lights, people sitting on porches, kids playing in the street. I miss neighborhood gatherings where you'd actually talk to the person next door.</p>
+        </section>
+        
+        <div class="pull-quote">
+            <p>When we stop driving past our neighborhoods, we start seeing them.</p>
+        </div>
+        
+        <section class="story-section">
+            <h2>Why This Exists</h2>
+            <p>This is a one-person project built for local businesses, not corporate budgets. I'm not trying to get rich. I'm trying to help neighborhoods survive.</p>
+            
+            <p>Every time you choose a local coffee shop over a chain, you're voting. Every time you walk instead of drive, you're participating. Every time you discover a new route through your own neighborhood, you're seeing what's been there all along.</p>
+            
+            <p>Flânerie is my answer to the question: <em>How do we get people to care about their neighborhoods again?</em></p>
+            
+            <p>We map the good stuff. We make it easy to find. We celebrate the people who walk, explore, and shop local. We remind each other that neighborhoods don't die—they're abandoned. And we can bring them back, one walk at a time.</p>
+        </section>
+        
+        <div class="mission-box">
+            <h3>Your neighborhood needs you.</h3>
+            <p>Not your money. Not your platform following. Just your feet, your eyes, and your willingness to look around.</p>
+            <p><strong>Walk slower. Notice more. Share what you find.</strong></p>
+        </div>
+        
+        <div class="signature">
+            <p>— Bobby</p>
+            <p style="font-size: 0.9rem; color: #999; font-style: normal;">Founder, the entire Flânerie "team"</p>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to wander?</h2>
+        <a href="index.html" class="btn-primary">Start Exploring</a>
+        <a href="for-businesses.html" class="btn-primary">I'm a Business Owner</a>
+    </section>
+</body>
+</html>

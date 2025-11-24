@@ -181,33 +181,35 @@
 }
 
 .rotating-text-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
+    min-height: 60px;
+    margin-top: 2rem;
+    position: relative;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1.2s forwards;
 }
 
 .rotating-text {
     position: relative;
     width: 100%;
-    height: 100%;
+    text-align: center;
 }
 
 .rotating-text span {
     position: absolute;
+    width: 100%;
     opacity: 0;
-    color: rgba(141, 188, 192, 0.7);
-    font-size: 1.4rem;
+    color: rgba(141, 188, 192, 0.8);
+    font-size: 1.3rem;
     font-weight: 300;
     font-style: italic;
-    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    text-align: center;
+    transition: opacity 1s ease-in-out;
+    left: 0;
+    top: 0;
 }
 
 .rotating-text span.active {
     opacity: 1;
-    transform: translateX(0) translateY(0);
 }
 
 /* Top corners and bottom corners - rotating between 4 positions */

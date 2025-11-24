@@ -77,18 +77,8 @@
             position: relative;
             z-index: 1001;
         }
-        
-        .nav-logo img {
-            animation: navLogoFloat 3s ease-in-out infinite;
-            margin-top: -40px;
-            margin-bottom: -40px;
-        }
-        
-        @keyframes navLogoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        
+      
+    
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -150,8 +140,13 @@
     height: 450px;
     margin: 0 auto 2rem;
     opacity: 0;
-    animation: fadeInScale 1s ease-out 0.3s forwards;
+    animation: fadeInScale 1s ease-out 0.3s forwards, logoBounce 3s ease-in-out 1.5s infinite;
     filter: drop-shadow(0 10px 30px rgba(107, 155, 158, 0.3));
+}
+
+@keyframes logoBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.02); }
 }
 
 @keyframes fadeInScale {
@@ -216,22 +211,24 @@
     transform: translateX(0) translateY(0);
 }
 
-/* Alternate positions - left and right */
+/* Alternate positions - FAR left and FAR right (away from logo) */
 .rotating-text span:nth-child(odd) {
-    left: 10%;
+    left: 5%;
     top: 50%;
     transform: translateX(-50px) translateY(-50%);
+    text-align: left;
 }
 
 .rotating-text span:nth-child(even) {
-    right: 10%;
+    right: 5%;
     top: 50%;
     transform: translateX(50px) translateY(-50%);
+    text-align: right;
 }
 
 /* Vary the vertical position */
 .rotating-text span:nth-child(3n) {
-    top: 35%;
+    top: 30%;
 }
 
 .rotating-text span:nth-child(3n+1) {
@@ -239,7 +236,7 @@
 }
 
 .rotating-text span:nth-child(3n+2) {
-    top: 65%;
+    top: 70%;
 }
 
 @keyframes fadeInUp {
@@ -1284,7 +1281,6 @@
     <nav id="navbar">
         <div class="nav-container">
             <a href="#home" class="nav-logo">
-                <img src="character-logo.png" alt="Flânerie" style="height: 180px; width: 180px; object-fit: contain;">
                 Flânerie
             </a>
             <ul class="nav-links">

@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flânerie - The Art of Urban Wandering</title>
     
-    <!-- Leaflet CSS for interactive maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -18,11 +15,15 @@
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             background: #0a0a0a;
-            color: #e0e0e0;
+            color: #8DBCC0;
             --accent-color: #6B9B9E;
             --accent-light: #8DBCC0;
         }
@@ -34,391 +35,384 @@
             width: 100%;
         }
         
-        body.choreography-active .hero,
-        body.choreography-active .main-content,
-        body.choreography-active .bg-container {
-            visibility: hidden;
-        }
-        
-        /* Background with rotating images - FIXED POSITION */
-        .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            background: #0a0a0a;
-        }
-        
-        .bg-image {
-            position: fixed;
-            top: 120px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 120px);
-            object-fit: cover;
-            object-position: center center;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-            background: #0a0a0a;
-        }
-        
-        .bg-image.active {
-            opacity: 0.70;
-        }
-        
-        /* Navigation */
+        /* Navigation - Centered, No Logo */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             z-index: 1000;
-            box-shadow: 0 2px 20px rgba(238, 111, 87, 0.3);
-            border-bottom: 2px solid var(--accent-color);
-            height: 120px;
-            overflow: visible;
+            border-bottom: 1px solid rgba(107, 155, 158, 0.2);
         }
         
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            height: 100%;
-        }
-        
-        .nav-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--accent-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-            z-index: 1001;
-        }
-        
-        .nav-logo img {
-            animation: navLogoFloat 3s ease-in-out infinite;
-            margin-top: -40px;
-            margin-bottom: -40px;
-        }
-        
-        @keyframes navLogoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
         }
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             list-style: none;
         }
         
         .nav-links a {
             text-decoration: none;
-            color: #d4d4d4;
+            color: var(--accent-light);
             font-weight: 500;
+            font-size: 1.1rem;
             transition: color 0.3s ease;
         }
         
         .nav-links a:hover {
-            color: var(--accent-color);
+            color: #ffffff;
         }
         
-        /* Hero Section - Full Width Design */
+        /* Hero Section */
         .hero {
-            min-height: 70vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             position: relative;
-            padding: 2rem;
-            padding-top: 140px;
+            padding: 6rem 2rem 4rem;
+            background: url('character-bg.png') center/cover fixed;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1;
         }
         
         .hero-content {
-            text-align: center;
-            padding: 0;
-            background: none;
-            border-radius: 0;
-            backdrop-filter: none;
-            box-shadow: none;
-            max-width: 800px;
-            border: none;
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
         }
         
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 6rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: #ffffff;
+            font-size: 7rem;
+            font-weight: 400;
+            color: var(--accent-light);
             margin-bottom: 1rem;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            letter-spacing: 3px;
+            text-shadow: 0 5px 30px rgba(0, 0, 0, 0.8);
         }
         
-        .tagline {
-            font-size: 1.3rem;
-            color: #d4d4d4;
-            margin-bottom: 1.5rem;
+        .hero-subtitle {
+            font-size: 1.8rem;
+            color: var(--accent-light);
             font-weight: 300;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .hero-logo-btn {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: url('character-logo.png') center/cover;
+            border: 5px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(107, 155, 158, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-logo-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 60px rgba(107, 155, 158, 0.6);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Rotating phrases below logo */
+        .rotating-text-container {
+            min-height: 50px;
+            position: relative;
+            margin-bottom: 1rem;
         }
         
         .rotating-text {
-            height: 120px;
-            overflow: hidden;
-            margin: 1rem 0;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
+            text-align: center;
         }
         
         .rotating-text span {
-            display: block;
             position: absolute;
             width: 100%;
-            text-align: center;
+            left: 0;
             opacity: 0;
-            animation: textFade 72s infinite;
-            color: #ffffff;
+            color: var(--accent-light);
+            font-size: 1.2rem;
+            font-weight: 300;
             font-style: italic;
-            font-weight: 400;
-            line-height: 1.4;
-            font-size: 1.56rem;
+            transition: opacity 1s ease-in-out;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-            padding: 0 2rem;
-            word-wrap: break-word;
-            white-space: normal;
         }
         
-        .rotating-text span:nth-child(1) { animation-delay: 0s; }
-        .rotating-text span:nth-child(2) { animation-delay: 4s; }
-        .rotating-text span:nth-child(3) { animation-delay: 8s; }
-        .rotating-text span:nth-child(4) { animation-delay: 12s; }
-        .rotating-text span:nth-child(5) { animation-delay: 16s; }
-        .rotating-text span:nth-child(6) { animation-delay: 20s; }
-        .rotating-text span:nth-child(7) { animation-delay: 24s; }
-        .rotating-text span:nth-child(8) { animation-delay: 28s; }
-        .rotating-text span:nth-child(9) { animation-delay: 32s; }
-        .rotating-text span:nth-child(10) { animation-delay: 36s; }
-        .rotating-text span:nth-child(11) { animation-delay: 40s; }
-        .rotating-text span:nth-child(12) { animation-delay: 44s; }
-        .rotating-text span:nth-child(13) { animation-delay: 48s; }
-        .rotating-text span:nth-child(14) { animation-delay: 52s; }
-        .rotating-text span:nth-child(15) { animation-delay: 56s; }
-        .rotating-text span:nth-child(16) { animation-delay: 60s; }
-        .rotating-text span:nth-child(17) { animation-delay: 64s; }
-        .rotating-text span:nth-child(18) { animation-delay: 68s; }
+        .rotating-text span.active {
+            opacity: 1;
+        }
         
-        @keyframes textFade {
-            0%, 4% { opacity: 0; }
-            4%, 9% { opacity: 1; }
-            9%, 11% { opacity: 0; }
-            11%, 100% { opacity: 0; }
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-light);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: bounce 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
         
         /* Main Content */
         .main-content {
             position: relative;
-            background: rgba(10, 10, 10, 0.92);
-            margin-top: 0;
-            border-radius: 0;
-            padding: 4rem 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            background: #0a0a0a;
+            padding: 6.5rem 0 2rem;
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 3rem;
+            padding: 0 2rem;
+        }
+        
+        /* Info Section - Definition */
+        .info-section {
+            text-align: center;
+            padding: 1.5rem 0 0.5rem;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .definition-box-animated {
+            margin-bottom: 1.2rem;
+            text-align: left;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1.3rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .definition-box-animated h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 400;
+            color: var(--accent-light);
+            margin-bottom: 0.4rem;
+        }
+        
+        .definition-box-animated p {
+            color: var(--accent-light);
+            line-height: 1.7;
+        }
+        
+        /* Welcome Section - Wider */
+        #welcome-section {
+            text-align: left;
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            background: rgba(30, 30, 30, 0.5);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+        }
+        
+        #welcome-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        #welcome-section p {
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            line-height: 1.65;
+            margin-bottom: 0.9rem;
+        }
+        
+        #welcome-section p:last-of-type {
+            margin-bottom: 0;
+        }
+        
+        #tagline-reveal {
+            margin-top: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-style: italic;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        /* Feature Cards - 4 in One Row */
+        .features-section {
+            padding: 4rem 0;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        
+        @media (max-width: 1200px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 0 1.5rem;
-            }
-        }
-        
-        /* Info Section */
-        .info-section {
-            text-align: center;
-            padding: 1rem 0 3rem;
-            max-width: 900px;
-            margin: 0 auto 4rem;
-        }
-        
-        .pronunciation {
-            font-style: italic;
-            color: #999;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--accent-light);
-            margin-bottom: 2rem;
-            font-weight: 500;
-        }
-        
-        .definition-box {
-            text-align: left;
-            background: rgba(30, 30, 30, 0.8);
-            padding: 2rem;
-            border-radius: 15px;
-            border-left: 4px solid var(--accent-color);
-            margin: 2rem 0;
-        }
-        
-        .definition-box p {
-            color: #d4d4d4;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-        
-        .definition-box ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .definition-box li {
-            color: #d4d4d4;
-            line-height: 2.2;
-            margin-bottom: 0.5rem;
-        }
-        
-        .welcome-text {
-            color: #d4d4d4;
-            line-height: 1.8;
-            margin: 1.5rem 0;
-        }
-        
-        /* Full Width Layout - No Sidebar */
-        .content-wrapper {
-            width: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        /* Main Features - Prominent and Spread Out */
-        .main-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-            margin-bottom: 3rem;
-            max-width: 1600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        @media (max-width: 968px) {
-            .main-features {
+            .feature-grid {
                 grid-template-columns: 1fr;
-                gap: 2rem;
             }
         }
         
-        /* Secondary Features - Spread Out */
-        .secondary-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-            margin-bottom: 4rem;
-            max-width: 1600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        @media (max-width: 968px) {
-            .secondary-features {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-        
-        /* Feature Cards */
-        .feature-card {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(238, 111, 87, 0.3);
-            border-color: var(--accent-color);
-        }
-        
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
-            border-radius: 15px;
+        .feature-card-large {
+            position: relative;
+            min-height: 85vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .feature-card h3 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        .feature-card-large::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+            z-index: 1;
         }
         
-        .feature-card p {
-            color: #d4d4d4;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+        .feature-card-large::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.7);
+            transition: background 0.3s ease;
+            z-index: 2;
+        }
+        
+        .feature-card-large:hover::before {
+            transform: scale(1.05);
+        }
+        
+        .feature-card-large:hover::after {
+            background: rgba(10, 10, 10, 0.85);
+        }
+        
+        .feature-card-large:nth-child(1)::before {
+            background-image: url('character-bg.png');
+        }
+        
+        .feature-card-large:nth-child(2)::before {
+            background-image: url('character-bg2.png');
+        }
+        
+        .feature-card-large:nth-child(3)::before {
+            background-image: url('character-bg3.png');
+        }
+        
+        .feature-card-large:nth-child(4)::before {
+            background-image: url('character-bg4.png');
+        }
+        
+        .feature-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .feature-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card-large h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.8);
+        }
+        
+        .feature-card-large p {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
         
         .feature-btn {
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 1rem 3rem;
             border: none;
-            border-radius: 25px;
-            cursor: pointer;
+            border-radius: 50px;
+            font-size: 1.1rem;
             font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(238, 111, 87, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .feature-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(238, 111, 87, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(107, 155, 158, 0.5);
         }
         
-        /* Upcoming Sections - Full Width */
+        /* Upcoming Sections */
         .upcoming-section {
             background: linear-gradient(135deg, rgba(107, 155, 158, 0.15), rgba(141, 188, 192, 0.15));
             border: 2px solid rgba(107, 155, 158, 0.3);
             border-radius: 25px;
             padding: 3rem;
-            margin: 3rem 0;
-            max-width: 1600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 3rem auto;
+            max-width: 1400px;
         }
         
         .upcoming-section h2 {
@@ -468,142 +462,9 @@
         }
         
         .upcoming-card p {
-            color: #d4d4d4;
+            color: var(--accent-light);
             line-height: 1.8;
             margin: 0.5rem 0;
-        }
-        
-        .upcoming-card .participants {
-            color: var(--accent-color);
-            font-weight: 600;
-            margin-top: 1rem;
-        }
-        
-        .section-cta {
-            text-align: center;
-            margin-top: 2.5rem;
-        }
-        /* Map Sections */
-        .map-container {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .map-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .map-container h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .map-container p {
-            color: #d4d4d4;
-            margin-bottom: 1.5rem;
-        }
-        
-        #map, #search-map, #swarm-map {
-            height: 500px;
-            border-radius: 15px;
-            margin: 1rem 0;
-        }
-        
-        /* Search Section */
-        .search-section {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .search-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .search-section h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .search-box {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-            border-radius: 15px;
-            background: rgba(40, 40, 40, 0.9);
-            color: #e0e0e0;
-            font-size: 1rem;
-        }
-        
-        /* Swarms & Events Sections */
-        .swarms-section, .events-section {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            display: none;
-            border: 2px solid rgba(238, 111, 87, 0.2);
-        }
-        
-        .swarms-section.active, .events-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .swarms-section h2, .events-section h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-        
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .swarm-card, .event-card {
-            background: rgba(40, 40, 40, 0.8);
-            padding: 1.5rem;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(238, 111, 87, 0.1);
-        }
-        
-        .swarm-card:hover, .event-card:hover {
-            transform: scale(1.02);
-            border-color: var(--accent-color);
-        }
-        
-        .swarm-card h4, .event-card h4 {
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-        
-        .card-details {
-            color: #d4d4d4;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.6;
         }
         
         .event-type {
@@ -620,9 +481,9 @@
         /* Footer */
         footer {
             background: rgba(10, 10, 10, 0.98);
-            color: #d4d4d4;
+            color: var(--accent-light);
             padding: 3rem 2rem 2rem;
-            border-top: 2px solid rgba(238, 111, 87, 0.3);
+            border-top: 2px solid rgba(107, 155, 158, 0.3);
         }
         
         .footer-content {
@@ -643,461 +504,37 @@
         .footer-section h4 {
             color: var(--accent-color);
             margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .footer-section ul {
-            list-style: none;
         }
         
         .footer-section a {
-            color: #d4d4d4;
+            color: var(--accent-light);
             text-decoration: none;
             line-height: 2;
             transition: color 0.3s;
         }
         
         .footer-section a:hover {
-            color: var(--accent-color);
+            color: #ffffff;
+        }
+        
+        .footer-section ul {
+            list-style: none;
         }
         
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
-            border-top: 1px solid rgba(238, 111, 87, 0.2);
+            border-top: 1px solid rgba(107, 155, 158, 0.2);
             color: #999;
         }
         
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background: rgba(25, 25, 25, 0.98);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-        }
-        
-        /* Fullscreen Modal for Maps and Upcoming Sections */
-        .modal-fullscreen {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: rgba(10, 10, 10, 0.98);
-            overflow-y: auto;
-        }
-        
-        .modal-fullscreen.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .modal-fullscreen .close-btn {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            background: rgba(238, 111, 87, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 2001;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-fullscreen .close-btn:hover {
-            background: var(--accent-color);
-            transform: scale(1.1);
-        }
-        
-        .modal-fullscreen .fullscreen-content {
-            padding: 3rem;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        /* Slideshow typewriter cursor */
-        #slideshow-typewriter-sentence::after {
-            content: '';
-            display: inline-block;
-            width: 0.6em;
-            height: 1.2em;
-            background-color: var(--accent-light);
-            margin-left: 4px;
-            animation: blockBlink 0.75s step-end infinite;
-            vertical-align: text-bottom;
-        }
-        
-        #slideshow-typewriter-sentence.cursor-hidden::after {
-            display: none;
-        }
-        
-        @keyframes blockBlink {
-            from, to { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .modal-header h2 {
-            color: var(--accent-color);
-        }
-        
-        .modal-close {
-            font-size: 2rem;
-            color: #d4d4d4;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .modal-close:hover {
-            color: var(--accent-color);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #d4d4d4;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid rgba(238, 111, 87, 0.3);
-            border-radius: 10px;
-            background: rgba(40, 40, 40, 0.9);
-            color: #e0e0e0;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-        
-        .modal-btn {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-btn-cancel {
-            background: rgba(60, 60, 60, 0.9);
-            color: #d4d4d4;
-        }
-        
-        .modal-btn-save {
-            background: linear-gradient(135deg, var(--accent-color), #f7a399);
-            color: white;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(238, 111, 87, 0.95);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 3000;
-        }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Map search autocomplete styling */
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(30, 30, 30, 0.98);
-            border: 2px solid rgba(238, 111, 87, 0.3);
-            border-top: none;
-            border-radius: 0 0 15px 15px;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .search-suggestions.show {
-            display: block;
-        }
-        
-        .suggestion-item {
-            padding: 1rem;
-            color: #d4d4d4;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(238, 111, 87, 0.1);
-            transition: background 0.2s;
-        }
-        
-        .suggestion-item:hover {
-            background: rgba(238, 111, 87, 0.2);
-        }
-        
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
-        
-        .suggestion-main {
-            font-weight: 600;
-            color: var(--accent-light);
-        }
-        
-        .suggestion-detail {
-            font-size: 0.9rem;
-            color: #999;
-            margin-top: 0.2rem;
-        }
-        
-        /* Choreographed sequential reveal */
-        .hidden-until-ready {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .fade-in-section {
-            opacity: 0;
-            animation: simpleFadeIn 1s ease-in forwards;
-        }
-        
-        @keyframes simpleFadeIn {
-            to { opacity: 1; }
-        }
-        
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            .nav-logo {
-                font-size: 1.5rem;
-            }
-            
-            .nav-logo img {
-                height: 50px !important;
-                width: 50px !important;
-            }
-            
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
-            }
-            
-            nav {
-                padding: 0.75rem 1rem;
-            }
-            
-            .bg-image {
-                object-fit: contain;
-                background: #0a0a0a;
-            }
-            
-            .hero {
-                min-height: 70vh;
-                padding: 1rem;
-                padding-top: 80px;
-            }
-            
-            .hero-content {
-                padding: 2rem 1.5rem;
-                max-width: 100%;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
- .rotating-text {
-    height: 180px;
-}
-
-.rotating-text span {
-    font-size: 1rem;
-    padding: 0 1rem;
-    line-height: 1.5;
-}
-            
-            .info-section h2 {
-                font-size: 2.5rem !important;
-            }
-            
-            .info-section h3 {
-                font-size: 1.8rem !important;
-            }
-            
-            .info-section h4 {
-                font-size: 1.4rem !important;
-            }
-            
-            .info-section p {
-                font-size: 1rem !important;
-            }
-            
-            .info-section p[style*="font-size: 2.5rem"] {
-                font-size: 1.8rem !important;
-            }
-            
-            .feature-card h3 {
-                font-size: 1.3rem;
-            }
-            
-            .feature-card p {
-                font-size: 0.95rem;
-            }
-            
-            .upcoming-section {
-                padding: 2rem 1.5rem;
-            }
-            
-            .upcoming-section h2 {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 0 1rem !important;
-            }
-            
-            .main-content {
-                padding: 3rem 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .info-section h2 {
-                font-size: 2rem !important;
-            }
-            
-            .feature-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-        }
-        
-        /* Slideshow Controls */
-        .slideshow-controls {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 10001;
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .slideshow-controls button {
-            background: rgba(107, 155, 158, 0.3);
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .slideshow-controls button:hover {
-            background: var(--accent-color);
-            color: #0a0a0a;
-            transform: scale(1.1);
-        }
-        
-        .slideshow-controls button.paused {
-            background: var(--accent-color);
-            color: #0a0a0a;
-        }
-        
-@media (max-width: 768px) {
-    .slideshow-controls {
-        bottom: 1rem;
-        right: 1rem;
-        gap: 0.5rem;
-        z-index: 10002;
-    }
-    
-    .slideshow-controls button {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
-        background: rgba(107, 155, 158, 0.8);
-    }
-}
-        
-        /* Slideshow Overlay - Combined with Epigraph */
+        /* SLIDESHOW - CORRECTED */
         .slideshow-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height for mobile */
             background: #0a0a0a;
             z-index: 10000;
             display: flex;
@@ -1120,11 +557,12 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 1s ease-in-out;
-            padding: 2rem 1rem;
+            padding: 4rem 2rem;
         }
         
         .slide.active {
@@ -1133,70 +571,185 @@
         
         .slide-content {
             text-align: center;
-            padding: 2rem;
             max-width: 800px;
             width: 100%;
         }
         
-        .definition-box-animated {
+        #slide-typewriter-with-image {
+            justify-content: flex-start;
+            padding-top: 15%;
+        }
+        
+        #slide-typewriter-with-image .typewriter-section {
+            margin-bottom: 3rem;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #slide-typewriter-with-image .image-section {
+            opacity: 0;
+            transition: opacity 4s ease-in;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-typewriter-with-image .image-section.fading {
             opacity: 1;
         }
         
+        #slide-paragraph-with-image {
+            justify-content: flex-start;
+            padding-top: 8%;
+        }
+        
+        #slide-paragraph-with-image .paragraph-section {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-paragraph-with-image .image-section {
+            opacity: 0;
+            transition: opacity 3s ease-in;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-paragraph-with-image .image-section.fading {
+            opacity: 1;
+        }
+        
+        #slide-paragraph-with-image .you-text {
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        #slide-paragraph-with-image .you-text.showing {
+            opacity: 1;
+        }
+        
+        #slide-welcome #welcome-text {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 3rem;
+            font-weight: 600;
+            transition: transform 2s ease-out;
+        }
+        
+        #slide-welcome #welcome-text.move-up {
+            transform: translateY(-40px);
+        }
+        
+        #slide-welcome #tagline-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            font-style: italic;
+            font-weight: 700;
+            opacity: 0;
+            margin-top: 2rem;
+            transition: opacity 1s ease-in;
+        }
+        
+        #slide-welcome #tagline-text.fade-in {
+            opacity: 1;
+        }
+        
+        #slideshow-typewriter-sentence {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.6rem;
+            color: var(--accent-light);
+            font-weight: 600;
+            text-align: center;
+            min-height: 50px;
+        }
+        
+        .slideshow-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10001;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .slideshow-controls button {
+            background: rgba(107, 155, 158, 0.3);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .slideshow-controls button:hover {
+            background: var(--accent-color);
+            color: #0a0a0a;
+        }
+        
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .slideshow-overlay {
-                position: fixed;
-                height: 100vh;
-                height: 100dvh;
+            .hero h1 {
+                font-size: 3.5rem;
             }
             
-            .slide {
-                padding: 1rem;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
             
-            .slide-content {
-                padding: 1rem;
-                max-width: 95%;
+            .hero-logo-btn {
+                width: 150px;
+                height: 150px;
             }
             
-            .slide-content h2 {
-                font-size: 2.5rem !important;
+            .feature-card-large {
+                min-height: 60vh;
             }
             
-            .slide-content h3 {
-                font-size: 1.8rem !important;
+            .feature-card-large h3 {
+                font-size: 2rem;
             }
             
-            .slide-content .pronunciation {
-                font-size: 1rem !important;
+            .feature-content {
+                padding: 2.5rem 1.5rem;
             }
             
-            .slide-content p {
-                font-size: 1rem !important;
-                line-height: 1.6 !important;
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
             }
             
-            #slideshow-typewriter-sentence {
-                font-size: 1.2rem !important;
+            .container {
+                padding: 0 1rem;
             }
             
-            #you-text {
-                font-size: 3rem !important;
+            #welcome-section {
+                padding: 2rem;
             }
             
-            #welcome-text {
-                font-size: 2rem !important;
-            }
-            
-            #tagline-text {
-                font-size: 1.5rem !important;
+            .definition-box-animated h2 {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
- <!-- Cinematic Slideshow - Starts with Definition -->
+    <!-- SLIDESHOW -->
     <div id="slideshow-overlay" class="slideshow-overlay">
-        <!-- Slideshow Controls -->
         <div class="slideshow-controls">
             <button id="rewind-btn" title="Restart">↺</button>
             <button id="pause-btn" title="Pause/Play">⏸</button>
@@ -1206,77 +759,57 @@
         <!-- Slide 1: Definition -->
         <div class="slide active" id="slide-definition">
             <div class="slide-content">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 400; color: #e0e0e0; margin-bottom: 1rem; letter-spacing: 2px;">flânerie</h2>
-                <p style="font-size: 1.2rem; color: #999; margin-bottom: 2rem; font-style: italic;">| ˈflɑːnəri |</p>
-                <p style="font-size: 1.6rem; color: #d4d4d4; line-height: 1.8; font-weight: 300;">The art of leisurely urban exploration;<br>mindful wandering through city streets<br>with intention and curiosity.</p>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 4rem; color: var(--accent-light); margin-bottom: 1rem;">flânerie</h2>
+                <p style="font-size: 1.2rem; color: var(--accent-light); margin-bottom: 2rem; font-style: italic;">| ˈflɑːnəri |</p>
+                <p style="font-size: 1.6rem; color: var(--accent-light); line-height: 1.8;">The art of leisurely urban exploration;<br>mindful wandering through city streets<br>with intention and curiosity.</p>
             </div>
         </div>
         
-        <!-- Slide 2: Typewriter sentence -->
-        <div class="slide" id="slide-typewriter">
+        <!-- Slide 2: Typewriter + Image -->
+        <div class="slide" id="slide-typewriter-with-image">
+            <div class="typewriter-section">
+                <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 2.8rem; margin-bottom: 3rem; text-align: center;">Take Back Your Main Street</h3>
+                <p id="slideshow-typewriter-sentence"></p>
+            </div>
+            
+            <div class="image-section" id="empty-street-section">
+                <img src="empty-street.png" alt="Empty street" style="max-width: 500px; width: 80%; height: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            </div>
+        </div>
+        
+        <!-- Slide 3: Paragraph + YOU + Image -->
+        <div class="slide" id="slide-paragraph-with-image">
+            <div class="paragraph-section">
+                <p style="font-size: 1.3rem; color: var(--accent-light); line-height: 1.9; text-align: center; max-width: 800px;">
+                    Search engines direct you to chains. Online shopping replaces neighborhood stores. Meanwhile, the café owner who remembers your name can't make rent. Small businesses don't have marketing budgets or algorithms working for them — they have...
+                </p>
+            </div>
+            
+            <div class="you-text" id="you-text">YOU</div>
+            
+            <div class="image-section" id="shopping-street-section">
+                <img src="shopping-street.png" alt="Shopping street" style="max-width: 500px; width: 80%; height: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            </div>
+        </div>
+        
+        <!-- Slide 4: Welcome -->
+        <div class="slide" id="slide-welcome">
             <div class="slide-content">
-                <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 2.8rem; margin-bottom: 3rem; font-weight: 600;">Take Back Your Main Street</h3>
-                <p id="slideshow-typewriter-sentence" style="font-size: 1.6rem; color: var(--accent-light); font-weight: 600;"></p>
+                <h3 id="welcome-text">Welcome to Flânerie</h3>
+                <p id="tagline-text">
+                    Share your journey.<br>Retrace theirs.
+                </p>
             </div>
         </div>
-        
-     <!-- Slide 3: Empty street image only (zooms) -->
-<div class="slide" id="slide-image">
-    <div class="slide-content" style="max-width: 900px;">
-        <img id="empty-street-img" src="empty-street.png" alt="Empty street" style="max-width: 500px; width: 80%; height: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); transform: scale(1); transition: transform 3s ease-out;">
-    </div>
-</div>
-
-<!-- Slide 4: Shortened paragraph -->
-<div class="slide" id="slide-paragraph">
-    <div class="slide-content" style="max-width: 900px;">
-        <p style="font-size: 1.3rem; color: #e0e0e0; line-height: 1.9;">
-            Search engines direct you to chains. Online shopping replaces neighborhood stores. Meanwhile, the café owner who remembers your name can't make rent. Small businesses don't have marketing budgets or algorithms working for them — they have...
-        </p>
-    </div>
-</div>
-
-<!-- Slide 5: YOU - with shopping image above, grows in size -->
-<div class="slide" id="slide-you">
-    <div class="slide-content" style="display: flex; flex-direction: column; align-items: center;">
-        <img id="you-image" src="shopping-street.png" alt="People shopping" style="max-width: 500px; width: 80%; height: auto; margin-bottom: 2rem; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); opacity: 1;">
-        <h2 id="you-text" style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 4rem; font-weight: 700; transform: scale(1); transition: transform 4s ease-out; opacity: 0;">YOU</h2>
-    </div>
-</div>
-
-<!-- Slide 6: Welcome with tagline fade in -->
-<div class="slide" id="slide-welcome-final">
-    <div class="slide-content">
-        <h3 id="welcome-text" style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3rem; font-weight: 600; transition: transform 2s ease-out;">Welcome to Flânerie</h3>
-        <p id="tagline-text" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent-color); font-style: italic; font-weight: 700; opacity: 0; margin-top: 2rem; transition: opacity 1s ease-in;">
-            Share your journey.<br>Retrace theirs.
-        </p>
-    </div>
-</div>   
-    </div>
-    <!-- Background Images -->
-    <div class="bg-container">
-        <img src="character-bg.png" class="bg-image active" alt="">
-        <img src="character-bg2.png" class="bg-image" alt="">
-        <img src="character-bg3.png" class="bg-image" alt="">
-        <img src="character-bg4.png" class="bg-image" alt="">
-        <img src="character-bg5.png" class="bg-image" alt="">
-        <img src="character-bg6.png" class="bg-image" alt="">
-        <img src="character-bg7.png" class="bg-image" alt="">
-        <img src="character-bg8.png" class="bg-image" alt="">
     </div>
     
     <!-- Navigation -->
-    <nav id="navbar">
+    <nav>
         <div class="nav-container">
-            <a href="#home" class="nav-logo">
-                <img src="character-logo.png" alt="Flânerie" style="height: 180px; width: 180px; object-fit: contain;">
-                Flânerie
-            </a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#features-content">Explore</a></li>
-                <li><a href="#welcome-section">How It Works</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent()">How It Works</a></li>
                 <li><a href="for-businesses.html">For Businesses</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
@@ -1287,110 +820,106 @@
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Flânerie</h1>
-            <div class="rotating-text">
-                <span>Wander well.</span>
-                <span>Walk kindly.</span>
-                <span>Support local business.</span>
-                <span>Discover hidden gems in your neighborhood.</span>
-                <span>Turn ordinary walks into extraordinary adventures.</span>
-                <span>Connect with your community, one step at a time.</span>
-                <span>Every block has a story to tell.</span>
-                <span>Shop small, feel big.</span>
-                <span>Find your city's secrets.</span>
-                <span>Life moves fast - walk slower.</span>
-                <span>Explore locally. Live fully.</span>
-                <span>Walk the paths that connect us.</span>
-                <span>Take the scenic route - every time.</span>
-                <span>Snack stops encouraged.</span>
-                <span>Explore like a kid again.</span>
-                <span>Where small lights glow, communities grow.</span>
-                <span>Let curiosity guide your compass.</span>
-                <span>Local lives here.</span>
+            <p class="hero-subtitle">The art of urban wandering.</p>
+            <div class="hero-logo-btn" onclick="scrollToContent()"></div>
+            
+            <!-- Rotating phrases below logo -->
+            <div class="rotating-text-container">
+                <div class="rotating-text">
+                    <span class="active">Wander well.</span>
+                    <span>Walk kindly.</span>
+                    <span>Support local business.</span>
+                    <span>Discover hidden gems in your neighborhood.</span>
+                    <span>Turn ordinary walks into extraordinary adventures.</span>
+                    <span>Connect with your community, one step at a time.</span>
+                    <span>Every block has a story to tell.</span>
+                    <span>Shop small, feel big.</span>
+                    <span>Find your city's secrets.</span>
+                    <span>Life moves fast - walk slower.</span>
+                </div>
             </div>
         </div>
+        <div class="scroll-hint">↓ Click to explore</div>
     </section>
     
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Info Section - Clean version with NO typewriter -->
+            <!-- Definition Section -->
             <section class="info-section">
-                <!-- Dictionary-style definition -->
-                <div class="definition-box-animated" style="margin-bottom: 2rem; text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
-                    <h2 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 400; color: #e0e0e0; margin-bottom: 0.5rem; letter-spacing: 0;">
-                        flânerie
-                    </h2>
-                    <p style="font-size: 1rem; color: #999; margin-bottom: 0.3rem;">
+                <div class="definition-box-animated">
+                    <h2>flânerie</h2>
+                    <p style="font-size: 1rem; color: var(--accent-light); margin-bottom: 0.3rem;">
                         | ˈflɑːnəri | <span style="font-style: italic;">noun</span>
                     </p>
                     <div style="width: 60px; height: 1px; background: #555; margin: 1rem 0;"></div>
-                    <p style="font-size: 1.3rem; color: #d4d4d4; line-height: 1.7; font-weight: 400;">
+                    <p style="font-size: 1.3rem; color: var(--accent-light); line-height: 1.7;">
                         The art of leisurely urban exploration; mindful wandering through city streets with intention and curiosity.
                     </p>
                 </div>
                 
-                <!-- THE SOLUTION - Welcome to Flânerie -->
-                <div id="welcome-section" style="text-align: left; max-width: 1100px; margin: 0 auto 3rem;">
-                    <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 3.2rem; margin-bottom: 2rem; font-weight: 600;">Welcome to Flânerie</h3>
+                <!-- Welcome Section -->
+                <div id="welcome-section">
+                    <h3>Welcome to Flânerie</h3>
                     
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color: var(--accent-color);">the art of strolling</strong> — observing city life with intention rather than rushing past it. This practice of <strong style="color: var(--accent-color);">cultural appreciation</strong> — slowing down to absorb the beauty and life around you — helps you rediscover the magic in the everyday.
+                    <p>
+                        We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color: var(--accent-color);">the art of strolling</strong> — observing city life with intention instead of rushing through it. It's <strong style="color: var(--accent-color);">cultural appreciation</strong> in motion: slowing down enough to notice the character and charm built into the everyday.
                     </p>
                     
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        Through <strong style="color: var(--accent-color);">urban exploration</strong>, discover neighborhoods at your own pace. From cozy cafés and local markets to boutique shops, art galleries, and bookstores, our routes are designed for <strong style="color: var(--accent-color);">mindful wandering</strong> — purposeful aimlessness with open eyes, where every corner holds possibility. Our routes highlight local businesses, parks, cultural gems, and unique urban spaces, designed to help you wander well and walk kindly.
+                    <p>
+                        With Flânerie, you can explore neighborhoods at your own pace or chart your own path. Our routes guide you from cozy cafés and local markets to boutique shops, art galleries, bookstores, parks, and hidden corners — each designed for <strong style="color: var(--accent-color);">mindful wandering</strong> and curiosity-led discovery. Search routes shared by others, map your upcoming outings, browse local events, or gather friends for a <strong style="color: var(--accent-color);">Shopping Swarm</strong> — a collective walk that turns routine errands into moments of connection and community support.
                     </p>
                     
-                    <p style="font-size: 1.2rem; font-weight: 400; color: #e0e0e0; line-height: 1.9; margin-bottom: 1.8rem;">
-                        Flânerie is crowdsourced discovery. <strong style="color: var(--accent-color);">Your route to that hidden coffee roaster? Someone's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities fight back — one walk, one recommendation, one conscious choice at a time.
+                    <p>
+                        <strong style="color: var(--accent-color);">Your route to that tiny coffee roaster? Someone else's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities strengthen themselves — one walk, one recommendation, one conscious choice at a time.
                     </p>
                 </div>
                 
-                <!-- Tagline -->
-                <p id="tagline-reveal" style="margin-top: 3rem; font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent-color); font-style: italic; font-weight: 700; text-align: center;">
-                    Share your journey. Retrace theirs.
-                </p>
+                <p id="tagline-reveal">Share your journey. Retrace theirs.</p>
             </section>
             
-            
-            <!-- Features Section -->
-            <div id="features-content" class="content-wrapper">
-                <!-- Primary Features - Large and Prominent -->
-                <div class="main-features">
-                    <div class="feature-card" onclick="toggleSection('journey-map')">
-                        <div class="feature-icon">📍</div>
-                        <h3>Share Your Journey</h3>
-                        <p>Plot your favorite routes on our interactive map and share your urban discoveries with the community.</p>
-                        <button class="feature-btn">Start Mapping</button>
+            <!-- Feature Cards - 4 in a row -->
+            <div id="features-content" class="features-section">
+                <div class="feature-grid">
+                    <div class="feature-card-large" onclick="toggleSection('journey-map')" style="cursor: pointer;">
+                        <div class="feature-content">
+                            <div class="feature-icon">📍</div>
+                            <h3>Share Your Journey</h3>
+                            <p>Plot your favorite routes</p>
+                            <button class="feature-btn">Start Mapping</button>
+                        </div>
                     </div>
                     
-                    <div class="feature-card" onclick="toggleSection('search')">
-                        <div class="feature-icon">🔍</div>
-                        <h3>Search Routes</h3>
-                        <p>Discover curated paths tailored to your interests. Find the perfect walk for any mood or occasion.</p>
-                        <button class="feature-btn">Explore Routes</button>
-                    </div>
-                </div>
-                
-                <!-- Secondary Features - Smaller -->
-                <div class="secondary-features">
-                    <div class="feature-card" onclick="toggleSection('swarms')">
-                        <div class="feature-icon">🛍️</div>
-                        <h3>Shopping Swarms</h3>
-                        <p>Organize or join community walks where locals explore, shop, and support businesses together.</p>
-                        <button class="feature-btn">View Swarms</button>
+                    <div class="feature-card-large" onclick="toggleSection('search')" style="cursor: pointer;">
+                        <div class="feature-content">
+                            <div class="feature-icon">🔍</div>
+                            <h3>Search Routes</h3>
+                            <p>Discover curated paths</p>
+                            <button class="feature-btn">Explore Routes</button>
+                        </div>
                     </div>
                     
-                    <div class="feature-card" onclick="toggleSection('events')">
-                        <div class="feature-icon">🎉</div>
-                        <h3>Local Events</h3>
-                        <p>Discover neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                        <button class="feature-btn">Browse Events</button>
+                    <div class="feature-card-large" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                        <div class="feature-content">
+                            <div class="feature-icon">🛍️</div>
+                            <h3>Shopping Swarms</h3>
+                            <p>Join community walks</p>
+                            <button class="feature-btn">View Swarms</button>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card-large" onclick="toggleSection('events')" style="cursor: pointer;">
+                        <div class="feature-content">
+                            <div class="feature-icon">🎉</div>
+                            <h3>Local Events</h3>
+                            <p>Discover celebrations</p>
+                            <button class="feature-btn">Browse Events</button>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Upcoming Shopping Swarms Section -->
+            <!-- Upcoming Shopping Swarms -->
             <section class="upcoming-section">
                 <h2>🛍️ Upcoming Shopping Swarms</h2>
                 <div class="upcoming-cards">
@@ -1398,32 +927,26 @@
                         <h3>Saturday Market Crawl</h3>
                         <p>📅 This Saturday, 10 AM</p>
                         <p>📍 Downtown Farmers Market</p>
-                        <p class="participants">👥 23 locals joining</p>
-                        <p style="margin-top: 1rem; font-style: italic;">Support local vendors and artisans!</p>
+                        <p style="color: var(--accent-color); font-weight: 600;">👥 23 locals joining</p>
                     </div>
                     
                     <div class="upcoming-card">
                         <h3>Art Gallery Night Walk</h3>
                         <p>📅 Friday, 6 PM</p>
                         <p>📍 Arts District</p>
-                        <p class="participants">👥 15 locals joining</p>
-                        <p style="margin-top: 1rem; font-style: italic;">Explore galleries and meet artists!</p>
+                        <p style="color: var(--accent-color); font-weight: 600;">👥 15 locals joining</p>
                     </div>
                     
                     <div class="upcoming-card">
                         <h3>Coffee Shop Marathon</h3>
                         <p>📅 Sunday, 9 AM</p>
                         <p>📍 Various Locations</p>
-                        <p class="participants">👥 31 locals joining</p>
-                        <p style="margin-top: 1rem; font-style: italic;">Taste the best brews in town!</p>
+                        <p style="color: var(--accent-color); font-weight: 600;">👥 31 locals joining</p>
                     </div>
-                </div>
-                <div class="section-cta">
-                    <button class="feature-btn" onclick="toggleSection('swarms')" style="font-size: 1.1rem; padding: 1rem 2.5rem;">View All Shopping Swarms</button>
                 </div>
             </section>
             
-            <!-- Upcoming Events Section -->
+            <!-- Upcoming Events -->
             <section class="upcoming-section">
                 <h2>🎉 Upcoming Local Events</h2>
                 <div class="upcoming-cards">
@@ -1432,8 +955,6 @@
                         <h3>Highland Street Festival</h3>
                         <p>📅 Saturday, June 15, 12-6 PM</p>
                         <p>📍 Highland Neighborhood</p>
-                        <p style="margin-top: 1rem;">🎵 Live music, local vendors, food trucks</p>
-                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #999;">Organized by Highland Merchants</p>
                     </div>
                     
                     <div class="upcoming-card">
@@ -1441,8 +962,6 @@
                         <h3>First Friday Gallery Stroll</h3>
                         <p>📅 First Friday, 6-9 PM</p>
                         <p>📍 Santa Fe Arts District</p>
-                        <p style="margin-top: 1rem;">🎨 Free gallery openings, artist demos</p>
-                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #999;">Organized by Arts District Alliance</p>
                     </div>
                     
                     <div class="upcoming-card">
@@ -1450,194 +969,6 @@
                         <h3>Pearl Street Summer Sale</h3>
                         <p>📅 July 20-22, 10 AM-7 PM</p>
                         <p>📍 Pearl Street Mall</p>
-                        <p style="margin-top: 1rem;">🛍️ Special discounts, outdoor displays</p>
-                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #999;">Organized by Pearl Street Association</p>
-                    </div>
-                </div>
-                <div class="section-cta">
-                    <button class="feature-btn" onclick="toggleSection('events')" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Browse All Local Events</button>
-                </div>
-            </section>  
-            <!-- Journey Map Section -->
-            <section class="map-container" id="journey-map">
-                <h2>Share Your Journey</h2>
-                <p>Search for a location or business to get started, or click on the map to add waypoints and create your custom route.</p>
-                <div style="margin-bottom: 1rem; position: relative;">
-                    <input type="text" id="mapSearch" placeholder="Search address, zip code, or business name..." style="width: 100%; padding: 1rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                    <div id="mapSearchSuggestions" class="search-suggestions"></div>
-                </div>
-                <div id="map"></div>
-                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                    <button class="feature-btn" onclick="saveRoute()">Save Route</button>
-                    <button class="feature-btn" onclick="clearRoute()">Clear Route</button>
-                    <button class="feature-btn" onclick="shareRoute()">Share Route</button>
-                </div>
-            </section>
-            
-            <!-- Search Section -->
-            <section class="search-section" id="search">
-                <h2>Search Routes</h2>
-                <p>Find the perfect route for your next adventure</p>
-                <div style="margin-bottom: 1rem;">
-                    <input type="text" id="searchMapLocation" placeholder="Search address, zip code, or business name..." style="width: 100%; padding: 1rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif; margin-bottom: 1rem;">
-                </div>
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search by interest, location, or mood...">
-                    <button class="feature-btn" onclick="searchRoutes()">Search</button>
-                </div>
-                <div id="search-map"></div>
-                <div id="search-results" style="margin-top: 2rem; color: #d4d4d4;"></div>
-            </section>
-            
-            <!-- Shopping Swarms Section -->
-            <section class="swarms-section" id="swarms">
-                <h2>Shopping Swarms</h2>
-                <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
-                <button class="feature-btn" onclick="createSwarm()">Create Shopping Swarm</button>
-                
-                <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
-                    <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Country</label>
-                            <select id="swarmCountry" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select Country</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="AU">Australia</option>
-                                <option value="NZ">New Zealand</option>
-                                <option value="IE">Ireland</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">State/Province</label>
-                            <select id="swarmState" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select State/Province</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CA">California</option>
-                                <option value="NY">New York</option>
-                                <option value="TX">Texas</option>
-                                <option value="FL">Florida</option>
-                                <option value="ON">Ontario</option>
-                                <option value="BC">British Columbia</option>
-                                <option value="QC">Quebec</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">City</label>
-                            <select id="swarmCity" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select City</option>
-                                <option value="denver">Denver</option>
-                                <option value="boulder">Boulder</option>
-                                <option value="losangeles">Los Angeles</option>
-                                <option value="newyork">New York</option>
-                                <option value="toronto">Toronto</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Or Search by Address/Zip</label>
-                        <input type="text" id="swarmLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif;">
-                    </div>
-                    <button class="feature-btn" onclick="searchSwarms()">Search</button>
-                </div>
-                
-                <div id="swarm-map"></div>
-                
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Active Shopping Swarms</h3>
-                <div class="card-grid">
-                    <div class="swarm-card">
-                        <h4>Saturday Market Crawl</h4>
-                        <p class="card-details">📅 This Saturday, 10 AM<br>📍 Downtown Farmers Market</p>
-                        <p style="color: var(--accent-light);">👥 23 people joined</p>
-                    </div>
-                    <div class="swarm-card">
-                        <h4>Art Gallery Night Walk</h4>
-                        <p class="card-details">📅 Friday, 6 PM<br>📍 Arts District</p>
-                        <p style="color: var(--accent-light);">👥 15 people joined</p>
-                    </div>
-                    <div class="swarm-card">
-                        <h4>Coffee Shop Marathon</h4>
-                        <p class="card-details">📅 Sunday, 9 AM<br>📍 Various Locations</p>
-                        <p style="color: var(--accent-light);">👥 31 people joined</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Events Section -->
-            <section class="events-section" id="events">
-                <h2>Local Events</h2>
-                <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                <button class="feature-btn" onclick="createEvent()">Promote Your Event</button>
-                
-                <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
-                    <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Country</label>
-                            <select id="eventCountry" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select Country</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="AU">Australia</option>
-                                <option value="NZ">New Zealand</option>
-                                <option value="IE">Ireland</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">State/Province</label>
-                            <select id="eventState" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select State/Province</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CA">California</option>
-                                <option value="NY">New York</option>
-                                <option value="TX">Texas</option>
-                                <option value="FL">Florida</option>
-                                <option value="ON">Ontario</option>
-                                <option value="BC">British Columbia</option>
-                                <option value="QC">Quebec</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">City</label>
-                            <select id="eventCity" style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0;">
-                                <option value="">Select City</option>
-                                <option value="denver">Denver</option>
-                                <option value="boulder">Boulder</option>
-                                <option value="losangeles">Los Angeles</option>
-                                <option value="newyork">New York</option>
-                                <option value="toronto">Toronto</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Or Search by Address/Zip</label>
-                        <input type="text" id="eventLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 0.8rem; border: 2px solid rgba(238, 111, 87, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif;">
-                    </div>
-                    <button class="feature-btn" onclick="searchEvents()">Search Events</button>
-                </div>
-                
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Upcoming Events</h3>
-                <div class="card-grid">
-                    <div class="event-card">
-                        <span class="event-type">Block Party</span>
-                        <h4>Highland Street Festival</h4>
-                        <p class="card-details">📅 Saturday, June 15, 12-6 PM<br>📍 Highland Neighborhood<br>🎵 Live music, local vendors, food trucks</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Highland Merchants</p>
-                    </div>
-                    <div class="event-card">
-                        <span class="event-type">Art Walk</span>
-                        <h4>First Friday Gallery Stroll</h4>
-                        <p class="card-details">📅 First Friday, 6-9 PM<br>📍 Santa Fe Arts District<br>🎨 Free gallery openings, artist demos</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Arts District Alliance</p>
-                    </div>
-                    <div class="event-card">
-                        <span class="event-type">Sidewalk Sale</span>
-                        <h4>Pearl Street Summer Sale</h4>
-                        <p class="card-details">📅 July 20-22, 10 AM-7 PM<br>📍 Pearl Street Mall<br>🛍️ Special discounts, outdoor displays</p>
-                        <p style="color: #94b85f; font-size: 0.85rem;">Organized by Pearl Street Association</p>
                     </div>
                 </div>
             </section>
@@ -1654,7 +985,7 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="#about">About Us</a></li>
+                    <li><a href="about.html">About Us</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="for-businesses.html">For Businesses</a></li>
                 </ul>
@@ -1680,374 +1011,93 @@
         </div>
     </footer>
     
-    <!-- Modals -->
-    <div class="modal" id="saveRouteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Save Your Route</h2>
-                <span class="modal-close" onclick="closeModal('saveRouteModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Route Name *</label>
-                    <input type="text" id="routeName" placeholder="e.g., Morning Coffee Trail">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="routeDescription" rows="3" placeholder="Describe your route..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="routeCategory">
-                        <option value="">Select a category...</option>
-                        <option value="coffee">☕ Coffee Shops</option>
-                        <option value="tacos">🌮 Tacos & Mexican</option>
-                        <option value="food">🍴 Food & Dining</option>
-                        <option value="bars">🍺 Bars & Nightlife</option>
-                        <option value="bookstores">📚 Bookstores</option>
-                        <option value="shopping">🛍️ Shopping & Boutiques</option>
-                        <option value="clothing">👕 Clothing & Fashion</option>
-                        <option value="art">🎨 Art & Culture</option>
-                        <option value="parks">🌳 Parks & Nature</option>
-                        <option value="historic">🏛️ Historic Sites</option>
-                        <option value="other">✨ Other</option>
-                    </select>
-                </div>
-                <div class="form-group" id="customCategoryGroup" style="display: none;">
-                    <label>Custom Category Name</label>
-                    <input type="text" id="customCategory" placeholder="Enter your category...">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('saveRouteModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmSaveRoute()">Save Route</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal" id="createSwarmModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create Shopping Swarm</h2>
-                <span class="modal-close" onclick="closeModal('createSwarmModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Event Name *</label>
-                    <input type="text" id="swarmName" placeholder="e.g., Saturday Market Crawl">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="swarmDescription" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Date *</label>
-                    <input type="date" id="swarmDate">
-                </div>
-                <div class="form-group">
-                    <label>Time *</label>
-                    <input type="time" id="swarmTime">
-                </div>
-                <div class="form-group">
-                    <label>Location *</label>
-                    <input type="text" id="swarmLocation" placeholder="Meeting point">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('createSwarmModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmCreateSwarm()">Create Swarm</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal" id="createEventModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Promote Your Event</h2>
-                <span class="modal-close" onclick="closeModal('createEventModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Event Name *</label>
-                    <input type="text" id="eventName" placeholder="e.g., Highland Street Festival">
-                </div>
-                <div class="form-group">
-                    <label>Event Type *</label>
-                    <select id="eventType">
-                        <option value="block-party">Block Party</option>
-                        <option value="art-walk">Art Walk</option>
-                        <option value="sidewalk-sale">Sidewalk Sale</option>
-                        <option value="food-festival">Food Festival</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="eventDescription" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Date *</label>
-                    <input type="date" id="eventDate">
-                </div>
-                <div class="form-group">
-                    <label>Location *</label>
-                    <input type="text" id="eventLocation">
-                </div>
-                <div class="form-group">
-                    <label>Organizer/Business Name *</label>
-                    <input type="text" id="eventOrganizer">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal('createEventModal')">Cancel</button>
-                <button class="modal-btn modal-btn-save" onclick="confirmCreateEvent()">Submit Event</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <span id="toast-message"></span>
-    </div>
-    
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <script>
-        // Background Image Rotation
-        let currentBgIndex = 0;
-        const bgImages = document.querySelectorAll('.bg-image');
-        
-        function rotateBgImages() {
-            bgImages[currentBgIndex].classList.remove('active');
-            currentBgIndex = (currentBgIndex + 1) % bgImages.length;
-            bgImages[currentBgIndex].classList.add('active');
-        }
-        
-        setInterval(rotateBgImages, 7000);
-        
-        // CINEMATIC SLIDESHOW PRESENTATION - Starts immediately
+        // SLIDESHOW - APPROVED TIMING
         const typewriterText = "Every year, 200,000 small businesses close in the U.S. alone.";
         let charIndex = 0;
         
-  function startSlideshow() {
-    const slideshowOverlay = document.getElementById('slideshow-overlay');
-    
-    // Start slideshow immediately (definition is first slide)
-    slideshowOverlay.classList.add('active');
-    
-    // Slide 1: Definition (holds for 4 seconds)
-    showSlide('slide-definition', 4000, () => {
-        
-        // Slide 2: Typewriter (starts typing)
-        showSlide('slide-typewriter', 2000, () => {
-            slideshowTypewriter(() => {
+        function startSlideshow() {
+            const slideshowOverlay = document.getElementById('slideshow-overlay');
+            document.body.classList.add('choreography-active');
+            slideshowOverlay.classList.add('active');
+            
+            // Slide 1: Definition (4 sec)
+            setTimeout(() => {
+                document.getElementById('slide-definition').classList.remove('active');
+                document.getElementById('slide-typewriter-with-image').classList.add('active');
                 
-                // Fade out typewriter before showing image
-                const typewriterSlide = document.getElementById('slide-typewriter');
-                typewriterSlide.style.transition = 'opacity 1s ease-out';
-                typewriterSlide.style.opacity = '0';
-                
+                // Start image fade when typing starts (slower now - 4s)
                 setTimeout(() => {
-                    typewriterSlide.classList.remove('active');
-                    
-                    // Slide 3: Empty street image only (fades in, zooms for 3 seconds)
-                    showSlide('slide-image', 0, () => {
-                        const emptyStreetImg = document.getElementById('empty-street-img');
+                    document.getElementById('empty-street-section').classList.add('fading');
+                }, 100);
+                
+                // Start typewriter
+                slideshowTypewriter(() => {
+                    // Hold for 5 seconds after typing finishes
+                    setTimeout(() => {
+                        document.getElementById('slide-typewriter-with-image').classList.remove('active');
+                        document.getElementById('slide-paragraph-with-image').classList.add('active');
                         
-                        // Start zoom effect
+                        // Paragraph HOLDS for 4 seconds (people can read)
                         setTimeout(() => {
-                            emptyStreetImg.style.transform = 'scale(1.1)';
-                        }, 100);
-                        
-                        // After 3 seconds, fade out image
-                        setTimeout(() => {
-                            const imageSlide = document.getElementById('slide-image');
-                            imageSlide.style.transition = 'opacity 1s ease-out';
-                            imageSlide.style.opacity = '0';
+                            // YOU fades in
+                            document.getElementById('you-text').classList.add('showing');
                             
+                            // Wait for YOU to finish fading (1.5 sec), then start image
                             setTimeout(() => {
-                                imageSlide.classList.remove('active');
-                                emptyStreetImg.style.transform = 'scale(1)'; // Reset for next time
+                                document.getElementById('shopping-street-section').classList.add('fading');
                                 
-                                // Slide 4: Paragraph (fades in)
-                                showSlide('slide-paragraph', 5000, () => {
-                                    
-                                    // Slide 5: YOU fades in and grows while paragraph fades out (4 seconds)
-                                    const paragraphSlide = document.getElementById('slide-paragraph');
-                                    const youSlide = document.getElementById('slide-you');
-                                    
-                                    // Make YOU visible but transparent to start
-                                    if (youSlide) {
-                                        youSlide.style.opacity = '0';
-                                        youSlide.classList.add('active');
-                                    }
-                                    
-                                    const youText = document.getElementById('you-text');
-                                    
-                                    // Start the transition
+                                // Wait for image to finish (3 sec), then hold
+                                setTimeout(() => {
+                                    // Everything holds for 3 seconds
                                     setTimeout(() => {
-                                        // Fade out paragraph
-                                        if (paragraphSlide) {
-                                            paragraphSlide.style.transition = 'opacity 2s ease-out';
-                                            paragraphSlide.style.opacity = '0';
-                                        }
+                                        document.getElementById('slide-paragraph-with-image').classList.remove('active');
+                                        document.getElementById('slide-welcome').classList.add('active');
                                         
-                                        // Fade in and grow YOU (text fades in below image)
-                                        if (youSlide) {
-                                            youSlide.style.transition = 'opacity 4s ease-in';
-                                            youSlide.style.opacity = '1';
-                                        }
-                                        if (youText) {
-                                            youText.style.transition = 'opacity 2s ease-in, transform 4s ease-out';
-                                            youText.style.opacity = '1';
-                                            youText.style.transform = 'scale(1.5)';
-                                        }
-                                    }, 100);
-                                    
-                                    // Wait for animation to complete before next slide
-                                    setTimeout(() => {
-                                        // Fade out YOU completely
-                                        if (paragraphSlide) {
-                                            paragraphSlide.classList.remove('active');
-                                            paragraphSlide.style.opacity = '0';
-                                        }
-                                        if (youSlide) {
-                                            youSlide.style.transition = 'opacity 1s ease-out';
-                                            youSlide.style.opacity = '0';
-                                        }
-                                        
-                                        // Wait for YOU to fully fade out before showing Welcome
+                                        // After 2 sec, move Welcome up and fade in tagline
                                         setTimeout(() => {
-                                            if (youSlide) {
-                                                youSlide.classList.remove('active');
-                                            }
+                                            document.getElementById('welcome-text').classList.add('move-up');
+                                            document.getElementById('tagline-text').classList.add('fade-in');
                                             
-                                            // Slide 6: Welcome + tagline fade in
-                                            showSlide('slide-welcome-final', 0, () => {
-                                                const welcomeText = document.getElementById('welcome-text');
-                                                const taglineText = document.getElementById('tagline-text');
+                                            // Hold for 4 sec, then END
+                                            setTimeout(() => {
+                                                slideshowOverlay.style.transition = 'opacity 1s ease-out';
+                                                slideshowOverlay.style.opacity = '0';
                                                 
-                                                // After 2 seconds, slide welcome up and fade in tagline
                                                 setTimeout(() => {
-                                                    if (welcomeText) {
-                                                        welcomeText.style.transform = 'translateY(-40px)';
-                                                    }
-                                                    if (taglineText) {
-                                                        taglineText.style.opacity = '1';
-                                                    }
-                                                }, 2000);
-                                                
-                                                // After another 2 seconds, fade to site
-                                                setTimeout(() => {
-                                                    slideshowOverlay.style.transition = 'opacity 1s ease-out';
-                                                    slideshowOverlay.style.opacity = '0';
-                                                    
-                                                    setTimeout(() => {
-                                                        slideshowOverlay.style.display = 'none';
-                                                        document.body.classList.remove('choreography-active');
-                                                        // Force scroll to very top
-                                                        window.scrollTo(0, 0);
-                                                        // Show main content
-                                                        document.querySelector('.main-content').style.opacity = '1';
-                                                    }, 1000);
-                                               }, 4000);
-                                            });
-                                        }, 1000); // Wait 1 second for YOU to fade out
-                                    }, 4000);
-                                });
-                            }, 1000); // Wait for image fade out
-                        }, 3000); // Show image for 3 seconds with zoom
-                    });
-                }, 1000); // Wait for typewriter to fade out
-            });
-        });
-    });
-}
-        
-        function showSlide(slideId, duration, callback) {
-            const slides = document.querySelectorAll('.slide');
-            slides.forEach(s => s.classList.remove('active'));
-            
-            const slide = document.getElementById(slideId);
-            slide.classList.add('active');
-            
-            if (duration > 0) {
-                setTimeout(callback, duration);
-            } else {
-                callback();
-            }
+                                                    slideshowOverlay.style.display = 'none';
+                                                    document.body.classList.remove('choreography-active');
+                                                }, 1000);
+                                            }, 4000);
+                                        }, 2000);
+                                    }, 3000);
+                                }, 3000);
+                            }, 1500);
+                        }, 4000);
+                    }, 5000);
+                });
+            }, 4000);
         }
         
         function slideshowTypewriter(callback) {
             const element = document.getElementById('slideshow-typewriter-sentence');
+            element.textContent = '';
+            charIndex = 0;
             
             function type() {
                 if (charIndex < typewriterText.length) {
                     element.textContent += typewriterText.charAt(charIndex);
                     charIndex++;
                     setTimeout(type, 50);
-             } else {
-    // Pause 2 seconds after typing (keep cursor blinking)
-    setTimeout(() => {
-        callback();
-    }, 2000);
-} 
+                } else {
+                    callback();
+                }
             }
             type();
         }
         
-        // Lock scrolling during slideshow
-        document.body.classList.add('choreography-active');
-        
-        // Slideshow control variables
-        let slideshowPaused = false;
-        let slideshowTimeouts = [];
-        
-        // Slideshow control buttons
+        // Slideshow controls
         document.getElementById('skip-btn').addEventListener('click', function() {
-            endSlideshow();
-        });
-        
-        document.getElementById('pause-btn').addEventListener('click', function() {
-            slideshowPaused = !slideshowPaused;
-            this.classList.toggle('paused');
-            this.textContent = slideshowPaused ? '▶' : '⏸';
-            
-            if (slideshowPaused) {
-                // Clear all pending timeouts
-                slideshowTimeouts.forEach(timeout => clearTimeout(timeout));
-                slideshowTimeouts = [];
-            } else {
-                // Resume - this is complex, for now just let them skip or rewind
-                showToast('Click skip to continue or restart to replay');
-            }
-        });
-        
-        document.getElementById('rewind-btn').addEventListener('click', function() {
-            // Clear all timeouts
-            slideshowTimeouts.forEach(timeout => clearTimeout(timeout));
-            slideshowTimeouts = [];
-            slideshowPaused = false;
-            document.getElementById('pause-btn').classList.remove('paused');
-            document.getElementById('pause-btn').textContent = '⏸';
-            charIndex = 0;
-            // Restart
-            const typewriterElement = document.getElementById('slideshow-typewriter-sentence');
-            if (typewriterElement) typewriterElement.textContent = '';
-            
-            // Reset image transforms
-            const emptyStreetImg = document.getElementById('empty-street-img');
-            if (emptyStreetImg) emptyStreetImg.style.transform = 'scale(1)';
-            const youText = document.getElementById('you-text');
-            if (youText) {
-                youText.style.opacity = '0';
-                youText.style.transform = 'scale(1)';
-            }
-            
-            startSlideshow();
-        });
-        
-        function endSlideshow() {
             const slideshowOverlay = document.getElementById('slideshow-overlay');
             slideshowOverlay.style.transition = 'opacity 0.5s ease-out';
             slideshowOverlay.style.opacity = '0';
@@ -2055,54 +1105,48 @@
             setTimeout(() => {
                 slideshowOverlay.style.display = 'none';
                 document.body.classList.remove('choreography-active');
-                window.scrollTo(0, 0);
-                document.querySelector('.main-content').style.opacity = '1';
             }, 500);
-        }
-        
-        startSlideshow();
-        // Category dropdown - show custom field when "Other" is selected
-        document.addEventListener('DOMContentLoaded', function() {
-            const categorySelect = document.getElementById('routeCategory');
-            const customCategoryGroup = document.getElementById('customCategoryGroup');
-            
-            if (categorySelect) {
-                categorySelect.addEventListener('change', function() {
-                    if (this.value === 'other') {
-                        customCategoryGroup.style.display = 'block';
-                    } else {
-                        customCategoryGroup.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Smooth scroll with offset for fixed navigation
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    
-                    if (targetId === '#home') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        return;
-                    }
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        const navHeight = 180; // Increased offset for fixed nav
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                        const offsetPosition = elementPosition - navHeight;
-                        
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
         });
         
-        // Initialize Variables
+        document.getElementById('pause-btn').addEventListener('click', function() {
+            this.textContent = this.textContent === '⏸' ? '▶' : '⏸';
+        });
+        
+        document.getElementById('rewind-btn').addEventListener('click', function() {
+            charIndex = 0;
+            document.getElementById('slideshow-typewriter-sentence').textContent = '';
+            // Reset all states
+            document.querySelectorAll('.fading, .showing, .move-up, .fade-in').forEach(el => {
+                el.classList.remove('fading', 'showing', 'move-up', 'fade-in');
+            });
+            startSlideshow();
+        });
+        
+        startSlideshow();
+        
+        // Rotating hero phrases
+        let currentHeroTextIndex = 0;
+        const heroTextSpans = document.querySelectorAll('.hero .rotating-text span');
+        
+        function rotateHeroText() {
+            heroTextSpans[currentHeroTextIndex].classList.remove('active');
+            currentHeroTextIndex = (currentHeroTextIndex + 1) % heroTextSpans.length;
+            heroTextSpans[currentHeroTextIndex].classList.add('active');
+        }
+        
+        setInterval(rotateHeroText, 3000);
+        
+        // Scroll to content
+        function scrollToContent() {
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Map variables
         let journeyMap = null;
         let searchMap = null;
         let swarmMap = null;
@@ -2110,164 +1154,122 @@
         let routePath = null;
         let routeCoordinates = [];
         
-        // Toggle Sections - Now with fullscreen option
+        // Toggle Sections - Opens fullscreen modal with maps
         function toggleSection(sectionId) {
-            const section = document.getElementById(sectionId);
+            // Create fullscreen modal
+            const modal = document.createElement('div');
+            modal.className = 'modal-fullscreen show';
+            modal.id = 'fullscreen-' + sectionId;
+            modal.style.cssText = 'display: block; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100vh; background-color: rgba(10, 10, 10, 0.98); overflow-y: auto;';
             
-            if (section.classList.contains('upcoming-section') || 
-                section.classList.contains('map-container') || 
-                section.classList.contains('search-section') ||
-                section.classList.contains('swarms-section') ||
-                section.classList.contains('events-section')) {
-                
-                // Create fullscreen modal
-                const modal = document.createElement('div');
-                modal.className = 'modal-fullscreen show';
-                modal.id = 'fullscreen-' + sectionId;
-                
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'close-btn';
-                closeBtn.innerHTML = '&times;';
-                closeBtn.onclick = () => closeFullscreen('fullscreen-' + sectionId);
-                
-                const content = document.createElement('div');
-                content.className = 'fullscreen-content';
-                content.innerHTML = section.innerHTML;
-                
-                modal.appendChild(closeBtn);
-                modal.appendChild(content);
-                document.body.appendChild(modal);
-                
-                // Initialize maps if needed - with slight delay for DOM
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = 'position: fixed; top: 2rem; right: 2rem; width: 50px; height: 50px; background: rgba(107, 155, 158, 0.9); border: none; border-radius: 50%; color: white; font-size: 2rem; cursor: pointer; z-index: 2001;';
+            closeBtn.onclick = () => modal.remove();
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto;';
+            
+            // Create content based on section
+            if (sectionId === 'journey-map') {
+                content.innerHTML = `
+                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Share Your Journey</h2>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Click on the map to add waypoints and create your custom route.</p>
+                    <div id="map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                        <button class="feature-btn" onclick="showToast('Route saved!')">Save Route</button>
+                        <button class="feature-btn" onclick="clearRoute()">Clear Route</button>
+                    </div>
+                `;
+            } else if (sectionId === 'search') {
+                content.innerHTML = `
+                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Search Routes</h2>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Find the perfect route for your next adventure</p>
+                    <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                `;
+            } else if (sectionId === 'swarms') {
+                content.innerHTML = `
+                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Shopping Swarms</h2>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks</p>
+                    <div id="swarm-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                `;
+            } else if (sectionId === 'events') {
+                content.innerHTML = `
+                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Local Events</h2>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover neighborhood celebrations and community festivals</p>
+                    <div style="margin-top: 2rem; color: #d4d4d4;">
+                        <h3>Upcoming Events</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                            <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px;">
+                                <h4 style="color: var(--accent-color);">Highland Street Festival</h4>
+                                <p>📅 Saturday, June 15, 12-6 PM<br>📍 Highland Neighborhood</p>
+                            </div>
+                            <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px;">
+                                <h4 style="color: var(--accent-color);">First Friday Gallery Stroll</h4>
+                                <p>📅 First Friday, 6-9 PM<br>📍 Santa Fe Arts District</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            modal.appendChild(closeBtn);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Initialize maps after DOM is ready
+            setTimeout(() => {
                 if (sectionId === 'journey-map') {
-                    setTimeout(() => {
-                        const mapElement = modal.querySelector('#map');
-                        if (mapElement && !journeyMap) {
-                            journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                                attribution: '© Mapbox © OpenStreetMap',
-                                tileSize: 512,
-                                zoomOffset: -1
-                            }).addTo(journeyMap);
-                            
-                            journeyMap.on('click', function(e) {
-                                addWaypoint(e.latlng);
-                            });
-                            
-                            // Add search functionality with autocomplete
-                            const searchInput = modal.querySelector('#mapSearch');
-                            const suggestionsDiv = modal.querySelector('#mapSearchSuggestions');
-                            let searchTimeout;
-                            
-                            if (searchInput) {
-                                searchInput.addEventListener('input', function(e) {
-                                    const query = e.target.value.trim();
-                                    
-                                    // Clear previous timeout
-                                    clearTimeout(searchTimeout);
-                                    
-                                    if (query.length < 2) {
-                                        suggestionsDiv.classList.remove('show');
-                                        return;
-                                    }
-                                    
-                                    // Very short debounce - 100ms for faster response
-                                    searchTimeout = setTimeout(() => {
-                                        fetchLocationSuggestions(query, suggestionsDiv, journeyMap, searchInput);
-                                    }, 100);
-                                });
-                                
-                                searchInput.addEventListener('keypress', function(e) {
-                                    if (e.key === 'Enter' && !suggestionsDiv.classList.contains('show')) {
-                                        searchLocation(searchInput.value, journeyMap);
-                                    }
-                                });
-                                
-                                // Hide suggestions when clicking outside
-                                document.addEventListener('click', function(e) {
-                                    if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
-                                        suggestionsDiv.classList.remove('show');
-                                    }
-                                });
-                            }
-                        }
-                    }, 300);
+                    const mapElement = document.getElementById('map');
+                    if (mapElement && !journeyMap) {
+                        journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                            attribution: '© Mapbox © OpenStreetMap',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(journeyMap);
+                        
+                        journeyMap.on('click', function(e) {
+                            addWaypoint(e.latlng);
+                        });
+                    }
                 } else if (sectionId === 'search') {
-                    setTimeout(() => {
-                        const mapElement = modal.querySelector('#search-map');
-                        if (mapElement && !searchMap) {
-                            searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                                attribution: '© Mapbox © OpenStreetMap',
-                                tileSize: 512,
-                                zoomOffset: -1
-                            }).addTo(searchMap);
-                            
-                            // Add search functionality
-                            const searchInput = modal.querySelector('#searchMapLocation');
-                            if (searchInput) {
-                                searchInput.addEventListener('keypress', function(e) {
-                                    if (e.key === 'Enter') {
-                                        searchLocation(searchInput.value, searchMap);
-                                    }
-                                });
-                            }
-                        }
-                    }, 300);
+                    const mapElement = document.getElementById('search-map');
+                    if (mapElement && !searchMap) {
+                        searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                            attribution: '© Mapbox © OpenStreetMap',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(searchMap);
+                    }
                 } else if (sectionId === 'swarms') {
-                    setTimeout(() => {
-                        const mapElement = modal.querySelector('#swarm-map');
-                        if (mapElement && !swarmMap) {
-                            swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                                attribution: '© Mapbox © OpenStreetMap',
-                                tileSize: 512,
-                                zoomOffset: -1
-                            }).addTo(swarmMap);
-                            
-                            const swarms = [
-                                { lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', participants: 23 },
-                                { lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', participants: 15 },
-                                { lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', participants: 31 }
-                            ];
-                            
-                            swarms.forEach(swarm => {
-                                L.marker([swarm.lat, swarm.lng]).addTo(swarmMap)
-                                    .bindPopup(`<strong>${swarm.name}</strong><br>👥 ${swarm.participants} people`);
-                            });
-                        }
-                    }, 300);
+                    const mapElement = document.getElementById('swarm-map');
+                    if (mapElement && !swarmMap) {
+                        swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                            attribution: '© Mapbox © OpenStreetMap',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(swarmMap);
+                        
+                        // Add sample swarm markers
+                        const swarms = [
+                            { lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', participants: 23 },
+                            { lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', participants: 15 },
+                            { lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', participants: 31 }
+                        ];
+                        
+                        swarms.forEach(swarm => {
+                            L.marker([swarm.lat, swarm.lng]).addTo(swarmMap)
+                                .bindPopup(`<strong>${swarm.name}</strong><br>👥 ${swarm.participants} people`);
+                        });
+                    }
                 }
-            }
-        }
-        
-        function closeFullscreen(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.remove();
-                // Reset map variables so they can be recreated
-                journeyMap = null;
-                searchMap = null;
-                swarmMap = null;
-            }
+            }, 300);
         }
         
         function addWaypoint(latlng) {
-            // Check distance from last waypoint if there are existing waypoints
-            if (routeCoordinates.length > 0) {
-                const lastCoord = routeCoordinates[routeCoordinates.length - 1];
-                const distance = calculateDistance(lastCoord[0], lastCoord[1], latlng.lat, latlng.lng);
-                
-                // Warn if distance is more than 1 mile (1.6 km)
-                if (distance > 1.6) {
-                    const miles = (distance * 0.621371).toFixed(1);
-                    if (!confirm(`This waypoint is ${miles} miles from your last point. That's far for walking! Add it anyway?`)) {
-                        return; // Cancel adding waypoint
-                    }
-                }
-            }
-            
-            // Create numbered marker
             const waypointNumber = routeCoordinates.length + 1;
             const numberIcon = L.divIcon({
                 className: 'numbered-marker',
@@ -2291,112 +1293,6 @@
             showToast(`Waypoint ${waypointNumber} added!`);
         }
         
-        // Calculate distance between two points in kilometers using Haversine formula
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in km
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                     Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-        
-        // Fetch location suggestions for autocomplete using Mapbox
-        function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
-            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=8&types=place,address,poi`;
-            
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.features && data.features.length > 0) {
-                    suggestionsDiv.innerHTML = '';
-                    data.features.forEach(result => {
-                        const item = document.createElement('div');
-                        item.className = 'suggestion-item';
-                        
-                        const main = document.createElement('div');
-                        main.className = 'suggestion-main';
-                        main.textContent = result.text || result.place_name.split(',')[0];
-                        
-                        const detail = document.createElement('div');
-                        detail.className = 'suggestion-detail';
-                        detail.textContent = result.place_name;
-                        
-                        item.appendChild(main);
-                        item.appendChild(detail);
-                        
-                        item.addEventListener('click', function() {
-                            const lon = result.center[0];
-                            const lat = result.center[1];
-                            map.setView([lat, lon], 15);
-                            L.marker([lat, lon])
-                                .addTo(map)
-                                .bindPopup(`<strong>${result.place_name}</strong>`)
-                                .openPopup();
-                            suggestionsDiv.classList.remove('show');
-                            inputElement.value = result.place_name;
-                            showToast(`Found: ${result.text}`);
-                        });
-                        
-                        suggestionsDiv.appendChild(item);
-                    });
-                    suggestionsDiv.classList.add('show');
-                } else {
-                    suggestionsDiv.classList.remove('show');
-                }
-            })
-            .catch(error => {
-                console.error('Autocomplete error:', error);
-                suggestionsDiv.classList.remove('show');
-            });
-        }
-        
-        // Search location using Mapbox geocoding
-        function searchLocation(query, map) {
-            if (!query || query.trim() === '') {
-                showToast('Please enter a location to search');
-                return;
-            }
-            
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
-            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=1`;
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features && data.features.length > 0) {
-                        const result = data.features[0];
-                        const lon = result.center[0];
-                        const lat = result.center[1];
-                        
-                        // Check if it's a zip code for zoom level
-                        const isZipCode = /^\d{5}$/.test(query.trim());
-                        const zoom = isZipCode ? 13 : 12;
-                        
-                        // Center map on result
-                        map.setView([lat, lon], zoom);
-                        
-                        // Add marker
-                        L.marker([lat, lon])
-                            .addTo(map)
-                            .bindPopup(`<strong>${result.place_name}</strong>`)
-                            .openPopup();
-                        
-                        const locationName = result.text || result.place_name.split(',')[0];
-                        showToast(`Found: ${locationName}`);
-                    } else {
-                        showToast('Location not found. Try being more specific.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Search error:', error);
-                    showToast('Search failed. Please try again.');
-                });
-        }
-        
         function clearRoute() {
             routeMarkers.forEach(marker => journeyMap.removeLayer(marker));
             if (routePath) journeyMap.removeLayer(routePath);
@@ -2406,86 +1302,15 @@
             showToast('Route cleared!');
         }
         
-        // Modal Functions
-        function saveRoute() {
-            if (routeCoordinates.length < 2) {
-                showToast('Please add at least 2 waypoints!');
-                return;
-            }
-            document.getElementById('saveRouteModal').classList.add('show');
-        }
-        
-        function shareRoute() {
-            if (routeCoordinates.length < 2) {
-                showToast('Please create a route first!');
-                return;
-            }
-            showToast('Share link copied to clipboard!');
-        }
-        
-        function createSwarm() {
-            document.getElementById('createSwarmModal').classList.add('show');
-        }
-        
-        function createEvent() {
-            document.getElementById('createEventModal').classList.add('show');
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
-        
-        function confirmSaveRoute() {
-            const name = document.getElementById('routeName').value;
-            if (!name) {
-                showToast('Please enter a route name!');
-                return;
-            }
-            closeModal('saveRouteModal');
-            showToast(`Route "${name}" saved successfully!`);
-        }
-        
-        function confirmCreateSwarm() {
-            const name = document.getElementById('swarmName').value;
-            if (!name) {
-                showToast('Please enter a swarm name!');
-                return;
-            }
-            closeModal('createSwarmModal');
-            showToast(`Swarm "${name}" created successfully!`);
-        }
-        
-        function confirmCreateEvent() {
-            const name = document.getElementById('eventName').value;
-            if (!name) {
-                showToast('Please enter an event name!');
-                return;
-            }
-            closeModal('createEventModal');
-            showToast(`Event "${name}" submitted for review!`);
-        }
-        
-        function searchRoutes() {
-            showToast('Searching routes...');
-        }
-        
-        function searchSwarms() {
-            showToast('Searching swarms...');
-        }
-        
-        function searchEvents() {
-            showToast('Searching events...');
-        }
-        
         // Toast Notification
         function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; bottom: 2rem; right: 2rem; background: rgba(107, 155, 158, 0.95); color: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); z-index: 3000;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
             
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.remove();
             }, 3000);
         }
     </script>

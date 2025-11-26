@@ -1164,6 +1164,7 @@
         let journeyMap = null;
         let searchMap = null;
         let swarmMap = null;
+        let eventMap = null;
         let routeMarkers = [];
         let routePath = null;
         let routeCoordinates = [];
@@ -1319,6 +1320,8 @@
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>
+                    
+                    <div id="event-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
                     
                     <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Upcoming Events</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
@@ -1493,6 +1496,29 @@
                         }
                     }
                 } else if (sectionId === 'events') {
+                    // Initialize event map
+                    const eventMapElement = document.getElementById('event-map');
+                    if (eventMapElement && !eventMap) {
+                        eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                            attribution: '© Mapbox © OpenStreetMap',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(eventMap);
+                        
+                        // Add sample event markers
+                        const events = [
+                            { lat: 39.7392, lng: -104.9903, name: 'Highland Street Festival', type: 'Block Party' },
+                            { lat: 39.7420, lng: -104.9880, name: 'First Friday Gallery Stroll', type: 'Art Walk' },
+                            { lat: 39.7350, lng: -104.9950, name: 'Pearl Street Summer Sale', type: 'Sidewalk Sale' }
+                        ];
+                        
+                        events.forEach(event => {
+                            L.marker([event.lat, event.lng]).addTo(eventMap)
+                                .bindPopup(`<strong>${event.name}</strong><br>${event.type}`);
+                        });
+                    }
+                    
                     // Add autocomplete for events search
                     const eventSearchInput = document.getElementById('eventLocationSearch');
                     const eventSuggestionsDiv = document.getElementById('eventSearchSuggestions');
@@ -1509,13 +1535,13 @@
                             }
                             
                             eventSearchTimeout = setTimeout(() => {
-                                fetchLocationSuggestions(query, eventSuggestionsDiv, null, eventSearchInput);
+                                fetchLocationSuggestions(query, eventSuggestionsDiv, eventMap, eventSearchInput);
                             }, 100);
                         });
                         
                         eventSearchInput.addEventListener('keypress', function(e) {
                             if (e.key === 'Enter' && eventSuggestionsDiv.style.display === 'none') {
-                                showToast('Searching events in ' + eventSearchInput.value);
+                                searchLocation(eventSearchInput.value, eventMap);
                             }
                         });
                         

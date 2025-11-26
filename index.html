@@ -883,38 +883,38 @@
             <!-- Upcoming Shopping Swarms -->
             <section class="upcoming-section">
                 <h2>🛍️ Upcoming Shopping Swarms</h2>
-                <p style="color: #999; text-align: center; margin: -1rem 0 1.5rem; font-size: 0.9rem;">Click any card to view on map</p>
+                <p style="color: #999; text-align: center; margin: -1rem 0 1.5rem; font-size: 0.9rem;">Click "I'm Interested" to view on map</p>
                 <div class="upcoming-cards">
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Saturday Market Crawl</h3>
                         <p>📅 This Saturday, 10 AM</p>
                         <p>📍 Downtown Farmers Market</p>
                         <p id="swarm-interest-0" style="color: var(--accent-color); font-weight: 600;">👥 23 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('swarm', 0); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('Saturday Market Crawl', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('swarm', 0);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Saturday Market Crawl', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Art Gallery Night Walk</h3>
                         <p>📅 Friday, 6 PM</p>
                         <p>📍 Arts District</p>
                         <p id="swarm-interest-1" style="color: var(--accent-color); font-weight: 600;">👥 15 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('swarm', 1); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('Art Gallery Night Walk', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('swarm', 1);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Art Gallery Night Walk', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Coffee Shop Marathon</h3>
                         <p>📅 Sunday, 9 AM</p>
                         <p>📍 Various Locations</p>
                         <p id="swarm-interest-2" style="color: var(--accent-color); font-weight: 600;">👥 31 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('swarm', 2); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('Coffee Shop Marathon', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('swarm', 2);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Coffee Shop Marathon', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                 </div>
@@ -923,12 +923,12 @@
             <!-- Upcoming Events -->
             <section class="upcoming-section">
                 <h2>🎉 Upcoming Local Events</h2>
-                <p style="color: #999; text-align: center; margin: -1rem 0 1.5rem; font-size: 0.9rem;">Click any card to view on map · Weather shown for events within 7 days</p>
+                <p style="color: #999; text-align: center; margin: -1rem 0 1.5rem; font-size: 0.9rem;">Click "I'm Interested" to view on map · Weather shown for events within 7 days</p>
                 <div class="upcoming-cards">
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Block Party</span>
                         <h3>Highland Street Festival</h3>
-                        <p>📅 Saturday, June 15, 12-6 PM</p>
+                        <p>📅 Saturday, November 30, 12-6 PM</p>
                         <p>📍 Highland Neighborhood</p>
                         <div style="background: rgba(40, 40, 40, 0.6); padding: 0.8rem; border-radius: 10px; margin-top: 0.8rem; border: 1px solid rgba(107, 155, 158, 0.3);">
                             <p style="color: var(--accent-light); font-weight: 600; margin-bottom: 0.3rem;">
@@ -941,15 +941,15 @@
                         <p style="color: #999; font-size: 0.9rem; margin-top: 0.8rem;">Posted by: Highland Merchants Assoc.</p>
                         <p id="event-interest-0" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('event', 0); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('Highland Street Festival', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('event', 0);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Highland Street Festival', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Art Walk</span>
                         <h3>First Friday Gallery Stroll</h3>
-                        <p>📅 First Friday, 6-9 PM</p>
+                        <p>📅 Friday, December 6, 6-9 PM</p>
                         <p>📍 Santa Fe Arts District</p>
                         <div style="background: rgba(40, 40, 40, 0.6); padding: 0.8rem; border-radius: 10px; margin-top: 0.8rem; border: 1px solid rgba(107, 155, 158, 0.3);">
                             <p style="color: var(--accent-light); font-weight: 600; margin-bottom: 0.3rem;">
@@ -963,12 +963,12 @@
                         <p style="color: #999; font-size: 0.9rem; margin-top: 0.8rem;">Posted by: Santa Fe Arts Council</p>
                         <p id="event-interest-1" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('event', 1); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('First Friday Gallery Stroll', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('event', 1);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('First Friday Gallery Stroll', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Sidewalk Sale</span>
                         <h3>Pearl Street Summer Sale</h3>
                         <p>📅 July 20-22, 10 AM-7 PM</p>
@@ -976,8 +976,8 @@
                         <p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">Posted by: Pearl Street Business Alliance</p>
                         <p id="event-interest-2" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button onclick="addInterest('event', 2); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
-                            <button onclick="shareItem('Pearl Street Summer Sale', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                            <button onclick="addInterest('event', 2);" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Pearl Street Summer Sale', window.location.href);" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
                         </div>
                     </div>
                 </div>
@@ -1189,7 +1189,7 @@
             };
             
             const content = document.createElement('div');
-            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto; max-height: 100vh; overflow-y: auto;';
+            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto;';
             
             // Create content based on section
             if (sectionId === 'journey-map') {

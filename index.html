@@ -884,25 +884,37 @@
             <section class="upcoming-section">
                 <h2>🛍️ Upcoming Shopping Swarms</h2>
                 <div class="upcoming-cards">
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Saturday Market Crawl</h3>
                         <p>📅 This Saturday, 10 AM</p>
                         <p>📍 Downtown Farmers Market</p>
-                        <p style="color: var(--accent-color); font-weight: 600;">👥 23 locals joining</p>
+                        <p id="swarm-interest-0" style="color: var(--accent-color); font-weight: 600;">👥 23 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('swarm', 0); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Saturday Market Crawl', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Art Gallery Night Walk</h3>
                         <p>📅 Friday, 6 PM</p>
                         <p>📍 Arts District</p>
-                        <p style="color: var(--accent-color); font-weight: 600;">👥 15 locals joining</p>
+                        <p id="swarm-interest-1" style="color: var(--accent-color); font-weight: 600;">👥 15 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('swarm', 1); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Art Gallery Night Walk', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('swarms')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <h3>Coffee Shop Marathon</h3>
                         <p>📅 Sunday, 9 AM</p>
                         <p>📍 Various Locations</p>
-                        <p style="color: var(--accent-color); font-weight: 600;">👥 31 locals joining</p>
+                        <p id="swarm-interest-2" style="color: var(--accent-color); font-weight: 600;">👥 31 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('swarm', 2); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Coffee Shop Marathon', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -911,25 +923,43 @@
             <section class="upcoming-section">
                 <h2>🎉 Upcoming Local Events</h2>
                 <div class="upcoming-cards">
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Block Party</span>
                         <h3>Highland Street Festival</h3>
                         <p>📅 Saturday, June 15, 12-6 PM</p>
                         <p>📍 Highland Neighborhood</p>
+                        <p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">Posted by: Highland Merchants Assoc.</p>
+                        <p id="event-interest-0" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('event', 0); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Highland Street Festival', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Art Walk</span>
                         <h3>First Friday Gallery Stroll</h3>
                         <p>📅 First Friday, 6-9 PM</p>
                         <p>📍 Santa Fe Arts District</p>
+                        <p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">Posted by: Santa Fe Arts Council</p>
+                        <p id="event-interest-1" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('event', 1); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('First Friday Gallery Stroll', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                     
-                    <div class="upcoming-card" onclick="toggleSection('events')" style="cursor: pointer;">
+                    <div class="upcoming-card" style="cursor: default;">
                         <span class="event-type">Sidewalk Sale</span>
                         <h3>Pearl Street Summer Sale</h3>
                         <p>📅 July 20-22, 10 AM-7 PM</p>
                         <p>📍 Pearl Street Mall</p>
+                        <p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">Posted by: Pearl Street Business Alliance</p>
+                        <p id="event-interest-2" style="color: var(--accent-color); font-weight: 600; margin-top: 0.5rem;">👥 0 locals interested</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="addInterest('event', 2); event.stopPropagation();" style="flex: 1; background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s;">I'm Interested</button>
+                            <button onclick="shareItem('Pearl Street Summer Sale', window.location.href); event.stopPropagation();" style="background: rgba(107, 155, 158, 0.2); border: 2px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;">📤 Share</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1176,7 +1206,7 @@
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Shopping Swarms</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
-                    <button class="feature-btn" onclick="showToast('Create swarm feature coming soon!')">Create Shopping Swarm</button>
+                    <button class="feature-btn" onclick="openCreateSwarmModal()">Create Shopping Swarm</button>
                     
                     <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
@@ -1236,7 +1266,7 @@
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Local Events</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                    <button class="feature-btn" onclick="showToast('Promote event feature coming soon!')">Promote Your Event</button>
+                    <button class="feature-btn" onclick="openCreateEventModal()">Promote Your Event</button>
                     
                     <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
@@ -1684,6 +1714,275 @@
                 toast.remove();
             }, 3000);
         }
+
+        // Modal Functions
+        function openCreateSwarmModal() {
+            document.getElementById('createSwarmModal').style.display = 'flex';
+        }
+
+        function closeCreateSwarmModal() {
+            document.getElementById('createSwarmModal').style.display = 'none';
+            document.getElementById('createSwarmForm').reset();
+        }
+
+        function openCreateEventModal() {
+            document.getElementById('createEventModal').style.display = 'flex';
+        }
+
+        function closeCreateEventModal() {
+            document.getElementById('createEventModal').style.display = 'none';
+            document.getElementById('createEventForm').reset();
+        }
+
+        // Submit handlers
+        function submitSwarm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const swarmData = {
+                title: formData.get('swarmTitle'),
+                location: formData.get('swarmLocation'),
+                date: formData.get('swarmDate'),
+                time: formData.get('swarmTime'),
+                description: formData.get('swarmDescription'),
+                contact: formData.get('swarmContact'),
+                duration: formData.get('swarmDuration'),
+                interested: 0,
+                created: new Date().toISOString()
+            };
+            
+            // Store in localStorage
+            let swarms = JSON.parse(localStorage.getItem('swarms') || '[]');
+            swarms.push(swarmData);
+            localStorage.setItem('swarms', JSON.stringify(swarms));
+            
+            showToast('Shopping Swarm created successfully!');
+            closeCreateSwarmModal();
+            // Refresh the swarms display if currently viewing
+            if (document.querySelector('.main-content').style.display !== 'none') {
+                toggleSection('swarms');
+            }
+        }
+
+        function submitEvent(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const eventData = {
+                name: formData.get('eventName'),
+                type: formData.get('eventType'),
+                location: formData.get('eventLocation'),
+                startDate: formData.get('eventStartDate'),
+                startTime: formData.get('eventStartTime'),
+                endDate: formData.get('eventEndDate'),
+                endTime: formData.get('eventEndTime'),
+                description: formData.get('eventDescription'),
+                contact: formData.get('eventContact'),
+                website: formData.get('eventWebsite'),
+                maxParticipants: formData.get('eventMaxParticipants'),
+                postedBy: formData.get('eventPostedBy'),
+                interested: 0,
+                created: new Date().toISOString()
+            };
+            
+            // Store in localStorage
+            let events = JSON.parse(localStorage.getItem('events') || '[]');
+            events.push(eventData);
+            localStorage.setItem('events', JSON.stringify(events));
+            
+            showToast('Event created successfully!');
+            closeCreateEventModal();
+            // Refresh the events display if currently viewing
+            if (document.querySelector('.main-content').style.display !== 'none') {
+                toggleSection('events');
+            }
+        }
+
+        // Interest counter
+        function addInterest(type, id) {
+            const key = type === 'swarm' ? 'swarms' : 'events';
+            let items = JSON.parse(localStorage.getItem(key) || '[]');
+            if (items[id]) {
+                items[id].interested = (items[id].interested || 0) + 1;
+                localStorage.setItem(key, JSON.stringify(items));
+                showToast('Thanks for your interest!');
+                // Update the displayed count
+                const countElement = document.getElementById(`${type}-interest-${id}`);
+                if (countElement) {
+                    countElement.textContent = `👥 ${items[id].interested} locals interested`;
+                }
+            }
+        }
+
+        // Share functionality
+        function shareItem(title, url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url || window.location.href
+                }).catch(() => {});
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(url || window.location.href);
+                showToast('Link copied to clipboard!');
+            }
+        }
+
+        // Format date display
+        function formatDateDisplay(dateStr) {
+            const eventDate = new Date(dateStr);
+            const now = new Date();
+            const currentWeekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+            const currentWeekEnd = new Date(currentWeekStart);
+            currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+            
+            if (eventDate >= currentWeekStart && eventDate <= currentWeekEnd) {
+                // Within current week - show day name
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                return days[eventDate.getDay()];
+            } else {
+                // Beyond current week - show full date
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[eventDate.getMonth()]} ${eventDate.getDate()}`;
+            }
+        }
     </script>
+
+    <!-- Create Swarm Modal -->
+    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
+            <button onclick="closeCreateSwarmModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <h2 style="color: var(--accent-color); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Create Shopping Swarm</h2>
+            
+            <form id="createSwarmForm" onsubmit="submitSwarm(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Title *</label>
+                    <input type="text" name="swarmTitle" required maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Saturday Market Crawl">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Starting Location *</label>
+                    <input type="text" name="swarmLocation" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Downtown Farmers Market">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Date *</label>
+                        <input type="date" name="swarmDate" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Time *</label>
+                        <input type="time" name="swarmTime" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Expected Duration</label>
+                    <select name="swarmDuration" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                        <option value="">Select duration...</option>
+                        <option value="1 hour">1 hour</option>
+                        <option value="2 hours">2 hours</option>
+                        <option value="3+ hours">3+ hours</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Description (200 characters max)</label>
+                    <textarea name="swarmDescription" maxlength="200" rows="3" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Hitting 3 coffee shops in the Arts District"></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Contact (Optional)</label>
+                    <input type="text" name="swarmContact" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="email@example.com or phone">
+                </div>
+
+                <button type="submit" class="feature-btn" style="width: 100%; margin-top: 1rem;">Create Swarm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
+            <button onclick="closeCreateEventModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <h2 style="color: var(--accent-color); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Promote Your Event</h2>
+            
+            <form id="createEventForm" onsubmit="submitEvent(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Event Name *</label>
+                    <input type="text" name="eventName" required maxlength="80" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Highland Street Festival">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Event Type *</label>
+                    <select name="eventType" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                        <option value="">Select type...</option>
+                        <option value="Block Party">Block Party</option>
+                        <option value="Art Walk">Art Walk</option>
+                        <option value="Sidewalk Sale">Sidewalk Sale</option>
+                        <option value="Market">Market</option>
+                        <option value="Festival">Festival</option>
+                        <option value="Concert">Concert</option>
+                        <option value="Parade">Parade</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Location *</label>
+                    <input type="text" name="eventLocation" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Highland Neighborhood">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Start Date *</label>
+                        <input type="date" name="eventStartDate" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Start Time *</label>
+                        <input type="time" name="eventStartTime" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Date</label>
+                        <input type="date" name="eventEndDate" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Time</label>
+                        <input type="time" name="eventEndTime" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Description * (500 characters max)</label>
+                    <textarea name="eventDescription" required maxlength="500" rows="4" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Describe your event..."></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Posted By *</label>
+                    <input type="text" name="eventPostedBy" required maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Organization or your name">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Contact Info (Optional)</label>
+                    <input type="text" name="eventContact" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="email@example.com or phone">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Website/Link (Optional)</label>
+                    <input type="url" name="eventWebsite" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="https://example.com">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Max Participants (Optional)</label>
+                    <input type="number" name="eventMaxParticipants" min="1" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Leave blank for unlimited">
+                </div>
+
+                <button type="submit" class="feature-btn" style="width: 100%; margin-top: 1rem;">Create Event</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

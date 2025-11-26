@@ -772,7 +772,7 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="javascript:void(0)" onclick="scrollToContent()">How It Works</a></li>
-                <li><a href="javascript:void(0)" onclick="toggleSection('explore')">Explore</a></li>
+                <a href="#explore">Explore</a>
                 <li><a href="for-businesses.html">For Businesses</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
@@ -842,7 +842,7 @@
             </section>
             
             <!-- Feature Cards - 4 in a row -->
-            <div id="features-content" class="features-section">
+            <div id="explore" class="features-section">
                 <div class="feature-grid">
                     <div class="feature-card-large" onclick="toggleSection('journey-map')" style="cursor: pointer;">
                         <div class="feature-content">
@@ -1685,19 +1685,7 @@
     </script>
         </script>
 
-    <script>
-      function toggleSection(section) {
-        const exploreSection = document.getElementById('features-content');
-
-        if (section === 'explore') {
-          exploreSection.classList.add('show');
-        } else {
-          exploreSection.classList.remove('show');
-        }
-      }
-    </script>
-
-</body>
+ </body>
 </html>
 
 </body>

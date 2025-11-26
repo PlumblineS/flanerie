@@ -1161,7 +1161,7 @@
         let routeCoordinates = [];
         
         // Toggle Sections - Opens fullscreen modal with maps
-        function toggleSection(sectionId) {
+        function toggleSection(sectionId, highlightId = null) {
             // Lock background scrolling
             document.body.style.overflow = 'hidden';
             
@@ -1401,14 +1401,44 @@
                         
                         // Add sample swarm markers
                         const swarms = [
-                            { lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', participants: 23 },
-                            { lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', participants: 15 },
-                            { lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', participants: 31 }
+                            { id: 0, lat: 39.7392, lng: -104.9903, name: 'Saturday Market Crawl', participants: 23 },
+                            { id: 1, lat: 39.7420, lng: -104.9880, name: 'Art Gallery Night Walk', participants: 15 },
+                            { id: 2, lat: 39.7350, lng: -104.9950, name: 'Coffee Shop Marathon', participants: 31 }
                         ];
                         
                         swarms.forEach(swarm => {
-                            L.marker([swarm.lat, swarm.lng]).addTo(swarmMap)
+                            const isHighlighted = highlightId !== null && swarm.id === highlightId;
+                            
+                            // Create custom icon for highlighted swarm
+                            const markerOptions = {};
+                            if (isHighlighted) {
+                                markerOptions.icon = L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                });
+                            } else {
+                                markerOptions.icon = L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                });
+                            }
+                            
+                            const marker = L.marker([swarm.lat, swarm.lng], markerOptions).addTo(swarmMap)
                                 .bindPopup(`<strong>${swarm.name}</strong><br>👥 ${swarm.participants} people`);
+                            
+                            // Auto-open popup for highlighted swarm
+                            if (isHighlighted) {
+                                marker.openPopup();
+                                swarmMap.setView([swarm.lat, swarm.lng], 15);
+                            }
                         });
                         
                         // Add search autocomplete functionality for swarms
@@ -1457,14 +1487,44 @@
                         
                         // Add sample event markers
                         const events = [
-                            { lat: 39.7392, lng: -104.9903, name: 'Highland Street Festival', type: 'Block Party' },
-                            { lat: 39.7420, lng: -104.9880, name: 'First Friday Gallery Stroll', type: 'Art Walk' },
-                            { lat: 39.7350, lng: -104.9950, name: 'Pearl Street Summer Sale', type: 'Sidewalk Sale' }
+                            { id: 0, lat: 39.7392, lng: -104.9903, name: 'Highland Street Festival', type: 'Block Party', date: 'November 30' },
+                            { id: 1, lat: 39.7420, lng: -104.9880, name: 'First Friday Gallery Stroll', type: 'Art Walk', date: 'December 6' },
+                            { id: 2, lat: 39.7350, lng: -104.9950, name: 'Pearl Street Summer Sale', type: 'Sidewalk Sale', date: 'July 20-22' }
                         ];
                         
                         events.forEach(event => {
-                            L.marker([event.lat, event.lng]).addTo(eventMap)
-                                .bindPopup(`<strong>${event.name}</strong><br>${event.type}`);
+                            const isHighlighted = highlightId !== null && event.id === highlightId;
+                            
+                            // Create custom icon for highlighted event
+                            const markerOptions = {};
+                            if (isHighlighted) {
+                                markerOptions.icon = L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                });
+                            } else {
+                                markerOptions.icon = L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                });
+                            }
+                            
+                            const marker = L.marker([event.lat, event.lng], markerOptions).addTo(eventMap)
+                                .bindPopup(`<strong>${event.name}</strong><br>${event.type}<br>📅 ${event.date}`);
+                            
+                            // Auto-open popup for highlighted event
+                            if (isHighlighted) {
+                                marker.openPopup();
+                                eventMap.setView([event.lat, event.lng], 15);
+                            }
                         });
                     }
                     
@@ -1810,10 +1870,10 @@
                     localStorage.setItem(key, JSON.stringify(items));
                 }
                 
-                // Navigate to the map section
+                // Navigate to the map section with highlighted item
                 const sectionName = type === 'swarm' ? 'swarms' : 'events';
                 setTimeout(() => {
-                    toggleSection(sectionName);
+                    toggleSection(sectionName, id);
                 }, 500);
             }
         }

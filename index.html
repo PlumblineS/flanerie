@@ -1166,7 +1166,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal-fullscreen show';
             modal.id = 'fullscreen-' + sectionId;
-            modal.style.cssText = 'display: block; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100vh; background-color: rgba(10, 10, 10, 0.98);';
+            modal.style.cssText = 'display: block; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100vh; background-color: rgba(10, 10, 10, 0.98); overflow-y: auto;';
             
             const closeBtn = document.createElement('button');
             closeBtn.innerHTML = '&times;';
@@ -1180,7 +1180,7 @@
             };
             
             const content = document.createElement('div');
-            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto;';
+            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto; padding-bottom: 4rem;';
             
             // Create content based on section
             if (sectionId === 'journey-map') {
@@ -1219,12 +1219,11 @@
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
                     <button class="feature-btn" onclick="openCreateSwarmModal()">Create Shopping Swarm</button>
                     
-                    <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
+                    <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Search by Address/Zip</label>
-                            <input type="text" id="swarmLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 0.8rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif;">
-                            <div id="swarmSearchSuggestions" style="position: absolute; top: calc(100% + 0.5rem); left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none; margin-top: 0.5rem;"></div>
+                            <input type="text" id="swarmLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem;">
+                            <div id="swarmSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching swarms...')">Search</button>
                     </div>
@@ -1256,12 +1255,11 @@
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
                     <button class="feature-btn" onclick="openCreateEventModal()">Promote Your Event</button>
                     
-                    <div style="background: rgba(40, 40, 40, 0.8); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
+                    <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
-                            <label style="display: block; margin-bottom: 0.5rem; color: #d4d4d4;">Search by Address/Zip</label>
-                            <input type="text" id="eventLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 0.8rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif;">
-                            <div id="eventSearchSuggestions" style="position: absolute; top: calc(100% + 0.5rem); left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none; margin-top: 0.5rem;"></div>
+                            <input type="text" id="eventLocationSearch" placeholder="Enter address, zip code, or business name..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem;">
+                            <div id="eventSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>

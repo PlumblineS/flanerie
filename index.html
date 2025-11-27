@@ -278,8 +278,8 @@
         
         /* Feature Cards - 2x2 Grid */
         .features-section {
-            min-height: 100vh;
-            padding: 10rem 2rem 2rem;
+            min-height: auto;
+            padding: 4rem 2rem 4rem;
             scroll-margin-top: 80px;
             display: flex;
             align-items: flex-start;
@@ -1051,6 +1051,10 @@
         function scrollToExplore() {
             document.getElementById('features-content').scrollIntoView({ behavior: 'smooth' });
         }
+        
+        // Make globally accessible
+        window.scrollToContent = scrollToContent;
+        window.scrollToExplore = scrollToExplore;
     </script>
     
     <!-- Leaflet JavaScript -->
@@ -2155,6 +2159,25 @@
                 </div>
             `;
         }
+        
+        // === MAKE ALL FUNCTIONS GLOBALLY ACCESSIBLE ===
+        // This ensures onclick handlers in HTML can find these functions
+        window.toggleSection = toggleSection;
+        window.showToast = showToast;
+        window.openCreateSwarmModal = openCreateSwarmModal;
+        window.closeCreateSwarmModal = closeCreateSwarmModal;
+        window.openCreateEventModal = openCreateEventModal;
+        window.closeCreateEventModal = closeCreateEventModal;
+        window.toggleCustomEventType = toggleCustomEventType;
+        window.submitSwarm = submitSwarm;
+        window.submitEvent = submitEvent;
+        window.addInterest = addInterest;
+        window.shareItem = shareItem;
+        window.openSaveRouteModal = openSaveRouteModal;
+        window.clearRoute = clearRoute;
+        window.confirmSaveRoute = confirmSaveRoute;
+        
+        console.log('✅ All functions loaded and globally accessible');
     </script>
 
     <!-- Create Swarm Modal -->

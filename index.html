@@ -1337,8 +1337,8 @@
         
         // Toggle Sections - Opens fullscreen modal with maps
         function toggleSection(sectionId, highlightId = null) {
-            // Lock background scrolling
-            document.body.style.overflow = 'hidden';
+            // Lock background scrolling - use the choreography-active class
+            document.body.classList.add('choreography-active');
             
             // Create fullscreen modal
             const modal = document.createElement('div');
@@ -1352,7 +1352,7 @@
             closeBtn.onclick = () => {
                 modal.remove();
                 // Unlock background scrolling
-                document.body.style.overflow = 'auto';
+                document.body.classList.remove('choreography-active');
                 // Reset map variables so they can be recreated
                 journeyMap = null;
                 searchMap = null;

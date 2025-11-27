@@ -1190,6 +1190,28 @@
         // ===== DATABASE HELPER FUNCTIONS =====
         // These wrap Firebase calls so we can easily switch databases later
         
+        // Geocode address to get lat/lng coordinates
+        async function geocodeAddress(address) {
+            try {
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${accessToken}&limit=1`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.features && data.features.length > 0) {
+                    const [lng, lat] = data.features[0].center;
+                    return { lat, lng, fullAddress: data.features[0].place_name };
+                }
+                return null;
+            } catch (error) {
+                console.error('Geocoding error:', error);
+                return null;
+            }
+        }
+        
+        // ===== DATABASE HELPER FUNCTIONS =====
+        
         // Save event to Firebase
         async function saveEventToFirebase(eventData) {
             try {
@@ -1939,15 +1961,46 @@
         function closeCreateEventModal() {
             document.getElementById('createEventModal').style.display = 'none';
             document.getElementById('createEventForm').reset();
+            document.getElementById('customEventTypeField').style.display = 'none';
+        }
+        
+        function toggleCustomEventType() {
+            const select = document.getElementById('eventTypeSelect');
+            const customField = document.getElementById('customEventTypeField');
+            const customInput = document.getElementById('customEventType');
+            
+            if (select.value === 'Other') {
+                customField.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customField.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
         }
 
         // Submit handlers
-        function submitSwarm(event) {
+        async function submitSwarm(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
+            
+            const locationText = formData.get('swarmLocation');
+            
+            // Geocode the location to get coordinates
+            showToast('Getting location coordinates...');
+            const coordinates = await geocodeAddress(locationText);
+            
+            if (!coordinates) {
+                showToast('Could not find that location. Please be more specific.');
+                return;
+            }
+            
             const swarmData = {
                 title: formData.get('swarmTitle'),
-                location: formData.get('swarmLocation'),
+                location: locationText,
+                locationFull: coordinates.fullAddress,
+                lat: coordinates.lat,
+                lng: coordinates.lng,
                 date: formData.get('swarmDate'),
                 time: formData.get('swarmTime'),
                 description: formData.get('swarmDescription'),
@@ -1967,19 +2020,37 @@
             
             showToast('Shopping Swarm created successfully!');
             closeCreateSwarmModal();
-            // Refresh the swarms display if currently viewing
-            if (document.querySelector('.main-content').style.display !== 'none') {
-                toggleSection('swarms');
-            }
+            // Don't auto-navigate - user can manually go to swarms to see it
         }
 
-        function submitEvent(event) {
+        async function submitEvent(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
+            
+            // Get event type - use custom if "Other" was selected
+            let eventType = formData.get('eventType');
+            if (eventType === 'Other') {
+                eventType = document.getElementById('customEventType').value;
+            }
+            
+            const locationText = formData.get('eventLocation');
+            
+            // Geocode the location to get coordinates
+            showToast('Getting location coordinates...');
+            const coordinates = await geocodeAddress(locationText);
+            
+            if (!coordinates) {
+                showToast('Could not find that location. Please be more specific.');
+                return;
+            }
+            
             const eventData = {
                 name: formData.get('eventName'),
-                type: formData.get('eventType'),
-                location: formData.get('eventLocation'),
+                type: eventType,
+                location: locationText,
+                locationFull: coordinates.fullAddress,
+                lat: coordinates.lat,
+                lng: coordinates.lng,
                 startDate: formData.get('eventStartDate'),
                 startTime: formData.get('eventStartTime'),
                 endDate: formData.get('eventEndDate'),
@@ -2002,10 +2073,7 @@
             
             showToast('Event created successfully!');
             closeCreateEventModal();
-            // Refresh the events display if currently viewing
-            if (document.querySelector('.main-content').style.display !== 'none') {
-                toggleSection('events');
-            }
+            // Don't auto-navigate - user can manually go to events to see it
         }
 
         // Interest counter
@@ -2243,7 +2311,7 @@
 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Event Type *</label>
-                    <select name="eventType" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    <select id="eventTypeSelect" name="eventType" required onchange="toggleCustomEventType()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
                         <option value="">Select type...</option>
                         <option value="Block Party">Block Party</option>
                         <option value="Art Walk">Art Walk</option>
@@ -2254,6 +2322,11 @@
                         <option value="Parade">Parade</option>
                         <option value="Other">Other</option>
                     </select>
+                </div>
+                
+                <div id="customEventTypeField" style="margin-bottom: 1.5rem; display: none;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Custom Event Type *</label>
+                    <input type="text" id="customEventType" maxlength="50" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Enter custom event type">
                 </div>
 
                 <div style="margin-bottom: 1.5rem;">

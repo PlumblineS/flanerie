@@ -1304,6 +1304,13 @@
                 searchMap = null;
                 swarmMap = null;
                 eventMap = null;
+                // Scroll back to Explore section
+                setTimeout(() => {
+                    const exploreSection = document.querySelector('.features-section');
+                    if (exploreSection) {
+                        exploreSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
             };
             
             const content = document.createElement('div');
@@ -1334,8 +1341,8 @@
                         <div id="searchMapSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none; margin-top: -1rem;"></div>
                     </div>
                     <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <input type="text" id="searchByCategory" placeholder="Search by interest, location, or mood..." style="flex: 1; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                        <button class="feature-btn" onclick="showToast('Searching routes...')">Search</button>
+                        <input type="text" id="searchByCategory" placeholder="Search by interest, location, or mood... (Coming Soon)" disabled style="flex: 1; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(30, 30, 30, 0.5); color: #888; font-size: 1rem; font-family: 'Poppins', sans-serif; cursor: not-allowed;">
+                        <button class="feature-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Search</button>
                     </div>
                     <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
                     <div id="search-results" style="margin-top: 2rem; color: #d4d4d4;"></div>
@@ -1344,7 +1351,7 @@
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Shopping Swarms</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
-                    <button class="feature-btn" onclick="openCreateSwarmModal()">Create Shopping Swarm</button>
+                    <button class="feature-btn" onclick="openMapPinSwarm()">Create Shopping Swarm</button>
                     
                     <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
@@ -1366,7 +1373,7 @@
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Local Events</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
-                    <button class="feature-btn" onclick="openCreateEventModal()">Promote Your Event</button>
+                    <button class="feature-btn" onclick="openMapPinEvent()">Promote Your Event</button>
                     
                     <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
@@ -1949,8 +1956,197 @@
             }, 3000);
         }
         window.showToast = showToast;
+        
+        // ===== REVERSE GEOCODING =====
+        // Convert coordinates back to address
+        async function reverseGeocode(lat, lng) {
+            try {
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg';
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}&limit=1`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.features && data.features.length > 0) {
+                    const address = data.features[0].place_name;
+                    console.log(`🗺️ Reverse geocoded [${lat}, ${lng}] → "${address}"`);
+                    return address;
+                }
+                return null;
+            } catch (error) {
+                console.error('Reverse geocoding error:', error);
+                return null;
+            }
+        }
+        
+        // ===== MAP-PIN MODALS FOR CREATING SWARMS/EVENTS =====
+        let pinCreationMap = null;
+        let pinCreationMarker = null;
+        let selectedPinLocation = null;
+        
+        function openMapPinSwarm() {
+            // Create fullscreen map modal for pin selection
+            const modal = document.createElement('div');
+            modal.id = 'pinSelectionModal';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            
+            modal.innerHTML = `
+                <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98);">
+                    <h2 style="color: var(--accent-color); margin: 0;">📍 Click the Map to Pin Your Swarm Location</h2>
+                    <p style="color: #d4d4d4; margin: 0.5rem 0;">Click anywhere on the map where your shopping swarm will meet</p>
+                    <button onclick="closePinSelection()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(200, 50, 50, 0.8); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 600;">Cancel</button>
+                </div>
+                <div id="pinCreationMap" style="flex: 1;"></div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Initialize map
+            setTimeout(() => {
+                pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                    attribution: '© Mapbox © OpenStreetMap',
+                    tileSize: 512,
+                    zoomOffset: -1
+                }).addTo(pinCreationMap);
+                
+                // Click to place pin
+                pinCreationMap.on('click', async function(e) {
+                    // Remove existing marker
+                    if (pinCreationMarker) {
+                        pinCreationMap.removeLayer(pinCreationMarker);
+                    }
+                    
+                    // Place new marker
+                    pinCreationMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(pinCreationMap);
+                    selectedPinLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+                    
+                    // Show loading toast
+                    showToast('Getting address...');
+                    
+                    // Reverse geocode to get address
+                    const address = await reverseGeocode(e.latlng.lat, e.latlng.lng);
+                    
+                    if (address) {
+                        selectedPinLocation.address = address;
+                        pinCreationMarker.bindPopup(`<strong>Selected Location:</strong><br>${address}<br><button onclick="confirmPinSwarm()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">✓ Confirm & Continue</button>`).openPopup();
+                    } else {
+                        showToast('Could not get address. Please try another location.');
+                    }
+                });
+            }, 100);
+        }
+        window.openMapPinSwarm = openMapPinSwarm;
+        
+        function openMapPinEvent() {
+            // Create fullscreen map modal for pin selection
+            const modal = document.createElement('div');
+            modal.id = 'pinSelectionModal';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            
+            modal.innerHTML = `
+                <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98);">
+                    <h2 style="color: var(--accent-color); margin: 0;">📍 Click the Map to Pin Your Event Location</h2>
+                    <p style="color: #d4d4d4; margin: 0.5rem 0;">Click anywhere on the map where your event will take place</p>
+                    <button onclick="closePinSelection()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(200, 50, 50, 0.8); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 600;">Cancel</button>
+                </div>
+                <div id="pinCreationMap" style="flex: 1;"></div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Initialize map
+            setTimeout(() => {
+                pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                    attribution: '© Mapbox © OpenStreetMap',
+                    tileSize: 512,
+                    zoomOffset: -1
+                }).addTo(pinCreationMap);
+                
+                // Click to place pin
+                pinCreationMap.on('click', async function(e) {
+                    // Remove existing marker
+                    if (pinCreationMarker) {
+                        pinCreationMap.removeLayer(pinCreationMarker);
+                    }
+                    
+                    // Place new marker
+                    pinCreationMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(pinCreationMap);
+                    selectedPinLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+                    
+                    // Show loading toast
+                    showToast('Getting address...');
+                    
+                    // Reverse geocode to get address
+                    const address = await reverseGeocode(e.latlng.lat, e.latlng.lng);
+                    
+                    if (address) {
+                        selectedPinLocation.address = address;
+                        pinCreationMarker.bindPopup(`<strong>Selected Location:</strong><br>${address}<br><button onclick="confirmPinEvent()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">✓ Confirm & Continue</button>`).openPopup();
+                    } else {
+                        showToast('Could not get address. Please try another location.');
+                    }
+                });
+            }, 100);
+        }
+        window.openMapPinEvent = openMapPinEvent;
+        
+        function closePinSelection() {
+            const modal = document.getElementById('pinSelectionModal');
+            if (modal) modal.remove();
+            if (pinCreationMap) {
+                pinCreationMap.remove();
+                pinCreationMap = null;
+            }
+            pinCreationMarker = null;
+            selectedPinLocation = null;
+        }
+        window.closePinSelection = closePinSelection;
+        
+        function confirmPinSwarm() {
+            if (!selectedPinLocation) {
+                showToast('Please select a location first!');
+                return;
+            }
+            closePinSelection();
+            openCreateSwarmModalWithLocation(selectedPinLocation);
+        }
+        window.confirmPinSwarm = confirmPinSwarm;
+        
+        function confirmPinEvent() {
+            if (!selectedPinLocation) {
+                showToast('Please select a location first!');
+                return;
+            }
+            closePinSelection();
+            openCreateEventModalWithLocation(selectedPinLocation);
+        }
+        window.confirmPinEvent = confirmPinEvent;
 
         // Modal Functions
+        function openCreateSwarmModalWithLocation(location) {
+            document.getElementById('createSwarmModal').style.display = 'flex';
+            // Pre-fill location field and store coordinates
+            document.querySelector('input[name="swarmLocation"]').value = location.address || `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
+            document.querySelector('input[name="swarmLocation"]').setAttribute('data-lat', location.lat);
+            document.querySelector('input[name="swarmLocation"]').setAttribute('data-lng', location.lng);
+            document.querySelector('input[name="swarmLocation"]').setAttribute('data-full-address', location.address || '');
+            document.querySelector('input[name="swarmLocation"]').readOnly = true;
+            document.querySelector('input[name="swarmLocation"]').style.background = 'rgba(60, 60, 60, 0.5)';
+        }
+        
+        function openCreateEventModalWithLocation(location) {
+            document.getElementById('createEventModal').style.display = 'flex';
+            // Pre-fill location field and store coordinates
+            document.querySelector('input[name="eventLocation"]').value = location.address || `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
+            document.querySelector('input[name="eventLocation"]').setAttribute('data-lat', location.lat);
+            document.querySelector('input[name="eventLocation"]').setAttribute('data-lng', location.lng);
+            document.querySelector('input[name="eventLocation"]').setAttribute('data-full-address', location.address || '');
+            document.querySelector('input[name="eventLocation"]').readOnly = true;
+            document.querySelector('input[name="eventLocation"]').style.background = 'rgba(60, 60, 60, 0.5)';
+        }
+        
         function openCreateSwarmModal() {
             document.getElementById('createSwarmModal').style.display = 'flex';
         }
@@ -1997,23 +2193,23 @@
             event.preventDefault();
             const formData = new FormData(event.target);
             
-            const locationText = formData.get('swarmLocation');
+            const locationInput = document.querySelector('input[name="swarmLocation"]');
+            const lat = parseFloat(locationInput.getAttribute('data-lat'));
+            const lng = parseFloat(locationInput.getAttribute('data-lng'));
+            const fullAddress = locationInput.getAttribute('data-full-address');
+            const displayLocation = locationInput.value;
             
-            // Geocode the location to get coordinates
-            showToast('Getting location coordinates...');
-            const coordinates = await geocodeAddress(locationText);
-            
-            if (!coordinates) {
-                showToast('Could not find that location. Please be more specific.');
+            if (!lat || !lng) {
+                showToast('Location coordinates missing. Please use the map to select a location.');
                 return;
             }
             
             const swarmData = {
                 title: formData.get('swarmTitle'),
-                location: locationText,
-                locationFull: coordinates.fullAddress,
-                lat: coordinates.lat,
-                lng: coordinates.lng,
+                location: displayLocation,
+                locationFull: fullAddress || displayLocation,
+                lat: lat,
+                lng: lng,
                 date: formData.get('swarmDate'),
                 time: formData.get('swarmTime'),
                 description: formData.get('swarmDescription'),
@@ -2022,6 +2218,8 @@
                 identifier: formData.get('swarmIdentifier'),
                 interested: 0
             };
+            
+            console.log('💾 Saving swarm with coordinates:', { lat, lng, location: displayLocation });
             
             // Save to Firebase (also keeps localStorage as backup)
             saveSwarmToFirebase(swarmData);
@@ -2033,7 +2231,6 @@
             
             showToast('Shopping Swarm created successfully!');
             closeCreateSwarmModal();
-            // Don't auto-navigate - user can manually go to swarms to see it
         }
 
         async function submitEvent(event) {
@@ -2046,24 +2243,24 @@
                 eventType = document.getElementById('customEventType').value;
             }
             
-            const locationText = formData.get('eventLocation');
+            const locationInput = document.querySelector('input[name="eventLocation"]');
+            const lat = parseFloat(locationInput.getAttribute('data-lat'));
+            const lng = parseFloat(locationInput.getAttribute('data-lng'));
+            const fullAddress = locationInput.getAttribute('data-full-address');
+            const displayLocation = locationInput.value;
             
-            // Geocode the location to get coordinates
-            showToast('Getting location coordinates...');
-            const coordinates = await geocodeAddress(locationText);
-            
-            if (!coordinates) {
-                showToast('Could not find that location. Please be more specific.');
+            if (!lat || !lng) {
+                showToast('Location coordinates missing. Please use the map to select a location.');
                 return;
             }
             
             const eventData = {
                 name: formData.get('eventName'),
                 type: eventType,
-                location: locationText,
-                locationFull: coordinates.fullAddress,
-                lat: coordinates.lat,
-                lng: coordinates.lng,
+                location: displayLocation,
+                locationFull: fullAddress || displayLocation,
+                lat: lat,
+                lng: lng,
                 startDate: formData.get('eventStartDate'),
                 startTime: formData.get('eventStartTime'),
                 endDate: formData.get('eventEndDate'),
@@ -2075,6 +2272,8 @@
                 postedBy: formData.get('eventPostedBy'),
                 interested: 0
             };
+            
+            console.log('💾 Saving event with coordinates:', { lat, lng, location: displayLocation });
             
             // Save to Firebase (also keeps localStorage as backup)
             saveEventToFirebase(eventData);
@@ -2379,12 +2578,8 @@
 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Starting Location *</label>
-                    <input type="text" name="swarmLocation" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Baker Neighborhood, Denver">
-                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem; line-height: 1.4;">
-                        ⚠️ <strong style="color: var(--accent-color);">Be specific!</strong> Include neighborhood AND city.<br>
-                        ✅ Good: "Baker Neighborhood, Denver" or "Little Italy, Manhattan"<br>
-                        ❌ Bad: "Baker" or "Downtown" (too vague)
-                    </p>
+                    <input type="text" name="swarmLocation" required style="width: 100%; padding: 0.8rem; background: rgba(60, 60, 60, 0.5); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Pin location on map first" readonly>
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">📍 This location was selected from the map</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
@@ -2465,12 +2660,8 @@
 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Location *</label>
-                    <input type="text" name="eventLocation" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Highland Neighborhood, Denver">
-                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem; line-height: 1.4;">
-                        ⚠️ <strong style="color: var(--accent-color);">Be specific!</strong> Include neighborhood AND city.<br>
-                        ✅ Good: "Highland Neighborhood, Denver" or "Pearl Street Mall, Boulder"<br>
-                        ❌ Bad: "Highland" or "Downtown" (too vague)
-                    </p>
+                    <input type="text" name="eventLocation" required style="width: 100%; padding: 0.8rem; background: rgba(60, 60, 60, 0.5); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Pin location on map first" readonly>
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">📍 This location was selected from the map</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">

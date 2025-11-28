@@ -879,6 +879,22 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Upcoming Shopping Swarms -->
+            <section class="upcoming-section">
+                <h2>🛍️ Upcoming Shopping Swarms</h2>
+                <div id="swarms-container" class="upcoming-cards">
+                    <p style="color: #999; text-align: center; width: 100%; padding: 2rem;">Loading swarms...</p>
+                </div>
+            </section>
+            
+            <!-- Upcoming Events -->
+            <section class="upcoming-section">
+                <h2>🎉 Upcoming Local Events</h2>
+                <div id="events-container" class="upcoming-cards">
+                    <p style="color: #999; text-align: center; width: 100%; padding: 2rem;">Loading events...</p>
+                </div>
+            </section>
         </div>
     </main>
     
@@ -1450,17 +1466,26 @@
                         
                         // Load swarms from Firebase
                         getAllSwarms().then(swarms => {
+                            console.log(`Loaded ${swarms.length} swarms from Firebase`);
+                            
                             if (swarms.length === 0) {
                                 console.log('No swarms found in Firebase');
                                 return;
                             }
                             
+                            let validCount = 0;
+                            let invalidCount = 0;
+                            
                             swarms.forEach(swarm => {
                                 // Skip swarms without coordinates
                                 if (!swarm.lat || !swarm.lng) {
-                                    console.warn('Swarm missing coordinates:', swarm.title);
+                                    console.warn(`❌ Swarm "${swarm.title}" missing coordinates - won't show on map`);
+                                    invalidCount++;
                                     return;
                                 }
+                                
+                                validCount++;
+                                console.log(`✅ Swarm "${swarm.title}" loaded at [${swarm.lat}, ${swarm.lng}]`);
                                 
                                 const isHighlighted = highlightId !== null && swarm.id === highlightId;
                                 
@@ -1496,6 +1521,8 @@
                                     swarmMap.setView([swarm.lat, swarm.lng], 15);
                                 }
                             });
+                            
+                            console.log(`📊 Swarms Map: ${validCount} shown, ${invalidCount} skipped (no coordinates)`);
                         });
                         
                         // Add search autocomplete functionality for swarms
@@ -1544,17 +1571,26 @@
                         
                         // Load events from Firebase
                         getAllEvents().then(events => {
+                            console.log(`Loaded ${events.length} events from Firebase`);
+                            
                             if (events.length === 0) {
                                 console.log('No events found in Firebase');
                                 return;
                             }
                             
+                            let validCount = 0;
+                            let invalidCount = 0;
+                            
                             events.forEach(event => {
                                 // Skip events without coordinates
                                 if (!event.lat || !event.lng) {
-                                    console.warn('Event missing coordinates:', event.name);
+                                    console.warn(`❌ Event "${event.name}" missing coordinates - won't show on map`);
+                                    invalidCount++;
                                     return;
                                 }
+                                
+                                validCount++;
+                                console.log(`✅ Event "${event.name}" loaded at [${event.lat}, ${event.lng}]`);
                                 
                                 const isHighlighted = highlightId !== null && event.id === highlightId;
                                 
@@ -1589,6 +1625,8 @@
                                     eventMap.setView([event.lat, event.lng], 15);
                                 }
                             });
+                            
+                            console.log(`📊 Events Map: ${validCount} shown, ${invalidCount} skipped (no coordinates)`);
                         });
                     }
                     
@@ -2052,6 +2090,99 @@
                 return `${months[eventDate.getMonth()]} ${eventDate.getDate()}`;
             }
         }
+        
+        // ===== LOAD HOMEPAGE UPCOMING SECTIONS =====
+        
+        async function loadHomepageSwarms() {
+            const container = document.getElementById('swarms-container');
+            if (!container) return;
+            
+            try {
+                const swarms = await getAllSwarms();
+                
+                if (swarms.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">No swarms yet. Be the first to create one!</p>';
+                    return;
+                }
+                
+                // Filter swarms that have coordinates
+                const validSwarms = swarms.filter(s => s.lat && s.lng);
+                
+                if (validSwarms.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">No swarms yet. Be the first to create one!</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                validSwarms.forEach(swarm => {
+                    const card = document.createElement('div');
+                    card.className = 'upcoming-card';
+                    card.innerHTML = `
+                        <h3>${swarm.title}</h3>
+                        <p>📅 ${swarm.date} at ${swarm.time}</p>
+                        <p>📍 ${swarm.location}</p>
+                        <p style="color: var(--accent-color); font-weight: 600;">👥 ${swarm.interested || 0} interested</p>
+                        <button onclick="toggleSection('swarms', '${swarm.id}')" class="feature-btn" style="width: 100%; margin-top: 1rem;">View on Map</button>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                console.log(`Loaded ${validSwarms.length} swarms on homepage`);
+            } catch (error) {
+                console.error('Error loading homepage swarms:', error);
+                container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">Unable to load swarms. Please refresh.</p>';
+            }
+        }
+        
+        async function loadHomepageEvents() {
+            const container = document.getElementById('events-container');
+            if (!container) return;
+            
+            try {
+                const events = await getAllEvents();
+                
+                if (events.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">No events yet. Be the first to promote one!</p>';
+                    return;
+                }
+                
+                // Filter events that have coordinates
+                const validEvents = events.filter(e => e.lat && e.lng);
+                
+                if (validEvents.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">No events yet. Be the first to promote one!</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                validEvents.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'upcoming-card';
+                    card.innerHTML = `
+                        <span class="event-type">${event.type}</span>
+                        <h3>${event.name}</h3>
+                        <p>📅 ${event.startDate} at ${event.startTime}</p>
+                        <p>📍 ${event.location}</p>
+                        <p style="color: var(--accent-color); font-weight: 600;">👥 ${event.interested || 0} interested</p>
+                        <button onclick="toggleSection('events', '${event.id}')" class="feature-btn" style="width: 100%; margin-top: 1rem;">View on Map</button>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                console.log(`Loaded ${validEvents.length} events on homepage`);
+            } catch (error) {
+                console.error('Error loading homepage events:', error);
+                container.innerHTML = '<p style="color: #999; text-align: center; width: 100%; padding: 2rem;">Unable to load events. Please refresh.</p>';
+            }
+        }
+        
+        // Load homepage sections when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                loadHomepageSwarms();
+                loadHomepageEvents();
+            }, 500);
+        });
 
         // === FINAL SAFETY CHECK - Ensure all functions are globally accessible ===
         if (typeof toggleSection !== 'undefined') window.toggleSection = toggleSection;

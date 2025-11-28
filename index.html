@@ -1665,6 +1665,9 @@
             }, 300);
         }
         
+        // Make toggleSection globally accessible immediately
+        window.toggleSection = toggleSection;
+        
         function addWaypoint(latlng) {
             const waypointNumber = routeCoordinates.length + 1;
             const numberIcon = L.divIcon({
@@ -1858,6 +1861,11 @@
             showToast(`Route "${name}" saved successfully!`);
         }
         
+        // Make route functions globally accessible
+        window.clearRoute = clearRoute;
+        window.openSaveRouteModal = openSaveRouteModal;
+        window.confirmSaveRoute = confirmSaveRoute;
+        
         // Toast Notification
         function showToast(message) {
             const toast = document.createElement('div');
@@ -1869,6 +1877,7 @@
                 toast.remove();
             }, 3000);
         }
+        window.showToast = showToast;
 
         // Modal Functions
         function openCreateSwarmModal() {
@@ -1904,6 +1913,13 @@
                 customInput.value = '';
             }
         }
+        
+        // Make modal functions globally accessible
+        window.openCreateSwarmModal = openCreateSwarmModal;
+        window.closeCreateSwarmModal = closeCreateSwarmModal;
+        window.openCreateEventModal = openCreateEventModal;
+        window.closeCreateEventModal = closeCreateEventModal;
+        window.toggleCustomEventType = toggleCustomEventType;
 
         // Submit handlers
         async function submitSwarm(event) {
@@ -2048,6 +2064,12 @@
                 showToast('Link copied to clipboard!');
             }
         }
+        
+        // Make submit and interaction functions globally accessible
+        window.submitSwarm = submitSwarm;
+        window.submitEvent = submitEvent;
+        window.addInterest = addInterest;
+        window.shareItem = shareItem;
 
         // Format date display
         function formatDateDisplay(dateStr) {
@@ -2159,23 +2181,6 @@
                 </div>
             `;
         }
-        
-        // === MAKE ALL FUNCTIONS GLOBALLY ACCESSIBLE ===
-        // This ensures onclick handlers in HTML can find these functions
-        window.toggleSection = toggleSection;
-        window.showToast = showToast;
-        window.openCreateSwarmModal = openCreateSwarmModal;
-        window.closeCreateSwarmModal = closeCreateSwarmModal;
-        window.openCreateEventModal = openCreateEventModal;
-        window.closeCreateEventModal = closeCreateEventModal;
-        window.toggleCustomEventType = toggleCustomEventType;
-        window.submitSwarm = submitSwarm;
-        window.submitEvent = submitEvent;
-        window.addInterest = addInterest;
-        window.shareItem = shareItem;
-        window.openSaveRouteModal = openSaveRouteModal;
-        window.clearRoute = clearRoute;
-        window.confirmSaveRoute = confirmSaveRoute;
         
         console.log('✅ All functions loaded and globally accessible');
     </script>

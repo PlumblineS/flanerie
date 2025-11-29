@@ -288,11 +288,17 @@
         
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 968px) {
@@ -838,41 +844,38 @@
                 <p id="tagline-reveal">Share your journey. Retrace theirs.</p>
             </section>
             
-            <!-- Feature Cards - 4 in a row -->
+            <!-- Feature Cards - 3 cards with 2 buttons each -->
             <div id="features-content" class="features-section">
                 <div class="feature-grid">
+                    <!-- Card 1: Journeys & Routes -->
                     <div class="feature-card-large">
                         <div class="feature-content">
                             <div class="feature-icon">📍</div>
-                            <h3>Share Your Journey</h3>
-                            <p>Plot your favorite routes</p>
-                            <button class="feature-btn" onclick="toggleSection('journey-map')">Start Mapping</button>
+                            <h3>Journeys & Routes</h3>
+                            <p>Share your path or discover new ones</p>
+                            <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.75rem;">Share Your Journey</button>
+                            <button class="feature-btn" onclick="toggleSection('search')">Search Routes</button>
                         </div>
                     </div>
                     
-                    <div class="feature-card-large">
-                        <div class="feature-content">
-                            <div class="feature-icon">🔍</div>
-                            <h3>Search Routes</h3>
-                            <p>Discover curated paths</p>
-                            <button class="feature-btn" onclick="toggleSection('search')">Explore Routes</button>
-                        </div>
-                    </div>
-                    
+                    <!-- Card 2: Shopping Swarms -->
                     <div class="feature-card-large">
                         <div class="feature-content">
                             <div class="feature-icon">🛍️</div>
                             <h3>Shopping Swarms</h3>
-                            <p>Join community walks</p>
+                            <p>Create or join community walks</p>
+                            <button class="feature-btn" onclick="openMapPinSwarm()" style="margin-bottom: 0.75rem;">Create Shopping Swarm</button>
                             <button class="feature-btn" onclick="toggleSection('swarms')">View Swarms</button>
                         </div>
                     </div>
                     
+                    <!-- Card 3: Local Events -->
                     <div class="feature-card-large">
                         <div class="feature-content">
                             <div class="feature-icon">🎉</div>
                             <h3>Local Events</h3>
-                            <p>Discover celebrations</p>
+                            <p>Promote events or discover celebrations</p>
+                            <button class="feature-btn" onclick="openMapPinEvent()" style="margin-bottom: 0.75rem;">Promote Your Event</button>
                             <button class="feature-btn" onclick="toggleSection('events')">Browse Events</button>
                         </div>
                     </div>
@@ -2004,7 +2007,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -2032,7 +2035,7 @@
                 // CRITICAL: Modal needs invalidateSize after it renders
                 setTimeout(() => {
                     pinCreationMap.invalidateSize();
-                }, 300);
+                }, 1000);
                 
                 // Address search functionality
                 let searchTimeout;
@@ -2075,7 +2078,7 @@
                         showToast('Could not get address. Please try another location.');
                     }
                 });
-            }, 100);
+            }, 500);
         }
         window.openMapPinSwarm = openMapPinSwarm;
         
@@ -2083,7 +2086,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -2111,7 +2114,7 @@
                 // CRITICAL: Modal needs invalidateSize after it renders
                 setTimeout(() => {
                     pinCreationMap.invalidateSize();
-                }, 300);
+                }, 1000);
                 
                 // Address search functionality
                 let searchTimeout;
@@ -2154,7 +2157,7 @@
                         showToast('Could not get address. Please try another location.');
                     }
                 });
-            }, 100);
+            }, 500);
         }
         window.openMapPinEvent = openMapPinEvent;
         

@@ -824,8 +824,8 @@
                     </p>
                 </div>
                 
-                <!-- Welcome Section - Hidden on Explore page -->
-                <div id="welcome-section" style="display: none;">
+                <!-- Welcome Section -->
+                <div id="welcome-section">
                     <h3>Welcome to Flânerie</h3>
                     
                     <p>
@@ -841,7 +841,7 @@
                     </p>
                 </div>
                 
-                <p id="tagline-reveal" style="display: none;">Share your journey. Retrace theirs.</p>
+                <p id="tagline-reveal">Share your journey. Retrace theirs.</p>
             </section>
             
             <!-- Feature Cards - 3 cards with 2 buttons each -->
@@ -1051,6 +1051,8 @@
         }
         
         function scrollToExplore() {
+            document.getElementById('welcome-section').style.display = 'none';
+            document.getElementById('tagline-reveal').style.display = 'none';
             document.getElementById('features-content').scrollIntoView({ behavior: 'smooth' });
         }
         

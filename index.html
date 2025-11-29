@@ -279,7 +279,7 @@
         /* Feature Cards - 2x2 Grid */
         .features-section {
             min-height: auto;
-            padding: 3rem 2rem 2rem;
+            padding: 1.5rem 2rem 2rem;
             scroll-margin-top: 80px;
             display: flex;
             align-items: flex-start;
@@ -289,7 +289,7 @@
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            gap: 1.25rem;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
@@ -311,7 +311,7 @@
         .feature-card-large {
             background: rgba(30, 30, 30, 0.9);
             border-radius: 20px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             cursor: pointer;
@@ -319,8 +319,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 200px;
-            max-height: 250px;
+            min-height: 240px;
+            max-height: 320px;
         }
         
         .feature-card-large:hover {
@@ -337,38 +337,38 @@
         }
         
         .feature-icon {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
             border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin: 0 auto 1rem;
+            font-size: 1.3rem;
+            margin: 0 auto 0.75rem;
         }
         
         .feature-card-large h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--accent-light);
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
         }
         
         .feature-card-large p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #d4d4d4;
-            line-height: 1.5;
-            margin-bottom: 1rem;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
         }
         
         .feature-btn {
             background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 0.7rem 1.75rem;
             border: none;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -824,8 +824,8 @@
                     </p>
                 </div>
                 
-                <!-- Welcome Section -->
-                <div id="welcome-section">
+                <!-- Welcome Section - Hidden on Explore page -->
+                <div id="welcome-section" style="display: none;">
                     <h3>Welcome to Flânerie</h3>
                     
                     <p>
@@ -841,7 +841,7 @@
                     </p>
                 </div>
                 
-                <p id="tagline-reveal">Share your journey. Retrace theirs.</p>
+                <p id="tagline-reveal" style="display: none;">Share your journey. Retrace theirs.</p>
             </section>
             
             <!-- Feature Cards - 3 cards with 2 buttons each -->
@@ -853,7 +853,7 @@
                             <div class="feature-icon">📍</div>
                             <h3>Journeys & Routes</h3>
                             <p>Share your path or discover new ones</p>
-                            <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.75rem;">Share Your Journey</button>
+                            <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.5rem;">Share Your Journey</button>
                             <button class="feature-btn" onclick="toggleSection('search')">Search Routes</button>
                         </div>
                     </div>
@@ -864,7 +864,7 @@
                             <div class="feature-icon">🛍️</div>
                             <h3>Shopping Swarms</h3>
                             <p>Create or join community walks</p>
-                            <button class="feature-btn" onclick="openMapPinSwarm()" style="margin-bottom: 0.75rem;">Create Shopping Swarm</button>
+                            <button class="feature-btn" onclick="openMapPinSwarm()" style="margin-bottom: 0.5rem;">Create Shopping Swarm</button>
                             <button class="feature-btn" onclick="toggleSection('swarms')">View Swarms</button>
                         </div>
                     </div>
@@ -875,7 +875,7 @@
                             <div class="feature-icon">🎉</div>
                             <h3>Local Events</h3>
                             <p>Promote events or discover celebrations</p>
-                            <button class="feature-btn" onclick="openMapPinEvent()" style="margin-bottom: 0.75rem;">Promote Your Event</button>
+                            <button class="feature-btn" onclick="openMapPinEvent()" style="margin-bottom: 0.5rem;">Promote Your Event</button>
                             <button class="feature-btn" onclick="toggleSection('events')">Browse Events</button>
                         </div>
                     </div>

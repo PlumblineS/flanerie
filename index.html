@@ -1344,7 +1344,7 @@
                     
                     <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
                     
-                    <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Saved Routes</h3>
+                    <h3 style="color: var(--accent-color); margin: 2rem 0 1rem;">Recently Added</h3>
                     <div id="routes-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                         <p style="color: #999; text-align: center; width: 100%; padding: 2rem;">Loading routes...</p>
                     </div>
@@ -2040,7 +2040,7 @@
                 // Force map to render properly after modal is visible
                 setTimeout(() => {
                     pinCreationMap.invalidateSize();
-                }, 200);
+                }, 500);
                 
                 // Address search functionality
                 let searchTimeout;
@@ -2127,7 +2127,7 @@
                 // Force map to render properly after modal is visible
                 setTimeout(() => {
                     pinCreationMap.invalidateSize();
-                }, 200);
+                }, 500);
                 
                 // Address search functionality
                 let searchTimeout;

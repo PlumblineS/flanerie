@@ -1358,7 +1358,7 @@
                             <button class="feature-btn" onclick="toggleSection('swarms')">Cancel</button>
                         </div>
                     </div>
-                    <div id="swarm-creation-map" style="flex: 1;"></div>
+                    <div id="swarm-creation-map" style="flex: 1; background: #fff;"></div>
                 `;
             } else if (sectionId === 'event-creation-map') {
                 // Event creation map - EXACT SAME as journey-map
@@ -1376,7 +1376,7 @@
                             <button class="feature-btn" onclick="toggleSection('events')">Cancel</button>
                         </div>
                     </div>
-                    <div id="event-creation-map" style="flex: 1;"></div>
+                    <div id="event-creation-map" style="flex: 1; background: #fff;"></div>
                 `;
             } else if (sectionId === 'search') {
                 content.innerHTML = `
@@ -1815,7 +1815,7 @@
                         });
                     }
                 }
-            }, 300);
+            }, 500);
         }
         
         // Make toggleSection globally accessible immediately

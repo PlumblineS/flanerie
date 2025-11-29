@@ -28,7 +28,7 @@
             --accent-light: #8DBCC0;
         }
         
-        <body>
+        body.choreography-active {
             overflow: hidden;
             height: 100vh;
             position: fixed;
@@ -1725,13 +1725,7 @@
         
         // Make toggleSection globally accessible immediately
         window.toggleSection = toggleSection;
-        // Hide any fullscreen overlays that block maps
-function hideAllOverlays() {
-    document.querySelectorAll('.modal-fullscreen').forEach(el => el.style.display = 'none');
-    const staticOverlay = document.getElementById('fullscreen-events');
-    if (staticOverlay) staticOverlay.style.display = 'none';
-}
-
+        
         function addWaypoint(latlng) {
             const waypointNumber = routeCoordinates.length + 1;
             const numberIcon = L.divIcon({
@@ -2177,8 +2171,6 @@ function hideAllOverlays() {
         window.closePinSelection = closePinSelection;
         
         function confirmPinSwarm() {
-            hideAllOverlays();
-
             if (!selectedPinLocation) {
                 showToast('Please select a location first!');
                 return;
@@ -2189,8 +2181,6 @@ function hideAllOverlays() {
         window.confirmPinSwarm = confirmPinSwarm;
         
         function confirmPinEvent() {
-hideAllOverlays();
-            
             if (!selectedPinLocation) {
                 showToast('Please select a location first!');
                 return;

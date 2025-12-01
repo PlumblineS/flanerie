@@ -1216,8 +1216,6 @@
         let searchMap = null;
         let swarmMap = null;
         let eventMap = null;
-        let swarmCreationMap = null;
-        let eventCreationMap = null;
         let swarmMapV2 = null;
         let eventMapV2 = null;
         let routeMarkers = [];
@@ -1313,43 +1311,7 @@
                     </div>
                     <div id="map" style="height: calc(100vh - 180px); width: 100%;"></div>
                 `;
-            } else if (sectionId === 'swarm-creation-map') {
-                // Swarm creation map - EXACT SAME as journey-map
-                content.style.cssText = 'padding: 0; max-width: none; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;';
-                
-                content.innerHTML = `
-                    <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
-                        <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">📍 Create Your Shopping Swarm</h2>
-                        <div style="max-width: 600px; margin: 0 auto;">
-                            <input type="text" id="swarmMapSearch" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Search for a location, then click the map to pin your swarm meeting point</p>
-                        </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
-                            <button class="feature-btn" onclick="openCreateSwarmModal()">Save Swarm</button>
-                            <button class="feature-btn" onclick="toggleSection('swarms')">Cancel</button>
-                        </div>
-                    </div>
-                    <div id="swarm-creation-map" style="height: calc(100vh - 180px); width: 100%;"></div>
-                `;
-            } else if (sectionId === 'event-creation-map') {
-                // Event creation map - EXACT SAME as journey-map
-                content.style.cssText = 'padding: 0; max-width: none; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;';
-                
-                content.innerHTML = `
-                    <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
-                        <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">🎉 Promote Your Event</h2>
-                        <div style="max-width: 600px; margin: 0 auto;">
-                            <input type="text" id="eventMapSearch" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Search for a location, then click the map to pin your event location</p>
-                        </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
-                            <button class="feature-btn" onclick="openCreateEventModal()">Save Event</button>
-                            <button class="feature-btn" onclick="toggleSection('events')">Cancel</button>
-                        </div>
-                    </div>
-                    <div id="event-creation-map" style="height: calc(100vh - 180px); width: 100%;"></div>
-                `;
-                      } else if (sectionId === 'search') {
+             } else if (sectionId === 'search') {
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Search Routes</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover community-shared walking routes and find your next adventure</p>

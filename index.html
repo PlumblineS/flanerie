@@ -864,7 +864,7 @@
                             <div class="feature-icon">🛍️</div>
                             <h3>Shopping Swarms</h3>
                             <p>Create or join community walks</p>
-                            <button class="feature-btn" onclick="toggleSection('swarm-creation-map')" style="margin-bottom: 0.75rem;">Create Shopping Swarm</button>
+                            <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.75rem;">Create Shopping Swarm (TEST - calls journey)</button>
                             <button class="feature-btn" onclick="toggleSection('swarms')">View Swarms</button>
                         </div>
                     </div>
@@ -875,18 +875,8 @@
                             <div class="feature-icon">🎉</div>
                             <h3>Local Events</h3>
                             <p>Promote events or discover celebrations</p>
-                            <button class="feature-btn" onclick="toggleSection('event-creation-map')" style="margin-bottom: 0.75rem;">Promote Your Event</button>
+                            <button class="feature-btn" onclick="toggleSection('event-map-v2')" style="margin-bottom: 0.75rem;">Promote Your Event</button>
                             <button class="feature-btn" onclick="toggleSection('events')">Browse Events</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 4: TEST MAP -->
-                    <div class="feature-card-large">
-                        <div class="feature-content">
-                            <div class="feature-icon">🧪</div>
-                            <h3>Test Map</h3>
-                            <p>Testing map functionality</p>
-                            <button class="feature-btn" onclick="toggleSection('journey-map')">Open Test Map (calls journey)</button>
                         </div>
                     </div>
                 </div>
@@ -1325,6 +1315,8 @@
                 swarmCreationMap = null;
                 eventCreationMap = null;
                 if (window.testMap) window.testMap = null;
+                swarmMapV2 = null;
+                eventMapV2 = null;
                 // Scroll back to Explore section
                 setTimeout(() => {
                     const exploreSection = document.querySelector('.features-section');
@@ -1357,6 +1349,44 @@
                         </div>
                     </div>
                     <div id="map" style="height: calc(100vh - 180px); width: 100%;"></div>
+                `;
+            } else if (sectionId === 'swarm-map-v2') {
+                // SWARM MAP V2 - EXACT COPY OF JOURNEY-MAP
+                content.style.cssText = 'padding: 0; max-width: none; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;';
+                
+                content.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
+                        <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">🛍️ Create Shopping Swarm</h2>
+                        <div style="max-width: 600px; margin: 0 auto;">
+                            <input type="text" id="swarmMapV2Search" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <div id="swarmMapV2SearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Search for a location, then click the map to pin your swarm meeting point</p>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
+                            <button class="feature-btn" onclick="openCreateSwarmModal()">Save Swarm</button>
+                            <button class="feature-btn" onclick="showToast('Swarm cancelled')">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="swarm-map-v2-div" style="height: calc(100vh - 180px); width: 100%;"></div>
+                `;
+            } else if (sectionId === 'event-map-v2') {
+                // EVENT MAP V2 - EXACT COPY OF JOURNEY-MAP
+                content.style.cssText = 'padding: 0; max-width: none; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;';
+                
+                content.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
+                        <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">🎉 Promote Your Event</h2>
+                        <div style="max-width: 600px; margin: 0 auto;">
+                            <input type="text" id="eventMapV2Search" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <div id="eventMapV2SearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Search for a location, then click the map to pin your event location</p>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
+                            <button class="feature-btn" onclick="openCreateEventModal()">Save Event</button>
+                            <button class="feature-btn" onclick="showToast('Event cancelled')">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="event-map-v2-div" style="height: calc(100vh - 180px); width: 100%;"></div>
                 `;
             } else if (sectionId === 'swarm-creation-map') {
                 // Swarm creation map - EXACT SAME as journey-map
@@ -1518,6 +1548,50 @@
                                 }
                             });
                         }
+                    }
+                } else if (sectionId === 'swarm-map-v2') {
+                    // SWARM MAP V2 - EXACT COPY OF JOURNEY-MAP JS
+                    const mapElement = document.getElementById('swarm-map-v2-div');
+                    if (mapElement && !swarmMapV2) {
+                        swarmMapV2 = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                             tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(swarmMapV2);
+                        L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(swarmMapV2);
+                        
+                        swarmMapV2.on('click', function(e) {
+                            // Remove existing marker
+                            if (window.swarmMarker) {
+                                swarmMapV2.removeLayer(window.swarmMarker);
+                            }
+                            // Place new marker
+                            window.swarmMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(swarmMapV2);
+                            window.swarmLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+                            showToast('Location pinned! Click "Save Swarm" to continue.');
+                        });
+                    }
+                } else if (sectionId === 'event-map-v2') {
+                    // EVENT MAP V2 - EXACT COPY OF JOURNEY-MAP JS
+                    const mapElement = document.getElementById('event-map-v2-div');
+                    if (mapElement && !eventMapV2) {
+                        eventMapV2 = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                             tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(eventMapV2);
+                        L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(eventMapV2);
+                        
+                        eventMapV2.on('click', function(e) {
+                            // Remove existing marker
+                            if (window.eventMarker) {
+                                eventMapV2.removeLayer(window.eventMarker);
+                            }
+                            // Place new marker
+                            window.eventMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(eventMapV2);
+                            window.eventLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+                            showToast('Location pinned! Click "Save Event" to continue.');
+                        });
                     }
                 } else if (sectionId === 'test-map') {
                     // TEST MAP - EXACT COPY OF JOURNEY JS

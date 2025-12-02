@@ -1019,23 +1019,6 @@
         window.database = firebase.database();
         const database = window.database; // Keep local reference for this script block
         
-        // Check if Firebase is configured
-        if (firebaseConfig.apiKey === "YOUR_API_KEY") {
-            console.warn('%c⚠️ FIREBASE NOT CONFIGURED YET!', 'color: orange; font-size: 20px; font-weight: bold;');
-            console.log('%cSTEPS TO SET UP FIREBASE:', 'color: cyan; font-size: 16px; font-weight: bold;');
-            console.log('1. Go to https://console.firebase.google.com/');
-            console.log('2. Create a new project (name it "flanerie")');
-            console.log('3. Click "Realtime Database" in left menu → Create Database');
-            console.log('4. Choose "Start in test mode" → Enable');
-            console.log('5. Click the gear icon → Project settings → Scroll down');
-            console.log('6. Click "Web" icon (</>) → Register app');
-            console.log('7. Copy the firebaseConfig object and replace lines 1163-1170 in this HTML');
-            console.log('%cData will only save to localStorage until Firebase is configured!', 'color: yellow;');
-        } else {
-            console.log('%c✅ Firebase is configured and ready!', 'color: green; font-size: 16px; font-weight: bold;');
-            console.log('Database URL:', firebaseConfig.databaseURL);
-        }
-        
         // ===== DATABASE HELPER FUNCTIONS =====
         // These wrap Firebase calls so we can easily switch databases later
         

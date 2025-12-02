@@ -1603,10 +1603,14 @@
                                             infoContent.innerHTML = `
                                                 <h3 style="color: var(--accent-color); margin: 0 0 0.5rem 0;">${route.name}</h3>
                                                 ${route.category ? `<span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; margin-bottom: 0.8rem; font-weight: 600;">📁 ${route.category}</span>` : ''}
-                                                ${route.description ? `<p style="color: #d4d4d4; margin-top: 0.8rem;">${route.description}</p>` : ''}
+                                                ${route.description ? `<p style="color: #d4d4d4; margin-top: 0.8rem; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${route.description}</p>` : ''}
                                                 ${waypointsHTML}
                                             `;
                                             infoPanel.style.display = 'block';
+                                            // Auto-scroll into view
+                                            setTimeout(() => {
+                                                infoPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                            }, 100);
                                         }
                                     });
                                     
@@ -1879,16 +1883,20 @@
                                     
                                     if (infoPanel && infoContent) {
                                         infoContent.innerHTML = `
-                                            <h3 style="color: var(--accent-color); margin: 0 0 0.8rem 0;">${swarm.title}</h3>
-                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📍 Meeting Location:</strong> ${swarm.meetingLocation || swarm.location || 'Location TBD'}</p>
+                                            <h3 style="color: var(--accent-color); margin: 0 0 0.8rem 0; word-wrap: break-word; word-break: break-word;">${swarm.title}</h3>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📍 Meeting Location:</strong> ${swarm.meetingLocation || swarm.location || 'Location TBD'}</p>
                                             <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${swarm.date} at ${swarm.time}</p>
                                             ${swarm.duration ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">⏱️ Duration:</strong> ${swarm.duration}</p>` : ''}
-                                            ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0;">${swarm.description}</p>` : ''}
-                                            ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
-                                            ${swarm.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${swarm.contact}</p>` : ''}
+                                            ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${swarm.description}</p>` : ''}
+                                            ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
+                                            ${swarm.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${swarm.contact}</p>` : ''}
                                             <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${participants} interested</p>
                                         `;
                                         infoPanel.style.display = 'block';
+                                        // Auto-scroll into view
+                                        setTimeout(() => {
+                                            infoPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                        }, 100);
                                     }
                                 });
                                 
@@ -2045,19 +2053,23 @@
                                         
                                         infoContent.innerHTML = `
                                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
-                                                <h3 style="color: var(--accent-color); margin: 0;">${event.name}</h3>
+                                                <h3 style="color: var(--accent-color); margin: 0; word-wrap: break-word; word-break: break-word; flex: 1;">${event.name}</h3>
                                                 <span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; margin-left: 1rem;">${event.type}</span>
                                             </div>
-                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📍 Location:</strong> ${event.location}</p>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📍 Location:</strong> ${event.location}</p>
                                             <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${dateTimeStr}</p>
-                                            ${event.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0;">${event.description}</p>` : ''}
-                                            ${event.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📢 Posted by:</strong> ${event.postedBy}</p>` : ''}
-                                            ${event.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${event.contact}</p>` : ''}
-                                            ${event.website ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">🔗 Website:</strong> <a href="${event.website}" target="_blank" style="color: var(--accent-light);">${event.website}</a></p>` : ''}
+                                            ${event.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${event.description}</p>` : ''}
+                                            ${event.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📢 Posted by:</strong> ${event.postedBy}</p>` : ''}
+                                            ${event.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${event.contact}</p>` : ''}
+                                            ${event.website ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔗 Website:</strong> <a href="${event.website}" target="_blank" style="color: var(--accent-light); word-break: break-all;">${event.website}</a></p>` : ''}
                                             ${event.maxParticipants ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">👥 Max Participants:</strong> ${event.maxParticipants}</p>` : ''}
                                             <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${event.interested || 0} interested</p>
                                         `;
                                         infoPanel.style.display = 'block';
+                                        // Auto-scroll into view
+                                        setTimeout(() => {
+                                            infoPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                        }, 100);
                                     }
                                 });
                                 

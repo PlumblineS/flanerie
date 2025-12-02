@@ -1036,10 +1036,6 @@
                 
                 if (data.features && data.features.length > 0) {
                     const [lng, lat] = data.features[0].center;
-                    console.log(`🗺️ Geocoded "${address}"`);
-                    console.log(`   Mapbox returned: [lng: ${lng}, lat: ${lat}]`);
-                    console.log(`   Saving as: { lat: ${lat}, lng: ${lng} }`);
-                    console.log(`   Full address: ${data.features[0].place_name}`);
                     return { lat, lng, fullAddress: data.features[0].place_name };
                 }
                 return null;
@@ -1060,7 +1056,6 @@
                     id: newEventRef.key,
                     created: new Date().toISOString()
                 });
-                console.log('Event saved to Firebase:', newEventRef.key);
                 return newEventRef.key;
             } catch (error) {
                 console.error('Error saving event:', error);
@@ -1077,7 +1072,6 @@
                     id: newSwarmRef.key,
                     created: new Date().toISOString()
                 });
-                console.log('Swarm saved to Firebase:', newSwarmRef.key);
                 return newSwarmRef.key;
             } catch (error) {
                 console.error('Error saving swarm:', error);
@@ -1096,7 +1090,6 @@
                         ...childSnapshot.val()
                     });
                 });
-                console.log('Loaded events from Firebase:', events.length);
                 return events;
             } catch (error) {
                 console.error('Error loading events:', error);
@@ -1115,7 +1108,6 @@
                         ...childSnapshot.val()
                     });
                 });
-                console.log('Loaded swarms from Firebase:', swarms.length);
                 return swarms;
             } catch (error) {
                 console.error('Error loading swarms:', error);
@@ -1130,7 +1122,6 @@
                 await database.ref(path).update({
                     interested: newCount
                 });
-                console.log(`Updated interest count for ${type} ${id}: ${newCount}`);
             } catch (error) {
                 console.error('Error updating interest:', error);
             }
@@ -1354,13 +1345,9 @@
             
             // Initialize maps after DOM is ready
             setTimeout(() => {
-                console.log('⏱️ setTimeout fired, sectionId =', sectionId);
                 if (sectionId === 'journey-map' || sectionId === 'swarm-map-v2' || sectionId === 'event-map-v2') {
-                    console.log('🟢 MAP: Entered universal map block, mode:', mapMode);
                     const mapElement = document.getElementById('map');
-                    console.log('🟢 MAP: mapElement =', mapElement);
                     if (mapElement && !journeyMap) {
-                        console.log('🟢 MAP: Initializing journeyMap...');
                         journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
                         L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                              tileSize: 512,
@@ -1443,7 +1430,6 @@
                         let selectedRoute = null;
                         
                         getAllRoutes().then(routes => {
-                            console.log("✅ Loaded " + routes.length + " routes from Firebase");
                             
                             routes.forEach((route, index) => {
                                 if (route.waypoints && route.waypoints.length >= 2) {
@@ -1586,10 +1572,8 @@
                         
                         // Load swarms from Firebase
                         getAllSwarms().then(swarms => {
-                            console.log(`Loaded ${swarms.length} swarms from Firebase`);
                             
                             if (swarms.length === 0) {
-                                console.log('No swarms found in Firebase');
                                 return;
                             }
                             
@@ -1599,13 +1583,11 @@
                             swarms.forEach(swarm => {
                                 // Skip swarms without coordinates
                                 if (!swarm.lat || !swarm.lng) {
-                                    console.warn(`❌ Swarm "${swarm.title}" missing coordinates - won't show on map`);
                                     invalidCount++;
                                     return;
                                 }
                                 
                                 validCount++;
-                                console.log(`✅ Swarm "${swarm.title}" at [lat: ${swarm.lat}, lng: ${swarm.lng}]`);
                                 
                                 const isHighlighted = highlightId !== null && swarm.id === highlightId;
                                 
@@ -1641,8 +1623,6 @@
                                     swarmMap.setView([swarm.lat, swarm.lng], 15);
                                 }
                             });
-                            
-                            console.log(`📊 Swarms Map: ${validCount} shown, ${invalidCount} skipped (no coordinates)`);
                         });
                         
                         // Add search autocomplete functionality for swarms
@@ -1691,10 +1671,8 @@
                         
                         // Load events from Firebase
                         getAllEvents().then(events => {
-                            console.log(`Loaded ${events.length} events from Firebase`);
                             
                             if (events.length === 0) {
-                                console.log('No events found in Firebase');
                                 return;
                             }
                             
@@ -1704,13 +1682,11 @@
                             events.forEach(event => {
                                 // Skip events without coordinates
                                 if (!event.lat || !event.lng) {
-                                    console.warn(`❌ Event "${event.name}" missing coordinates - won't show on map`);
                                     invalidCount++;
                                     return;
                                 }
                                 
                                 validCount++;
-                                console.log(`✅ Event "${event.name}" at [lat: ${event.lat}, lng: ${event.lng}]`);
                                 
                                 const isHighlighted = highlightId !== null && event.id === highlightId;
                                 
@@ -1745,8 +1721,6 @@
                                     eventMap.setView([event.lat, event.lng], 15);
                                 }
                             });
-                            
-                            console.log(`📊 Events Map: ${validCount} shown, ${invalidCount} skipped (no coordinates)`);
                         });
                     }
                     
@@ -1997,8 +1971,6 @@
                 createdBy: 'anonymous' // Could add user auth later
             };
             
-            console.log('💾 Attempting to save route:', routeData);
-            
             // Save to Firebase
             try {
                 if (!window.database) {
@@ -2007,7 +1979,6 @@
                 
                 const routesRef = window.database.ref('routes');
                 await routesRef.push(routeData);
-                console.log('✅ Route saved to Firebase:', routeData);
                 
                 document.getElementById('saveRouteModal').remove();
                 showToast(`Route "${name}" saved successfully!`);
@@ -2048,7 +2019,6 @@
                 
                 if (data.features && data.features.length > 0) {
                     const address = data.features[0].place_name;
-                    console.log(`🗺️ Reverse geocoded [${lat}, ${lng}] → "${address}"`);
                     return address;
                 }
                 return null;
@@ -2348,8 +2318,6 @@
                 interested: 0
             };
             
-            console.log('💾 Saving swarm with coordinates:', { lat, lng, location: displayLocation });
-            
             // Save to Firebase (also keeps localStorage as backup)
             saveSwarmToFirebase(swarmData);
             
@@ -2401,8 +2369,6 @@
                 postedBy: formData.get('eventPostedBy'),
                 interested: 0
             };
-            
-            console.log('💾 Saving event with coordinates:', { lat, lng, location: displayLocation });
             
             // Save to Firebase (also keeps localStorage as backup)
             saveEventToFirebase(eventData);
@@ -2734,9 +2700,6 @@
         if (typeof openSaveRouteModal !== 'undefined') window.openSaveRouteModal = openSaveRouteModal;
         if (typeof confirmSaveRoute !== 'undefined') window.confirmSaveRoute = confirmSaveRoute;
         if (typeof toggleCustomEventType !== 'undefined') window.toggleCustomEventType = toggleCustomEventType;
-        
-        console.log('✅ All functions loaded and globally accessible');
-        console.log('toggleSection available:', typeof window.toggleSection);
     </script>
 
     <!-- Create Swarm Modal -->

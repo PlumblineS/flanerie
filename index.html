@@ -1206,6 +1206,7 @@
         let routeMarkers = [];
         let routePath = null;
         let routeCoordinates = [];
+        let waypointLabels = []; // Store custom labels for each waypoint
         
         // Toggle Sections - Opens fullscreen modal with maps
         function toggleSection(sectionId, highlightId = null) {
@@ -1289,7 +1290,18 @@
                             ${buttons[mapMode]}
                         </div>
                     </div>
-                    <div id="map" style="height: calc(100vh - 180px); width: 100%;"></div>
+                    <div id="map" style="height: calc(100vh - 400px); width: 100%;"></div>
+                    
+                    <!-- Waypoint Labels (only shows for journey mode) -->
+                    <div id="waypointLabelsContainer" style="display: none; padding: 1rem 2rem; background: rgba(25, 25, 25, 0.95); max-height: 200px; overflow-y: auto;">
+                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops (Optional)</h4>
+                        <div id="waypointLabelsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                    
+                    <!-- Info Panel -->
+                    <div id="journeyInfoPanel" style="display: none; padding: 1.5rem 2rem; background: rgba(25, 25, 25, 0.95); border-top: 2px solid rgba(107, 155, 158, 0.3); max-height: 200px; overflow-y: auto;">
+                        <div id="journeyInfoContent"></div>
+                    </div>
                 `;
              } else if (sectionId === 'search') {
                 content.innerHTML = `
@@ -1359,7 +1371,12 @@
                     
                     <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
                     
-                    <p style="color: #999; font-size: 0.9rem; margin-top: 1rem; text-align: center;">💡 Click any route on the map to highlight it</p>
+                    <!-- Info Panel -->
+                    <div id="searchInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin-top: 1rem;">
+                        <div id="searchInfoContent"></div>
+                    </div>
+                    
+                    <p style="color: #999; font-size: 0.9rem; margin-top: 1rem; text-align: center;">💡 Click any route on the map to view details below</p>
                 `;
             } else if (sectionId === 'swarms') {
                 content.innerHTML = `
@@ -1376,6 +1393,13 @@
                     </div>
                     
                     <div id="swarm-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    
+                    <!-- Info Panel -->
+                    <div id="swarmInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin-top: 1rem;">
+                        <div id="swarmInfoContent"></div>
+                    </div>
+                    
+                    <p style="color: #999; font-size: 0.9rem; margin-top: 1rem; text-align: center;">💡 Click any swarm pin to view details below</p>
                 `;
             } else if (sectionId === 'events') {
                 content.innerHTML = `
@@ -1392,6 +1416,13 @@
                     </div>
                     
                     <div id="event-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    
+                    <!-- Info Panel -->
+                    <div id="eventInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin-top: 1rem;">
+                        <div id="eventInfoContent"></div>
+                    </div>
+                    
+                    <p style="color: #999; font-size: 0.9rem; margin-top: 1rem; text-align: center;">💡 Click any event pin to view details below</p>
                 `;
             }
             
@@ -1533,9 +1564,6 @@
                                         markers.push(marker);
                                     });
                                     
-                                    // Add popup to polyline
-                                    polyline.bindPopup("<strong>" + route.name + "</strong><br>" + (route.description || "") + "<br>" + (route.category ? "📁 " + route.category + "<br>" : "") + "📍 " + route.waypointCount + " waypoints");
-                                    
                                     // Store route data
                                     allRoutesData.push({
                                         route: route,
@@ -1543,7 +1571,7 @@
                                         markers: markers
                                     });
                                     
-                                    // Click handler for highlighting
+                                    // Click handler for highlighting and showing info
                                     polyline.on('click', function() {
                                         // Reset all routes to faded
                                         allRoutesData.forEach(r => {
@@ -1556,8 +1584,30 @@
                                         markers.forEach(m => m.setOpacity(1));
                                         selectedRoute = route;
                                         
-                                        // Open popup
-                                        polyline.openPopup();
+                                        // Populate info panel
+                                        const infoPanel = document.getElementById('searchInfoPanel');
+                                        const infoContent = document.getElementById('searchInfoContent');
+                                        
+                                        if (infoPanel && infoContent) {
+                                            let waypointsHTML = '';
+                                            if (route.waypointLabels && route.waypointLabels.length > 0) {
+                                                waypointsHTML = '<div style="margin-top: 1rem;"><strong style="color: var(--accent-light);">Route Stops:</strong><ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: #d4d4d4;">';
+                                                route.waypointLabels.forEach((label, idx) => {
+                                                    waypointsHTML += `<li style="margin: 0.3rem 0;">${label || `Stop ${idx + 1}`}</li>`;
+                                                });
+                                                waypointsHTML += '</ol></div>';
+                                            } else {
+                                                waypointsHTML = `<p style="color: #999; margin-top: 1rem;">📍 ${route.waypointCount} waypoints</p>`;
+                                            }
+                                            
+                                            infoContent.innerHTML = `
+                                                <h3 style="color: var(--accent-color); margin: 0 0 0.5rem 0;">${route.name}</h3>
+                                                ${route.category ? `<span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; margin-bottom: 0.8rem; font-weight: 600;">📁 ${route.category}</span>` : ''}
+                                                ${route.description ? `<p style="color: #d4d4d4; margin-top: 0.8rem;">${route.description}</p>` : ''}
+                                                ${waypointsHTML}
+                                            `;
+                                            infoPanel.style.display = 'block';
+                                        }
                                     });
                                     
                                     // Also make markers clickable to highlight route
@@ -1820,12 +1870,31 @@
                                 }
                                 
                                 const participants = swarm.interested || 0;
-                                const marker = L.marker([swarm.lat, swarm.lng], markerOptions).addTo(swarmMap)
-                                    .bindPopup(`<strong>${swarm.title}</strong><br>📍 ${swarm.meetingLocation || swarm.location || 'Location TBD'}<br>👥 ${participants} interested<br>📅 ${swarm.date} at ${swarm.time}`);
+                                const marker = L.marker([swarm.lat, swarm.lng], markerOptions).addTo(swarmMap);
                                 
-                                // Auto-open popup for highlighted swarm
+                                // Click handler to populate info panel
+                                marker.on('click', function() {
+                                    const infoPanel = document.getElementById('swarmInfoPanel');
+                                    const infoContent = document.getElementById('swarmInfoContent');
+                                    
+                                    if (infoPanel && infoContent) {
+                                        infoContent.innerHTML = `
+                                            <h3 style="color: var(--accent-color); margin: 0 0 0.8rem 0;">${swarm.title}</h3>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📍 Meeting Location:</strong> ${swarm.meetingLocation || swarm.location || 'Location TBD'}</p>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${swarm.date} at ${swarm.time}</p>
+                                            ${swarm.duration ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">⏱️ Duration:</strong> ${swarm.duration}</p>` : ''}
+                                            ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0;">${swarm.description}</p>` : ''}
+                                            ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
+                                            ${swarm.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${swarm.contact}</p>` : ''}
+                                            <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${participants} interested</p>
+                                        `;
+                                        infoPanel.style.display = 'block';
+                                    }
+                                });
+                                
+                                // Auto-show info for highlighted swarm
                                 if (isHighlighted) {
-                                    marker.openPopup();
+                                    marker.fire('click');
                                     swarmMap.setView([swarm.lat, swarm.lng], 15);
                                 }
                             });
@@ -1961,12 +2030,40 @@
                                     });
                                 }
                                 
-                                const marker = L.marker([event.lat, event.lng], markerOptions).addTo(eventMap)
-                                    .bindPopup(`<strong>${event.name}</strong><br>${event.type}<br>📍 ${event.location}<br>📅 ${event.startDate} at ${event.startTime}`);
+                                const marker = L.marker([event.lat, event.lng], markerOptions).addTo(eventMap);
                                 
-                                // Auto-open popup for highlighted event
+                                // Click handler to populate info panel
+                                marker.on('click', function() {
+                                    const infoPanel = document.getElementById('eventInfoPanel');
+                                    const infoContent = document.getElementById('eventInfoContent');
+                                    
+                                    if (infoPanel && infoContent) {
+                                        let dateTimeStr = `${event.startDate} at ${event.startTime}`;
+                                        if (event.endDate || event.endTime) {
+                                            dateTimeStr += ` - ${event.endDate || event.startDate}${event.endTime ? ' at ' + event.endTime : ''}`;
+                                        }
+                                        
+                                        infoContent.innerHTML = `
+                                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
+                                                <h3 style="color: var(--accent-color); margin: 0;">${event.name}</h3>
+                                                <span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; margin-left: 1rem;">${event.type}</span>
+                                            </div>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📍 Location:</strong> ${event.location}</p>
+                                            <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${dateTimeStr}</p>
+                                            ${event.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0;">${event.description}</p>` : ''}
+                                            ${event.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📢 Posted by:</strong> ${event.postedBy}</p>` : ''}
+                                            ${event.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${event.contact}</p>` : ''}
+                                            ${event.website ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">🔗 Website:</strong> <a href="${event.website}" target="_blank" style="color: var(--accent-light);">${event.website}</a></p>` : ''}
+                                            ${event.maxParticipants ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">👥 Max Participants:</strong> ${event.maxParticipants}</p>` : ''}
+                                            <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${event.interested || 0} interested</p>
+                                        `;
+                                        infoPanel.style.display = 'block';
+                                    }
+                                });
+                                
+                                // Auto-show info for highlighted event
                                 if (isHighlighted) {
-                                    marker.openPopup();
+                                    marker.fire('click');
                                     eventMap.setView([event.lat, event.lng], 15);
                                 }
                             });
@@ -2024,6 +2121,32 @@
             const marker = L.marker(latlng, { icon: numberIcon }).addTo(journeyMap);
             routeMarkers.push(marker);
             routeCoordinates.push([latlng.lat, latlng.lng]);
+            waypointLabels.push(''); // Initialize empty label
+            
+            // Show and update waypoint labels container
+            const labelsContainer = document.getElementById('waypointLabelsContainer');
+            const labelsList = document.getElementById('waypointLabelsList');
+            if (labelsContainer && labelsList) {
+                labelsContainer.style.display = 'block';
+                
+                const labelInput = document.createElement('div');
+                labelInput.style.cssText = 'display: flex; align-items: center; gap: 0.5rem;';
+                labelInput.innerHTML = `
+                    <span style="color: var(--accent-light); font-weight: 600; min-width: 30px;">${waypointNumber}.</span>
+                    <input type="text" 
+                           id="waypointLabel${waypointNumber}" 
+                           placeholder="e.g., Blue Bottle Coffee, Tattered Cover, etc."
+                           maxlength="50"
+                           style="flex: 1; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(107, 155, 158, 0.3); border-radius: 8px; color: white; font-size: 0.9rem;">
+                `;
+                labelsList.appendChild(labelInput);
+                
+                // Update waypointLabels array when input changes
+                const input = document.getElementById(`waypointLabel${waypointNumber}`);
+                input.addEventListener('input', (e) => {
+                    waypointLabels[waypointNumber - 1] = e.target.value;
+                });
+            }
             
             if (routePath) {
                 journeyMap.removeLayer(routePath);
@@ -2041,7 +2164,17 @@
             if (routePath) journeyMap.removeLayer(routePath);
             routeMarkers = [];
             routeCoordinates = [];
+            waypointLabels = [];
             routePath = null;
+            
+            // Clear and hide waypoint labels container
+            const labelsContainer = document.getElementById('waypointLabelsContainer');
+            const labelsList = document.getElementById('waypointLabelsList');
+            if (labelsContainer && labelsList) {
+                labelsContainer.style.display = 'none';
+                labelsList.innerHTML = '';
+            }
+            
             showToast('Route cleared!');
         }
         
@@ -2300,6 +2433,7 @@
                 description: description,
                 category: category,
                 waypoints: routeCoordinates,
+                waypointLabels: waypointLabels, // Save custom labels
                 waypointCount: routeCoordinates.length,
                 created: new Date().toISOString(),
                 createdBy: 'anonymous' // Could add user auth later

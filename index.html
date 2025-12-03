@@ -1038,7 +1038,7 @@
         // Geocode address to get lat/lng coordinates
         async function geocodeAddress(address) {
             try {
-                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA';
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg';
                 
                 // No proximity bias - users must be specific with city/state
                 // Examples: "Baker Neighborhood, Denver" or "Little Italy, Manhattan, NY"
@@ -1438,7 +1438,7 @@
                     const mapElement = document.getElementById('map');
                     if (mapElement && !journeyMap) {
                         journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(journeyMap);
@@ -1531,7 +1531,7 @@
                     const mapElement = document.getElementById('search-map');
                     if (mapElement && !searchMap) {
                         searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                             tileSize: 512,
                             zoomOffset: -1
                         }).addTo(searchMap);
@@ -1625,12 +1625,10 @@
                                             }
                                             
                                             infoContent.innerHTML = `
-                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 2px solid rgba(107, 155, 158, 0.3);">
+                                                <button onclick="closeRouteInfo()" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255, 255, 255, 0.1); border: none; color: var(--accent-light); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">✕</button>
+                                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem; padding-right: 2.5rem;">
                                                     <h3 style="color: var(--accent-color); margin: 0; word-wrap: break-word; word-break: break-word; flex: 1;">${route.name}</h3>
-                                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                                        ${route.category ? `<span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">📁 ${route.category}</span>` : ''}
-                                                        <button onclick="closeRouteInfo()" style="background: rgba(255, 255, 255, 0.1); border: none; color: var(--accent-light); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">✕</button>
-                                                    </div>
+                                                    ${route.category ? `<span style="display: inline-block; background: var(--accent-light); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; margin-left: 1rem;">📁 ${route.category}</span>` : ''}
                                                 </div>
                                                 ${route.description ? `<p style="color: #d4d4d4; margin-top: 0.5rem; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${route.description}</p>` : ''}
                                                 ${waypointsHTML}
@@ -1830,7 +1828,7 @@
                     const mapElement = document.getElementById('swarm-map');
                     if (mapElement && !swarmMap) {
                         swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(swarmMap);
@@ -1992,7 +1990,7 @@
                     const eventMapElement = document.getElementById('event-map');
                     if (eventMapElement && !eventMap) {
                         eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(eventMap);
@@ -2211,19 +2209,15 @@
                 
                 // Get business name via reverse geocoding
                 const input = document.getElementById(`waypointLabel${waypointNumber}`);
-                console.log('Calling reverseGeocode for waypoint', waypointNumber);
                 const placeName = await reverseGeocode(latlng.lat, latlng.lng);
-                console.log('Got place name:', placeName);
                 
                 if (placeName) {
                     // Extract just the business/place name (first part before comma)
                     const shortName = placeName.split(',')[0].trim();
-                    console.log('Setting input value to:', shortName);
                     input.value = shortName;
                     input.placeholder = "e.g., Blue Bottle Coffee, Tattered Cover, etc.";
                     waypointLabels[waypointNumber - 1] = shortName;
                 } else {
-                    console.log('No place name found, using default placeholder');
                     input.placeholder = "e.g., Blue Bottle Coffee, Tattered Cover, etc.";
                 }
                 
@@ -2265,7 +2259,7 @@
         
         // Fetch location suggestions using Mapbox Geocoding API
         function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA';
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
             const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=8&types=place,address,poi`;
             
             fetch(url)
@@ -2363,7 +2357,7 @@
                 return;
             }
             
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA';
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
             const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=1`;
             
             fetch(url)
@@ -2699,26 +2693,16 @@
         // Convert coordinates back to address
         async function reverseGeocode(lat, lng) {
             try {
-                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA';
-                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}&limit=1&types=poi,address`;
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg';
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}&limit=1`;
                 
-                console.log('Reverse geocoding:', lat, lng);
                 const response = await fetch(url);
-                
-                if (!response.ok) {
-                    console.error('Geocoding API error:', response.status);
-                    return null;
-                }
-                
                 const data = await response.json();
-                console.log('Geocoding response:', data);
                 
                 if (data.features && data.features.length > 0) {
                     const address = data.features[0].place_name;
-                    console.log('Found place:', address);
                     return address;
                 }
-                console.log('No features found');
                 return null;
             } catch (error) {
                 console.error('Reverse geocoding error:', error);
@@ -2754,7 +2738,7 @@
             // Initialize map - EXACT SAME as Share Your Journey
             setTimeout(() => {
                 pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
-                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
                     tileSize: 512,
                     zoomOffset: -1
                 }).addTo(pinCreationMap);
@@ -2833,7 +2817,7 @@
             // Initialize map - EXACT SAME as Share Your Journey
             setTimeout(() => {
                 pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
-                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA', {
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
                     tileSize: 512,
                     zoomOffset: -1
                 }).addTo(pinCreationMap);

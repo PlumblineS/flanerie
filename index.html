@@ -1553,22 +1553,25 @@
                                         opacity: 0.7 
                                     }).addTo(searchMap);
                                     
-                                    // Create waypoint markers (only show first one initially)
+                                    // Create plain pin for initial display (first waypoint only)
+                                    const plainPinIcon = L.divIcon({
+                                        className: 'route-pin',
+                                        html: '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">📍</span></div>',
+                                        iconSize: [28, 28],
+                                        iconAnchor: [14, 28]
+                                    });
+                                    const plainPin = L.marker(route.waypoints[0], { icon: plainPinIcon }).addTo(searchMap);
+                                    
+                                    // Create numbered waypoint markers (don't add to map initially)
                                     const markers = [];
                                     route.waypoints.forEach((waypoint, wpIndex) => {
                                         const numberIcon = L.divIcon({
                                             className: 'waypoint-number',
-                                            html: '<div style="background: rgba(107, 155, 158, 0.9); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">' + (wpIndex + 1) + '</div>',
-                                            iconSize: [30, 30],
-                                            iconAnchor: [15, 15]
+                                            html: '<div style="background: #0056b3; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">' + (wpIndex + 1) + '</div>',
+                                            iconSize: [32, 32],
+                                            iconAnchor: [16, 16]
                                         });
                                         const marker = L.marker(waypoint, { icon: numberIcon });
-                                        
-                                        // Only add first waypoint to map initially
-                                        if (wpIndex === 0) {
-                                            marker.addTo(searchMap);
-                                        }
-                                        
                                         markers.push(marker);
                                     });
                                     
@@ -1576,14 +1579,20 @@
                                     allRoutesData.push({
                                         route: route,
                                         polyline: polyline,
-                                        markers: markers
+                                        markers: markers,
+                                        plainPin: plainPin
                                     });
                                     
                                     // Click handler for highlighting and showing info
                                     polyline.on('click', function() {
-                                        // Hide all markers from all routes and fade polylines
+                                        // Hide all plain pins and numbered markers from all routes, fade polylines
                                         allRoutesData.forEach(r => {
                                             r.polyline.setStyle({ opacity: 0.3, weight: 3 });
+                                            // Hide plain pin
+                                            if (r.plainPin && searchMap.hasLayer(r.plainPin)) {
+                                                searchMap.removeLayer(r.plainPin);
+                                            }
+                                            // Hide numbered markers
                                             r.markers.forEach(m => {
                                                 if (searchMap.hasLayer(m)) {
                                                     searchMap.removeLayer(m);
@@ -1591,8 +1600,8 @@
                                             });
                                         });
                                         
-                                        // Highlight selected route and show ALL its waypoints
-                                        polyline.setStyle({ opacity: 1, weight: 6, color: '#6B9B9E' });
+                                        // Highlight selected route and show ALL its numbered waypoints
+                                        polyline.setStyle({ opacity: 1, weight: 6, color: '#0056b3' });
                                         markers.forEach(m => {
                                             if (!searchMap.hasLayer(m)) {
                                                 m.addTo(searchMap);
@@ -1647,7 +1656,12 @@
                                         }
                                     });
                                     
-                                    // Also make markers clickable to highlight route
+                                    // Make plain pin clickable to highlight route
+                                    plainPin.on('click', function() {
+                                        polyline.fire('click');
+                                    });
+                                    
+                                    // Also make numbered markers clickable to highlight route
                                     markers.forEach(marker => {
                                         marker.on('click', function() {
                                             polyline.fire('click');
@@ -2663,21 +2677,18 @@
                 // Reset polyline style
                 r.polyline.setStyle({ opacity: 0.7, weight: 4, color: '#8DBCC0' });
                 
-                // Hide all waypoints except first
-                r.markers.forEach((marker, idx) => {
-                    if (idx === 0) {
-                        // Show first waypoint
-                        if (!searchMap.hasLayer(marker)) {
-                            marker.addTo(searchMap);
-                        }
-                        marker.setOpacity(1);
-                    } else {
-                        // Hide other waypoints
-                        if (searchMap.hasLayer(marker)) {
-                            searchMap.removeLayer(marker);
-                        }
+                // Hide all numbered markers
+                r.markers.forEach(marker => {
+                    if (searchMap.hasLayer(marker)) {
+                        searchMap.removeLayer(marker);
                     }
                 });
+                
+                // Show plain pin
+                if (r.plainPin && !searchMap.hasLayer(r.plainPin)) {
+                    r.plainPin.addTo(searchMap);
+                    r.plainPin.setOpacity(1);
+                }
             });
             
             selectedRoute = null;

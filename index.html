@@ -1303,6 +1303,12 @@
                         <p id="businessCount" style="color: var(--accent-light); margin: 0.5rem 0 0 0; font-size: 0.85rem; font-weight: 600;"></p>
                     </div>
                     
+                    <!-- Swarm Business Labels (only shows for swarm mode) -->
+                    <div id="swarmBusinessLabelsContainer" style="display: none; padding: 1rem 2rem; background: rgba(25, 25, 25, 0.95); max-height: 200px; overflow-y: auto; border-top: 1px solid rgba(107, 155, 158, 0.2);">
+                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">🏪 Label Your Businesses (Required)</h4>
+                        <div id="swarmBusinessLabelsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                    
                     <!-- Waypoint Labels (only shows for journey mode) -->
                     <div id="waypointLabelsContainer" style="display: none; padding: 1rem 2rem; background: rgba(25, 25, 25, 0.95); max-height: 200px; overflow-y: auto;">
                         <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops (Optional)</h4>
@@ -1463,7 +1469,11 @@
                             if (!window.swarmMarkers) {
                                 window.swarmMarkers = [];
                                 window.swarmLocations = [];
+                                window.swarmBusinessLabels = [];
                             }
+                            
+                            // Reset multi-business mode flag
+                            window.swarmMultiBusinessMode = false;
                             
                             // Show multi-business container
                             const multiBusinessContainer = document.getElementById('multiBusinessContainer');
@@ -1741,10 +1751,14 @@
                                             
                                             if (isCustom) {
                                                 searchMap.addLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.addLayer(m));
+                                                if (routeData.plainPin && !searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.addLayer(routeData.plainPin);
+                                                }
                                             } else {
                                                 searchMap.removeLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.removeLayer(m));
+                                                if (routeData.plainPin && searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.removeLayer(routeData.plainPin);
+                                                }
                                             }
                                         });
                                     } else {
@@ -1757,10 +1771,14 @@
                                             
                                             if (shouldShow) {
                                                 searchMap.addLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.addLayer(m));
+                                                if (routeData.plainPin && !searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.addLayer(routeData.plainPin);
+                                                }
                                             } else {
                                                 searchMap.removeLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.removeLayer(m));
+                                                if (routeData.plainPin && searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.removeLayer(routeData.plainPin);
+                                                }
                                             }
                                         });
                                     }
@@ -1786,10 +1804,14 @@
                                             
                                             if (shouldShow) {
                                                 searchMap.addLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.addLayer(m));
+                                                if (routeData.plainPin && !searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.addLayer(routeData.plainPin);
+                                                }
                                             } else {
                                                 searchMap.removeLayer(routeData.polyline);
-                                                routeData.markers.forEach(m => searchMap.removeLayer(m));
+                                                if (routeData.plainPin && searchMap.hasLayer(routeData.plainPin)) {
+                                                    searchMap.removeLayer(routeData.plainPin);
+                                                }
                                             }
                                         });
                                     });
@@ -2535,6 +2557,13 @@
                 return;
             }
             
+            // Validate that all waypoints have labels
+            const emptyLabels = waypointLabels.filter((label, idx) => !label || label.trim() === '');
+            if (emptyLabels.length > 0) {
+                showToast('Please label all waypoints before saving!');
+                return;
+            }
+            
             const description = document.getElementById('routeDescription')?.value || '';
             let category = document.getElementById('routeCategory')?.value || '';
             
@@ -2964,6 +2993,12 @@
 
         // Multi-Business Swarm Functions
         function addSwarmMarker(latlng) {
+            // Check if multi-business mode is enabled
+            if (!window.swarmMultiBusinessMode && window.swarmMarkers.length >= 1) {
+                showToast('Click "Add another location" to add more businesses');
+                return;
+            }
+            
             const markerNumber = window.swarmMarkers.length + 1;
             
             // Create numbered marker for multi-business
@@ -2984,6 +3019,15 @@
             const marker = L.marker([latlng.lat, latlng.lng], { icon: markerIcon }).addTo(journeyMap);
             window.swarmMarkers.push(marker);
             
+            // Initialize business labels array if needed
+            if (!window.swarmBusinessLabels) {
+                window.swarmBusinessLabels = [];
+            }
+            window.swarmBusinessLabels.push(''); // Initialize empty label
+            
+            // Add label input field
+            addSwarmLabelInput(markerNumber, latlng);
+            
             // Store location with reverse geocoding for address
             reverseGeocode(latlng.lat, latlng.lng).then(address => {
                 window.swarmLocations.push({ 
@@ -2991,6 +3035,14 @@
                     lng: latlng.lng,
                     address: address
                 });
+                
+                // Auto-fill business name from geocoding
+                const labelInput = document.getElementById(`swarmBusinessLabel${markerNumber}`);
+                if (labelInput && address) {
+                    const businessName = address.split(',')[0].trim();
+                    labelInput.value = businessName;
+                    window.swarmBusinessLabels[markerNumber - 1] = businessName;
+                }
             });
             
             // Update business count display
@@ -3001,16 +3053,45 @@
             if (saveBtn) saveBtn.disabled = false;
             
             const message = markerNumber === 1 ? 
-                'Meeting point pinned! Click "Save Swarm" to continue or add more locations.' :
+                'Location pinned! Label the business below.' :
                 `Location ${markerNumber} added!`;
             showToast(message);
         }
         window.addSwarmMarker = addSwarmMarker;
         
         function addAnotherBusiness() {
-            showToast('Click the map to add another business location');
+            window.swarmMultiBusinessMode = true;
+            showToast('Multi-business mode enabled! Click the map to add more locations.');
         }
         window.addAnotherBusiness = addAnotherBusiness;
+        
+        function addSwarmLabelInput(markerNumber, latlng) {
+            const labelsContainer = document.getElementById('swarmBusinessLabelsContainer');
+            const labelsList = document.getElementById('swarmBusinessLabelsList');
+            
+            if (labelsContainer && labelsList) {
+                labelsContainer.style.display = 'block';
+                
+                const labelInput = document.createElement('div');
+                labelInput.style.cssText = 'display: flex; align-items: center; gap: 0.5rem;';
+                labelInput.innerHTML = `
+                    <span style="color: var(--accent-light); font-weight: 600; min-width: 30px;">${markerNumber}.</span>
+                    <input type="text" 
+                           id="swarmBusinessLabel${markerNumber}" 
+                           placeholder="Loading business name..."
+                           maxlength="50"
+                           style="flex: 1; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(107, 155, 158, 0.3); border-radius: 8px; color: white; font-size: 0.9rem;">
+                `;
+                labelsList.appendChild(labelInput);
+                
+                // Update swarmBusinessLabels array when input changes
+                const input = document.getElementById(`swarmBusinessLabel${markerNumber}`);
+                input.addEventListener('input', (e) => {
+                    window.swarmBusinessLabels[markerNumber - 1] = e.target.value;
+                });
+            }
+        }
+        window.addSwarmLabelInput = addSwarmLabelInput;
         
         function updateBusinessCount() {
             const countElement = document.getElementById('businessCount');
@@ -3064,6 +3145,16 @@
             if (window.swarmLocations) {
                 window.swarmLocations = [];
             }
+            if (window.swarmBusinessLabels) {
+                window.swarmBusinessLabels = [];
+            }
+            // Reset multi-business mode
+            window.swarmMultiBusinessMode = false;
+            // Clear and hide labels container
+            const labelsContainer = document.getElementById('swarmBusinessLabelsContainer');
+            const labelsList = document.getElementById('swarmBusinessLabelsList');
+            if (labelsContainer) labelsContainer.style.display = 'none';
+            if (labelsList) labelsList.innerHTML = '';
             updateBusinessCount();
         }
 
@@ -3147,6 +3238,18 @@
                 return;
             }
             
+            // Validate that all businesses have labels
+            if (!window.swarmBusinessLabels || window.swarmBusinessLabels.length !== window.swarmLocations.length) {
+                showToast('Please label all businesses before saving!');
+                return;
+            }
+            
+            const emptyLabels = window.swarmBusinessLabels.filter((label, idx) => !label || label.trim() === '');
+            if (emptyLabels.length > 0) {
+                showToast('Please label all businesses before saving!');
+                return;
+            }
+            
             const primaryLocation = window.swarmLocations[0];
             
             const swarmData = {
@@ -3155,6 +3258,7 @@
                 lat: primaryLocation.lat, // Primary pin
                 lng: primaryLocation.lng, // Primary pin
                 locations: window.swarmLocations, // All pinned locations
+                businessLabels: window.swarmBusinessLabels, // Business names
                 locationCount: window.swarmLocations.length,
                 date: formData.get('swarmDate'),
                 time: formData.get('swarmTime'),

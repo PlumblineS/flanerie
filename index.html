@@ -1884,6 +1884,13 @@
                                     const infoContent = document.getElementById('swarmInfoContent');
                                     
                                     if (infoPanel && infoContent) {
+                                        // Check if user already marked interest
+                                        const storageKey = `flanerie_interested_swarms_${swarm.id}`;
+                                        const alreadyInterested = localStorage.getItem(storageKey);
+                                        const btnState = alreadyInterested ? 
+                                            `<button id="swarm-interest-btn-${swarm.id}" style="background: rgba(107, 155, 158, 0.5); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: default; font-size: 0.9rem;" disabled>✓ Interested</button>` :
+                                            `<button id="swarm-interest-btn-${swarm.id}" onclick="toggleInterest('swarms', '${swarm.id}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;">I'm Interested</button>`;
+                                        
                                         infoContent.innerHTML = `
                                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
                                                 <h3 style="color: var(--accent-color); margin: 0; word-wrap: break-word; word-break: break-word; flex: 1;">${swarm.title}</h3>
@@ -1895,7 +1902,10 @@
                                             ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${swarm.description}</p>` : ''}
                                             ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
                                             ${swarm.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${swarm.contact}</p>` : ''}
-                                            <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${participants} interested</p>
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
+                                                <p id="swarm-interest-count-${swarm.id}" style="color: var(--accent-light); font-weight: 600; margin: 0;">👥 ${participants} interested</p>
+                                                ${btnState}
+                                            </div>
                                         `;
                                         infoPanel.style.display = 'block';
                                         // Auto-scroll into view
@@ -2056,6 +2066,13 @@
                                             dateTimeStr += ` - ${event.endDate || event.startDate}${event.endTime ? ' at ' + event.endTime : ''}`;
                                         }
                                         
+                                        // Check if user already marked interest
+                                        const storageKey = `flanerie_interested_events_${event.id}`;
+                                        const alreadyInterested = localStorage.getItem(storageKey);
+                                        const btnState = alreadyInterested ? 
+                                            `<button id="event-interest-btn-${event.id}" style="background: rgba(107, 155, 158, 0.5); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: default; font-size: 0.9rem;" disabled>✓ Interested</button>` :
+                                            `<button id="event-interest-btn-${event.id}" onclick="toggleInterest('events', '${event.id}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;">I'm Interested</button>`;
+                                        
                                         infoContent.innerHTML = `
                                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
                                                 <h3 style="color: var(--accent-color); margin: 0; word-wrap: break-word; word-break: break-word; flex: 1;">${event.name}</h3>
@@ -2068,7 +2085,10 @@
                                             ${event.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${event.contact}</p>` : ''}
                                             ${event.website ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔗 Website:</strong> <a href="${event.website}" target="_blank" style="color: var(--accent-light); word-break: break-all;">${event.website}</a></p>` : ''}
                                             ${event.maxParticipants ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">👥 Max Participants:</strong> ${event.maxParticipants}</p>` : ''}
-                                            <p style="color: var(--accent-light); font-weight: 600; margin-top: 1rem;">👥 ${event.interested || 0} interested</p>
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
+                                                <p id="event-interest-count-${event.id}" style="color: var(--accent-light); font-weight: 600; margin: 0;">👥 ${event.interested || 0} interested</p>
+                                                ${btnState}
+                                            </div>
                                         `;
                                         infoPanel.style.display = 'block';
                                         // Auto-scroll into view
@@ -2478,6 +2498,56 @@
         window.clearRoute = clearRoute;
         window.openSaveRouteModal = openSaveRouteModal;
         window.confirmSaveRoute = confirmSaveRoute;
+        
+        // Interest Button Handler
+        async function toggleInterest(type, id) {
+            const storageKey = `flanerie_interested_${type}_${id}`;
+            const alreadyInterested = localStorage.getItem(storageKey);
+            
+            if (alreadyInterested) {
+                showToast('You already marked interest in this!');
+                return;
+            }
+            
+            try {
+                if (!window.database) {
+                    throw new Error('Firebase database not initialized');
+                }
+                
+                // Get current count and increment
+                const itemRef = window.database.ref(`${type}/${id}/interested`);
+                const snapshot = await itemRef.once('value');
+                const currentCount = snapshot.val() || 0;
+                const newCount = currentCount + 1;
+                
+                // Update Firebase
+                await itemRef.set(newCount);
+                
+                // Update displayed count
+                const countElement = document.getElementById(`${type.slice(0, -1)}-interest-count-${id}`);
+                if (countElement) {
+                    countElement.textContent = `👥 ${newCount} interested`;
+                }
+                
+                // Update button
+                const btnElement = document.getElementById(`${type.slice(0, -1)}-interest-btn-${id}`);
+                if (btnElement) {
+                    btnElement.textContent = '✓ Interested';
+                    btnElement.style.background = 'rgba(107, 155, 158, 0.5)';
+                    btnElement.style.cursor = 'default';
+                    btnElement.disabled = true;
+                }
+                
+                // Save to localStorage to prevent duplicates
+                localStorage.setItem(storageKey, 'true');
+                
+                showToast('Thanks for your interest!');
+            } catch (error) {
+                console.error('Error updating interest:', error);
+                showToast('Error updating interest');
+            }
+        }
+        window.toggleInterest = toggleInterest;
         
         // Toast Notification
         function showToast(message) {

@@ -1038,7 +1038,7 @@
         // Geocode address to get lat/lng coordinates
         async function geocodeAddress(address) {
             try {
-                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg';
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA';
                 
                 // No proximity bias - users must be specific with city/state
                 // Examples: "Baker Neighborhood, Denver" or "Little Italy, Manhattan, NY"
@@ -1438,7 +1438,7 @@
                     const mapElement = document.getElementById('map');
                     if (mapElement && !journeyMap) {
                         journeyMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(journeyMap);
@@ -1531,7 +1531,7 @@
                     const mapElement = document.getElementById('search-map');
                     if (mapElement && !searchMap) {
                         searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
                             tileSize: 512,
                             zoomOffset: -1
                         }).addTo(searchMap);
@@ -1830,7 +1830,7 @@
                     const mapElement = document.getElementById('swarm-map');
                     if (mapElement && !swarmMap) {
                         swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(swarmMap);
@@ -1992,7 +1992,7 @@
                     const eventMapElement = document.getElementById('event-map');
                     if (eventMapElement && !eventMap) {
                         eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(eventMap);
@@ -2265,7 +2265,7 @@
         
         // Fetch location suggestions using Mapbox Geocoding API
         function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA';
             const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=8&types=place,address,poi`;
             
             fetch(url)
@@ -2363,7 +2363,7 @@
                 return;
             }
             
-            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+            const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.C8n0_5bdKeklbAFSYEmxaA';
             const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=us&limit=1`;
             
             fetch(url)
@@ -2699,7 +2699,7 @@
         // Convert coordinates back to address
         async function reverseGeocode(lat, lng) {
             try {
-                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg';
+                const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA';
                 const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}&limit=1&types=poi,address`;
                 
                 console.log('Reverse geocoding:', lat, lng);
@@ -2754,7 +2754,7 @@
             // Initialize map - EXACT SAME as Share Your Journey
             setTimeout(() => {
                 pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
-                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA', {
                     tileSize: 512,
                     zoomOffset: -1
                 }).addTo(pinCreationMap);
@@ -2833,7 +2833,7 @@
             // Initialize map - EXACT SAME as Share Your Journey
             setTimeout(() => {
                 pinCreationMap = L.map('pinCreationMap').setView([39.7392, -104.9903], 11);
-                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3cifQ.EPETOMFI41QInYccb4Cehg', {
+                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaXFhcHplajBuM2szZnB3MmdqdGk4a3MifQ.C8n0_5bdKeklbAFSYEmxaA', {
                     tileSize: 512,
                     zoomOffset: -1
                 }).addTo(pinCreationMap);

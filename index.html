@@ -1272,11 +1272,13 @@
                     `,
                     swarm: `
                         <button id="saveSwarmMapBtn" class="feature-btn" onclick="openCreateSwarmModal()" disabled>Save Swarm</button>
-                        <button class="feature-btn" onclick="showToast('Swarm cancelled')">Cancel</button>
+                        <button class="feature-btn" onclick="clearSwarm()">Clear Swarm</button>
+                        <button class="feature-btn" onclick="showToast('Share link copied!')">Share Swarm</button>
                     `,
                     event: `
                         <button id="saveEventMapBtn" class="feature-btn" onclick="openCreateEventModal()" disabled>Save Event</button>
-                        <button class="feature-btn" onclick="showToast('Event cancelled')">Cancel</button>
+                        <button class="feature-btn" onclick="clearEvent()">Clear Event</button>
+                        <button class="feature-btn" onclick="showToast('Share link copied!')">Share Event</button>
                     `
                 };
                 
@@ -1489,7 +1491,16 @@
                                 if (window.eventMarker) {
                                     journeyMap.removeLayer(window.eventMarker);
                                 }
-                                window.eventMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(journeyMap);
+                                
+                                // Create custom pin icon to match swarm/journey style
+                                const eventPinIcon = L.divIcon({
+                                    className: 'event-marker-pin',
+                                    html: '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">📍</span></div>',
+                                    iconSize: [32, 32],
+                                    iconAnchor: [16, 32]
+                                });
+                                
+                                window.eventMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: eventPinIcon }).addTo(journeyMap);
                                 
                                 // Store location with reverse geocoding for address
                                 reverseGeocode(e.latlng.lat, e.latlng.lng).then(address => {
@@ -1955,7 +1966,7 @@
                                         const additionalMarkerOptions = {
                                             icon: L.divIcon({
                                                 className: 'swarm-additional-marker',
-                                                html: `<div style="background: rgba(107, 155, 158, 0.8); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${idx + 2}</div>`,
+                                                html: `<div style="background: rgba(0, 86, 179, 0.9); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${idx + 2}</div>`,
                                                 iconSize: [28, 28],
                                                 iconAnchor: [14, 14]
                                             })
@@ -2321,6 +2332,53 @@
             showToast('Route cleared!');
         }
         
+        function clearSwarm() {
+            // Clear all markers from map
+            if (window.swarmMarkers && journeyMap) {
+                window.swarmMarkers.forEach(marker => {
+                    journeyMap.removeLayer(marker);
+                });
+            }
+            
+            // Reset all swarm data
+            window.swarmMarkers = [];
+            window.swarmLocations = [];
+            window.swarmBusinessLabels = [];
+            window.swarmMultiBusinessMode = false;
+            
+            // Clear and hide business labels container
+            const labelsContainer = document.getElementById('swarmBusinessLabelsContainer');
+            const labelsList = document.getElementById('swarmBusinessLabelsList');
+            if (labelsContainer) labelsContainer.style.display = 'none';
+            if (labelsList) labelsList.innerHTML = '';
+            
+            // Update count display
+            updateBusinessCount();
+            
+            // Disable save button
+            const saveBtn = document.getElementById('saveSwarmMapBtn');
+            if (saveBtn) saveBtn.disabled = true;
+            
+            showToast('Swarm cleared!');
+        }
+        
+        function clearEvent() {
+            // Clear marker from map
+            if (window.eventMarker && journeyMap) {
+                journeyMap.removeLayer(window.eventMarker);
+            }
+            
+            // Reset event data
+            window.eventMarker = null;
+            window.eventLocation = null;
+            
+            // Disable save button
+            const saveBtn = document.getElementById('saveEventMapBtn');
+            if (saveBtn) saveBtn.disabled = true;
+            
+            showToast('Event cleared!');
+        }
+        
         // Fetch location suggestions using Mapbox Geocoding API
         function fetchLocationSuggestions(query, suggestionsDiv, map, inputElement) {
             const accessToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
@@ -2610,6 +2668,8 @@
         
         // Make route functions globally accessible
         window.clearRoute = clearRoute;
+        window.clearSwarm = clearSwarm;
+        window.clearEvent = clearEvent;
         window.openSaveRouteModal = openSaveRouteModal;
         window.confirmSaveRoute = confirmSaveRoute;
         
@@ -3005,13 +3065,13 @@
             const markerIcon = window.swarmMarkers.length === 0 ? 
                 L.divIcon({
                     className: 'swarm-marker-first',
-                    html: '<div style="background: #6B9B9E; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">' + markerNumber + '</span></div>',
+                    html: '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">' + markerNumber + '</span></div>',
                     iconSize: [32, 32],
                     iconAnchor: [16, 32]
                 }) :
                 L.divIcon({
                     className: 'swarm-marker',
-                    html: '<div style="background: #6B9B9E; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">' + markerNumber + '</div>',
+                    html: '<div style="background: #0056b3; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">' + markerNumber + '</div>',
                     iconSize: [32, 32],
                     iconAnchor: [16, 16]
                 });

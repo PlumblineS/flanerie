@@ -1975,7 +1975,7 @@
         // Toggle Sections - Opens fullscreen modal with maps
         function toggleSection(sectionId, highlightId = null) {
             // Check auth for creation sections (not browsing)
-            const creationSections = ['journey-map', 'swarm-map', 'event-map'];
+            const creationSections = ['journey-map', 'swarm-map', 'event-map', 'swarm-map-v2', 'event-map-v2'];
             if (creationSections.includes(sectionId)) {
                 if (!checkAuthAndVerification()) {
                     return; // Stop if not authorized

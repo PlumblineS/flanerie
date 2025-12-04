@@ -51,7 +51,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
         
@@ -71,6 +71,28 @@
         
         .nav-links a:hover {
             color: #ffffff;
+        }
+        
+        /* Auth UI */
+        .nav-auth {
+            display: flex;
+            align-items: center;
+        }
+        
+        .auth-btn {
+            background: linear-gradient(135deg, var(--accent-color), #8dbcc0);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 155, 158, 0.4);
         }
         
         /* Hero Section */
@@ -729,6 +751,15 @@
                 <li><a href="for-businesses.html">For Businesses</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
+            
+            <!-- Auth UI -->
+            <div class="nav-auth">
+                <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                <div id="user-info" style="display: none;">
+                    <span id="user-name" style="color: var(--accent-light); margin-right: 1rem;">Hi, User!</span>
+                    <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                </div>
+            </div>
         </div>
     </nav>
     
@@ -1044,6 +1075,164 @@
         firebase.initializeApp(firebaseConfig);
         window.database = firebase.database();
         const database = window.database; // Keep local reference for this script block
+        
+        // Initialize Firebase Auth
+        window.auth = firebase.auth();
+        const auth = window.auth;
+        
+        // ===== FIREBASE AUTHENTICATION =====
+        
+        // Auth state listener - runs when user signs in/out
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in
+                console.log('User signed in:', user.email);
+                
+                // Update UI
+                document.getElementById('sign-in-btn').style.display = 'none';
+                document.getElementById('user-info').style.display = 'flex';
+                
+                // Show display name or email
+                const displayName = user.displayName || user.email.split('@')[0];
+                document.getElementById('user-name').textContent = `Hi, ${displayName}!`;
+                
+                // Close sign-in modal if open
+                closeSignInModal();
+            } else {
+                // User is signed out
+                console.log('User signed out');
+                
+                // Update UI
+                document.getElementById('sign-in-btn').style.display = 'block';
+                document.getElementById('user-info').style.display = 'none';
+            }
+        });
+        
+        // Sign in with Google
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    showToast('Welcome to Flânerie!');
+                })
+                .catch((error) => {
+                    console.error('Google sign-in error:', error);
+                    showToast('Error signing in with Google');
+                });
+        }
+        
+        // Sign in with Email/Password
+        function signInWithEmail(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signInEmail').value;
+            const password = document.getElementById('signInPassword').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    showToast('Welcome back!');
+                })
+                .catch((error) => {
+                    console.error('Sign-in error:', error);
+                    if (error.code === 'auth/user-not-found') {
+                        showToast('No account found with this email');
+                    } else if (error.code === 'auth/wrong-password') {
+                        showToast('Incorrect password');
+                    } else {
+                        showToast('Error signing in');
+                    }
+                });
+        }
+        
+        // Sign up with Email/Password
+        function signUpWithEmail(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signUpEmail').value;
+            const password = document.getElementById('signUpPassword').value;
+            const displayName = document.getElementById('signUpDisplayName').value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Set display name
+                    return userCredential.user.updateProfile({
+                        displayName: displayName
+                    }).then(() => {
+                        // Send verification email
+                        return userCredential.user.sendEmailVerification();
+                    });
+                })
+                .then(() => {
+                    showToast('Account created! Please check your email to verify.');
+                })
+                .catch((error) => {
+                    console.error('Sign-up error:', error);
+                    if (error.code === 'auth/email-already-in-use') {
+                        showToast('Email already in use');
+                    } else if (error.code === 'auth/weak-password') {
+                        showToast('Password must be at least 6 characters');
+                    } else {
+                        showToast('Error creating account');
+                    }
+                });
+        }
+        
+        // Sign out
+        function signOut() {
+            auth.signOut()
+                .then(() => {
+                    showToast('Signed out successfully');
+                })
+                .catch((error) => {
+                    console.error('Sign-out error:', error);
+                    showToast('Error signing out');
+                });
+        }
+        
+        // Modal controls
+        function showSignInModal() {
+            document.getElementById('signInModal').style.display = 'block';
+        }
+        
+        function closeSignInModal() {
+            document.getElementById('signInModal').style.display = 'none';
+            // Reset forms
+            document.getElementById('signInForm').reset();
+            document.getElementById('signUpForm').reset();
+        }
+        
+        // Switch between Sign In and Sign Up tabs
+        function switchAuthTab(tab) {
+            const signInTab = document.getElementById('signInTab');
+            const signUpTab = document.getElementById('signUpTab');
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+            
+            if (tab === 'signin') {
+                signInTab.style.borderBottomColor = 'var(--accent-color)';
+                signInTab.style.color = 'var(--accent-light)';
+                signUpTab.style.borderBottomColor = 'transparent';
+                signUpTab.style.color = '#999';
+                signInForm.style.display = 'block';
+                signUpForm.style.display = 'none';
+            } else {
+                signUpTab.style.borderBottomColor = 'var(--accent-color)';
+                signUpTab.style.color = 'var(--accent-light)';
+                signInTab.style.borderBottomColor = 'transparent';
+                signInTab.style.color = '#999';
+                signUpForm.style.display = 'block';
+                signInForm.style.display = 'none';
+            }
+        }
+        
+        // Make functions globally accessible
+        window.signInWithGoogle = signInWithGoogle;
+        window.signInWithEmail = signInWithEmail;
+        window.signUpWithEmail = signUpWithEmail;
+        window.signOut = signOut;
+        window.showSignInModal = showSignInModal;
+        window.closeSignInModal = closeSignInModal;
+        window.switchAuthTab = switchAuthTab;
         
         // ===== DATABASE HELPER FUNCTIONS =====
         // These wrap Firebase calls so we can easily switch databases later
@@ -3695,6 +3884,66 @@
                 </div>
 
                 <button type="submit" id="createEventBtn" class="feature-btn" style="width: 100%; margin-top: 1rem;" disabled>Create Event</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close" onclick="closeSignInModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 1.5rem;">Welcome to Flânerie</h2>
+            
+            <!-- Google Sign In -->
+            <button onclick="signInWithGoogle()" style="width: 100%; padding: 1rem; background: white; color: #333; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <span style="font-size: 1.2rem;">G</span> Sign in with Google
+            </button>
+            
+            <div style="text-align: center; margin: 1.5rem 0; color: #999;">
+                ───── OR ─────
+            </div>
+            
+            <!-- Email/Password Tabs -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid rgba(107, 155, 158, 0.2);">
+                <button id="signInTab" class="auth-tab active" onclick="switchAuthTab('signin')" style="flex: 1; padding: 1rem; background: none; border: none; color: var(--accent-light); font-weight: 600; cursor: pointer; border-bottom: 3px solid var(--accent-color); transition: all 0.3s ease;">
+                    Sign In
+                </button>
+                <button id="signUpTab" class="auth-tab" onclick="switchAuthTab('signup')" style="flex: 1; padding: 1rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    Sign Up
+                </button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <form id="signInForm" onsubmit="signInWithEmail(event); return false;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" id="signInEmail" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
+                    <input type="password" id="signInPassword" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <button type="submit" class="feature-btn" style="width: 100%;">Sign In</button>
+            </form>
+            
+            <!-- Sign Up Form -->
+            <form id="signUpForm" style="display: none;" onsubmit="signUpWithEmail(event); return false;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" id="signUpEmail" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Password (min 6 characters)</label>
+                    <input type="password" id="signUpPassword" required minlength="6" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Display Name</label>
+                    <input type="text" id="signUpDisplayName" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="How you'll appear on the map">
+                </div>
+                <button type="submit" class="feature-btn" style="width: 100%;">Sign Up</button>
+                <p style="color: #999; font-size: 0.85rem; margin-top: 1rem; text-align: center;">
+                    You'll receive a verification email after signing up
+                </p>
             </form>
         </div>
     </div>

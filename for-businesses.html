@@ -22,6 +22,44 @@
             --accent-light: #8DBCC0;
         }
         
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(107, 155, 158, 0.2);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--accent-light);
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+        
         /* Top Notice Banner */
         .notice-banner {
             background: linear-gradient(135deg, rgba(107, 155, 158, 0.15), rgba(141, 188, 192, 0.15));
@@ -60,7 +98,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 8rem 2rem 4rem;
             background: linear-gradient(135deg, rgba(107, 155, 158, 0.1), rgba(10, 10, 10, 0.9));
         }
         
@@ -201,6 +239,11 @@
         }
         
         @media (max-width: 968px) {
+            .nav-links {
+                gap: 1.5rem;
+                font-size: 0.95rem;
+            }
+            
             .features-grid {
                 grid-template-columns: 1fr;
             }
@@ -476,6 +519,16 @@
     </style>
 </head>
 <body>
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#content">How It Works</a></li>
+                <li><a href="index.html#explore">Explore</a></li>
+            </ul>
+        </div>
+    </nav>
+    
     <!-- Top Notice Banner -->
     <section class="notice-banner">
         <div class="notice-content">
@@ -492,10 +545,6 @@
         <div class="hero-content">
             <h1>Get discovered by people<br>already walking past your door.</h1>
             <p>Search engines show the biggest advertisers. Flânerie helps locals discover your business because someone they trust put you on their walking route. Not ads. Not algorithms. Just neighbors sharing what they love.</p>
-            <div class="cta-buttons">
-                <a href="#claim" class="btn-primary">Claim Your Free Listing</a>
-                <a href="#how-it-works" class="btn-secondary">See How It Works</a>
-            </div>
         </div>
     </section>
     
@@ -610,7 +659,7 @@
             <h3>💡 Want a Free Window Sticker?</h3>
             <img src="flanerie-sticker-transparent.png" alt="Flânerie Window Sticker">
             <p>Let customers know you're on Flânerie with a window decal. Show your support for local discovery and help spread the word!</p>
-            <a href="mailto:contact@flanerie.com?subject=Free Window Sticker Request" class="btn-primary">Contact Us for Your Free Sticker</a>
+            <a href="/cdn-cgi/l/email-protection#690a06071d080a1d290f0508070c1b000c470a0604561a1c0b030c0a1d542f1b0c0c493e00070d061e493a1d000a020c1b493b0c181c0c1a1d" class="btn-primary">Contact Us for Your Free Sticker</a>
         </div>
     </section>
     
@@ -639,8 +688,7 @@
         <h2>Ready to be discovered?</h2>
         <p>Join hundreds of local businesses bringing their neighborhoods back to life.</p>
         <div class="cta-buttons">
-            <a href="mailto:contact@flanerie.com?subject=Claim My Business Listing" class="btn-primary">Claim Your Free Listing</a>
-            <a href="mailto:contact@flanerie.com?subject=Question About Flanerie" class="btn-secondary">Questions? Email Us</a>
+            <a href="index.html#explore" class="btn-primary">Plot Your Own Location</a>
         </div>
     </section>
 </body>

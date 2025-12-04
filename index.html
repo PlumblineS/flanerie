@@ -803,6 +803,14 @@
         </div>
     </nav>
     
+    <!-- Email Verification Banner -->
+    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
+        <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
+            📧 Please verify your email to start posting. 
+            <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer;">Resend verification email</a>
+        </p>
+    </div>
+    
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
@@ -1137,6 +1145,15 @@
                 const displayName = user.displayName || user.email.split('@')[0];
                 document.getElementById('user-name').textContent = `Hi, ${displayName}!`;
                 
+                // Show verification banner if email not verified (only for email/password users)
+                const isEmailPasswordUser = user.providerData[0].providerId === 'password';
+                const verificationBanner = document.getElementById('verification-banner');
+                if (isEmailPasswordUser && !user.emailVerified) {
+                    verificationBanner.style.display = 'block';
+                } else {
+                    verificationBanner.style.display = 'none';
+                }
+                
                 // Close sign-in modal if open
                 closeSignInModal();
             } else {
@@ -1146,6 +1163,9 @@
                 // Update UI
                 document.getElementById('sign-in-btn').style.display = 'block';
                 document.getElementById('user-info').style.display = 'none';
+                
+                // Hide verification banner
+                document.getElementById('verification-banner').style.display = 'none';
             }
         });
         
@@ -1242,6 +1262,40 @@
             document.getElementById('signUpForm').reset();
         }
         
+        // Check if user can create content (signed in AND email verified)
+        function checkAuthAndVerification() {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                // Not signed in
+                showSignInModal();
+                return false;
+            }
+            
+            if (!user.emailVerified && user.providerData[0].providerId === 'password') {
+                // Email not verified (only check for email/password, not Google)
+                showToast('Please verify your email before posting. Check your inbox!');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Resend verification email
+        function resendVerificationEmail() {
+            const user = auth.currentUser;
+            if (user && !user.emailVerified) {
+                user.sendEmailVerification()
+                    .then(() => {
+                        showToast('Verification email sent! Check your inbox.');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending verification:', error);
+                        showToast('Error sending verification email');
+                    });
+            }
+        }
+        
         // Switch between Sign In and Sign Up tabs
         function switchAuthTab(tab) {
             const signInTab = document.getElementById('signInTab');
@@ -1274,6 +1328,8 @@
         window.showSignInModal = showSignInModal;
         window.closeSignInModal = closeSignInModal;
         window.switchAuthTab = switchAuthTab;
+        window.checkAuthAndVerification = checkAuthAndVerification;
+        window.resendVerificationEmail = resendVerificationEmail;
         
         // ===== DATABASE HELPER FUNCTIONS =====
         // These wrap Firebase calls so we can easily switch databases later
@@ -1455,6 +1511,14 @@
         
         // Toggle Sections - Opens fullscreen modal with maps
         function toggleSection(sectionId, highlightId = null) {
+            // Check auth for creation sections (not browsing)
+            const creationSections = ['journey-map', 'swarm-map', 'event-map'];
+            if (creationSections.includes(sectionId)) {
+                if (!checkAuthAndVerification()) {
+                    return; // Stop if not authorized
+                }
+            }
+            
             // Lock background scrolling - use the choreography-active class
             document.body.classList.add('choreography-active');
             

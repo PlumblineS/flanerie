@@ -60,38 +60,7 @@
             color: #ffffff;
         }
         
-        /* Top Notice Banner */
-        .notice-banner {
-            background: linear-gradient(135deg, rgba(107, 155, 158, 0.15), rgba(141, 188, 192, 0.15));
-            border-bottom: 2px solid rgba(107, 155, 158, 0.3);
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .notice-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .notice-content h3 {
-            color: var(--accent-color);
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .notice-content p {
-            color: #d4d4d4;
-            line-height: 1.8;
-            font-size: 1.05rem;
-            margin-bottom: 1rem;
-        }
-        
-        .notice-content .signature {
-            color: var(--accent-light);
-            font-style: italic;
-            margin-top: 1rem;
-        }
-        
+        /* Hero Section */
         .hero {
             min-height: 60vh;
             display: flex;
@@ -428,50 +397,7 @@
             margin-bottom: 2rem;
         }
         
-        /* Testimonials */
-        .testimonial-section {
-            padding: 4rem 2rem;
-        }
-        
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        @media (max-width: 768px) {
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .testimonial-card {
-            background: rgba(30, 30, 30, 0.8);
-            border-radius: 15px;
-            padding: 2rem;
-            border-left: 4px solid var(--accent-color);
-        }
-        
-        .testimonial-quote {
-            font-size: 1.1rem;
-            color: #d4d4d4;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-        
-        .testimonial-author {
-            color: var(--accent-light);
-            font-weight: 600;
-        }
-        
-        .testimonial-business {
-            color: #999;
-            font-size: 0.9rem;
-        }
-        
+        /* Final CTA */
         .final-cta {
             text-align: center;
             padding: 4rem 2rem;
@@ -524,21 +450,12 @@
             <ul class="nav-links">
                 <li><a href="index.html#home">Home</a></li>
                 <li><a href="index.html#content">How It Works</a></li>
-                <li><a href="index.html#explore">Explore</a></li>
+                <li><a href="index.html#features-content">Explore</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
         </div>
     </nav>
     
-    <!-- Top Notice Banner -->
-    <section class="notice-banner">
-        <div class="notice-content">
-            <h3>Hey, quick heads up:</h3>
-            <p>This is a one-person project built for local businesses, not corporate budgets. Everything's <strong>free right now</strong> while we grow the community.</p>
-            <p>Down the road, I might charge a small one-time fee ($20-ish) for premium features to keep the lights on, but anyone who joins early gets locked in free forever. Fair?</p>
-            <p>Let's bring neighborhoods back to life. 🚶‍♀️</p>
-            <p class="signature">— Bobby, the entire Flânerie "team"</p>
-        </div>
-    </section>
     
     <!-- Hero Section -->
     <section class="hero">
@@ -663,32 +580,13 @@
         </div>
     </section>
     
-    <!-- Testimonials Section -->
-    <section class="testimonial-section">
-        <div class="container">
-            <h2 class="section-title">What Local Merchants Say</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <p class="testimonial-quote">"We're on 23 routes now. Every Saturday we get new faces saying 'I found you on the Coffee Lovers route!' This is how neighborhoods should work."</p>
-                    <p class="testimonial-author">Maria Rodriguez</p>
-                    <p class="testimonial-business">Luna Coffee Roasters • Denver, CO</p>
-                </div>
-                
-                <div class="testimonial-card">
-                    <p class="testimonial-quote">"Better than paid ads. People show up because they're actually interested, not because we outbid someone."</p>
-                    <p class="testimonial-author">James Chen</p>
-                    <p class="testimonial-business">Binding & Spine Books • Boulder, CO</p>
-                </div>
-            </div>
-        </div>
-    </section>
     
     <!-- Final CTA -->
     <section id="claim" class="final-cta">
         <h2>Ready to be discovered?</h2>
         <p>Join hundreds of local businesses bringing their neighborhoods back to life.</p>
         <div class="cta-buttons">
-            <a href="index.html#explore" class="btn-primary">Plot Your Own Location</a>
+            <a href="index.html#features-content" class="btn-primary">Plot Your Own Location</a>
         </div>
     </section>
 </body>

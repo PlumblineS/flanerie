@@ -687,7 +687,7 @@
         /* Modal Styles */
         .modal {
             position: fixed;
-            z-index: 2000;
+            z-index: 3000;
             left: 0;
             top: 0;
             width: 100%;
@@ -2138,7 +2138,7 @@
                     
                     <!-- Waypoint Labels (only shows for journey mode) -->
                     <div id="waypointLabelsContainer" style="display: none; padding: 1rem 2rem; background: rgba(25, 25, 25, 0.95); max-height: 200px; overflow-y: auto;">
-                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops (Optional)</h4>
+                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops *</h4>
                         <div id="waypointLabelsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
                     </div>
                     
@@ -2785,10 +2785,10 @@
                                 const swarmPinIcon = L.divIcon({
                                     className: 'swarm-browse-pin',
                                     html: isHighlighted ? 
-                                        '<div style="background: #d9534f; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">🛍️</span></div>' :
+                                        '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #FFD700; transform: rotate(-45deg); box-shadow: 0 4px 12px rgba(0,0,0,0.5);"><span style="transform: rotate(45deg); font-size: 1.2rem;">🛍️</span></div>' :
                                         '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">🛍️</span></div>',
-                                    iconSize: [32, 32],
-                                    iconAnchor: [16, 32]
+                                    iconSize: isHighlighted ? [40, 40] : [32, 32],
+                                    iconAnchor: isHighlighted ? [20, 40] : [16, 32]
                                 });
                                 
                                 const participants = swarm.interested || 0;
@@ -2970,10 +2970,10 @@
                                 const eventPinIcon = L.divIcon({
                                     className: 'event-browse-pin',
                                     html: isHighlighted ? 
-                                        '<div style="background: #d9534f; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">🎉</span></div>' :
+                                        '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #FFD700; transform: rotate(-45deg); box-shadow: 0 4px 12px rgba(0,0,0,0.5);"><span style="transform: rotate(45deg); font-size: 1.2rem;">🎉</span></div>' :
                                         '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">🎉</span></div>',
-                                    iconSize: [32, 32],
-                                    iconAnchor: [16, 32]
+                                    iconSize: isHighlighted ? [40, 40] : [32, 32],
+                                    iconAnchor: isHighlighted ? [20, 40] : [16, 32]
                                 });
                                 
                                 const marker = L.marker([event.lat, event.lng], { icon: eventPinIcon }).addTo(eventMap);
@@ -4190,17 +4190,17 @@
             
             // Close the creation map and open browse swarms with the new swarm highlighted
             if (newSwarmId) {
-                // Close creation section
+                // Close creation section without triggering scroll
                 const modal = document.getElementById('fullscreen-swarm-map-v2');
                 if (modal) {
+                    // Remove modal directly without triggering closeBtn onclick
+                    modal.style.display = 'none';
                     modal.remove();
                     document.body.classList.remove('choreography-active');
                     journeyMap = null;
                 }
-                // Open browse swarms with new swarm highlighted
-                setTimeout(() => {
-                    toggleSection('swarms', newSwarmId);
-                }, 300);
+                // Open browse swarms immediately (no delay needed)
+                toggleSection('swarms', newSwarmId);
             }
         }
 
@@ -4261,17 +4261,17 @@
             
             // Close the creation map and open browse events with the new event highlighted
             if (newEventId) {
-                // Close creation section
+                // Close creation section without triggering scroll
                 const modal = document.getElementById('fullscreen-event-map-v2');
                 if (modal) {
+                    // Remove modal directly without triggering closeBtn onclick
+                    modal.style.display = 'none';
                     modal.remove();
                     document.body.classList.remove('choreography-active');
                     journeyMap = null;
                 }
-                // Open browse events with new event highlighted
-                setTimeout(() => {
-                    toggleSection('events', newEventId);
-                }, 300);
+                // Open browse events immediately (no delay needed)
+                toggleSection('events', newEventId);
             }
         }
 

@@ -797,6 +797,7 @@
                 <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
                 <div id="user-info" style="display: none;">
                     <span id="user-name" style="color: var(--accent-light); margin-right: 1rem;">Hi, User!</span>
+                    <button class="auth-btn" onclick="openDashboard()" style="margin-right: 0.5rem;">Dashboard</button>
                     <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
                 </div>
             </div>
@@ -1451,6 +1452,311 @@
         window.showForgotPasswordModal = showForgotPasswordModal;
         window.closeForgotPasswordModal = closeForgotPasswordModal;
         window.sendPasswordResetEmail = sendPasswordResetEmail;
+        
+        // ===== DASHBOARD FUNCTIONS =====
+        
+        // Open dashboard
+        async function openDashboard() {
+            const user = auth.currentUser;
+            if (!user) {
+                showSignInModal();
+                return;
+            }
+            
+            document.getElementById('dashboardModal').style.display = 'flex';
+            switchDashboardTab('routes');
+        }
+        
+        // Close dashboard
+        function closeDashboard() {
+            document.getElementById('dashboardModal').style.display = 'none';
+        }
+        
+        // Switch dashboard tabs
+        function switchDashboardTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.dashboard-tab').forEach(btn => {
+                btn.style.color = '#999';
+                btn.style.borderBottom = '3px solid transparent';
+            });
+            document.getElementById(tab + 'Tab').style.color = 'var(--accent-light)';
+            document.getElementById(tab + 'Tab').style.borderBottom = '3px solid var(--accent-color)';
+            
+            // Update content sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(tab + 'Content').style.display = 'block';
+            
+            // Load content based on tab
+            if (tab === 'routes') {
+                loadMyRoutes();
+            } else if (tab === 'swarms') {
+                loadMySwarms();
+            } else if (tab === 'events') {
+                loadMyEvents();
+            } else if (tab === 'likes') {
+                loadMyLikes();
+            }
+        }
+        
+        // Load user's routes
+        async function loadMyRoutes() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const contentDiv = document.getElementById('routesContent');
+            contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
+            
+            try {
+                const snapshot = await database.ref('routes').orderByChild('createdBy').equalTo(user.uid).once('value');
+                const routes = [];
+                snapshot.forEach(child => {
+                    routes.push({ id: child.key, ...child.val() });
+                });
+                
+                if (routes.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t created any routes yet.</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
+                routes.forEach(route => {
+                    html += `
+                        <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
+                            <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${route.name}</h3>
+                            <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 0.5rem;">${route.description || 'No description'}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
+                                📍 ${route.waypointCount} waypoints<br>
+                                🗂️ ${route.category || 'Uncategorized'}<br>
+                                ❤️ ${route.likes || 0} flâneurs like this route<br>
+                                📅 ${new Date(route.created).toLocaleDateString()}
+                            </p>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button onclick="deleteRoute('${route.id}')" style="padding: 0.5rem 1rem; background: #d9534f; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                contentDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading routes:', error);
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading routes</p>';
+            }
+        }
+        
+        // Load user's swarms
+        async function loadMySwarms() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const contentDiv = document.getElementById('swarmsContent');
+            contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
+            
+            try {
+                const snapshot = await database.ref('swarms').orderByChild('createdBy').equalTo(user.uid).once('value');
+                const swarms = [];
+                snapshot.forEach(child => {
+                    swarms.push({ id: child.key, ...child.val() });
+                });
+                
+                if (swarms.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t created any swarms yet.</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
+                swarms.forEach(swarm => {
+                    html += `
+                        <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
+                            <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${swarm.title}</h3>
+                            <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 0.5rem;">${swarm.description || 'No description'}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
+                                📍 ${swarm.locationCount || 1} location${swarm.locationCount > 1 ? 's' : ''}<br>
+                                📅 ${swarm.date} at ${swarm.time}<br>
+                                👥 ${swarm.interested || 0} flâneurs interested<br>
+                                ⏱️ ${swarm.duration || 'TBD'}
+                            </p>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button onclick="deleteSwarm('${swarm.id}')" style="padding: 0.5rem 1rem; background: #d9534f; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                contentDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading swarms:', error);
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading swarms</p>';
+            }
+        }
+        
+        // Load user's events
+        async function loadMyEvents() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const contentDiv = document.getElementById('eventsContent');
+            contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
+            
+            try {
+                const snapshot = await database.ref('events').orderByChild('createdBy').equalTo(user.uid).once('value');
+                const events = [];
+                snapshot.forEach(child => {
+                    events.push({ id: child.key, ...child.val() });
+                });
+                
+                if (events.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t created any events yet.</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
+                events.forEach(event => {
+                    html += `
+                        <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
+                            <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${event.name}</h3>
+                            <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 0.5rem;">${event.description || 'No description'}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
+                                🏷️ ${event.type}<br>
+                                📍 ${event.location}<br>
+                                📅 ${event.startDate} at ${event.startTime}<br>
+                                👥 ${event.interested || 0} flâneurs interested
+                            </p>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button onclick="deleteEvent('${event.id}')" style="padding: 0.5rem 1rem; background: #d9534f; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                contentDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading events:', error);
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading events</p>';
+            }
+        }
+        
+        // Load user's likes
+        async function loadMyLikes() {
+            const contentDiv = document.getElementById('likesContent');
+            contentDiv.innerHTML = '<div style="text-align: center; color: #999;"><p>Loading your likes...</p></div>';
+            
+            // Get all items the user has liked from localStorage
+            const likedItems = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('flanerie_liked_') || key.startsWith('flanerie_interested_')) {
+                    const value = localStorage.getItem(key);
+                    if (value === 'true') {
+                        const match = key.match(/flanerie_(liked|interested)_(route|swarm|event)_(.+)/);
+                        if (match) {
+                            likedItems.push({
+                                action: match[1],
+                                type: match[2],
+                                id: match[3]
+                            });
+                        }
+                    }
+                }
+            }
+            
+            if (likedItems.length === 0) {
+                contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t liked anything yet. Explore and like routes, swarms, or events!</p>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
+            
+            for (const item of likedItems) {
+                try {
+                    const snapshot = await database.ref(`${item.type}s/${item.id}`).once('value');
+                    const data = snapshot.val();
+                    
+                    if (data) {
+                        const emoji = item.type === 'route' ? '🚶' : item.type === 'swarm' ? '🛍️' : '🎉';
+                        const actionText = item.action === 'liked' ? 'Liked' : 'Interested in';
+                        
+                        html += `
+                            <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">${emoji}</span>
+                                    <span style="color: #999; font-size: 0.85rem;">${actionText}</span>
+                                </div>
+                                <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${data.name || data.title}</h3>
+                                <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 1rem;">${data.description || 'No description'}</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading liked item:', error);
+                }
+            }
+            
+            html += '</div>';
+            contentDiv.innerHTML = html;
+        }
+        
+        // Delete route
+        async function deleteRoute(routeId) {
+            if (!confirm('Are you sure you want to delete this route? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`routes/${routeId}`).remove();
+                showToast('Route deleted successfully');
+                loadMyRoutes();
+            } catch (error) {
+                console.error('Error deleting route:', error);
+                showToast('Error deleting route');
+            }
+        }
+        
+        // Delete swarm
+        async function deleteSwarm(swarmId) {
+            if (!confirm('Are you sure you want to delete this swarm? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`swarms/${swarmId}`).remove();
+                showToast('Swarm deleted successfully');
+                loadMySwarms();
+            } catch (error) {
+                console.error('Error deleting swarm:', error);
+                showToast('Error deleting swarm');
+            }
+        }
+        
+        // Delete event
+        async function deleteEvent(eventId) {
+            if (!confirm('Are you sure you want to delete this event? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`events/${eventId}`).remove();
+                showToast('Event deleted successfully');
+                loadMyEvents();
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                showToast('Error deleting event');
+            }
+        }
+        
+        // Make dashboard functions globally accessible
+        window.openDashboard = openDashboard;
+        window.closeDashboard = closeDashboard;
+        window.switchDashboardTab = switchDashboardTab;
+        window.loadMyRoutes = loadMyRoutes;
+        window.loadMySwarms = loadMySwarms;
+        window.loadMyEvents = loadMyEvents;
+        window.loadMyLikes = loadMyLikes;
+        window.deleteRoute = deleteRoute;
+        window.deleteSwarm = deleteSwarm;
+        window.deleteEvent = deleteEvent;
         
         // ===== DATABASE HELPER FUNCTIONS =====
         // These wrap Firebase calls so we can easily switch databases later
@@ -4186,6 +4492,46 @@
                 </div>
                 <button type="submit" class="feature-btn" style="width: 100%;">Send Reset Link</button>
             </form>
+        </div>
+    </div>
+    
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 1200px; width: 95%; max-height: 90vh;">
+            <span class="close" onclick="closeDashboard()">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 2rem;">My Dashboard</h2>
+            
+            <!-- Dashboard Tabs -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid rgba(107, 155, 158, 0.3); flex-wrap: wrap;">
+                <button id="routesTab" class="dashboard-tab active" onclick="switchDashboardTab('routes')" style="padding: 1rem 1.5rem; background: none; border: none; color: var(--accent-light); font-weight: 600; cursor: pointer; border-bottom: 3px solid var(--accent-color); transition: all 0.3s ease;">
+                    My Routes
+                </button>
+                <button id="swarmsTab" class="dashboard-tab" onclick="switchDashboardTab('swarms')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Swarms
+                </button>
+                <button id="eventsTab" class="dashboard-tab" onclick="switchDashboardTab('events')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Events
+                </button>
+                <button id="likesTab" class="dashboard-tab" onclick="switchDashboardTab('likes')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Likes
+                </button>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" style="overflow-y: auto; max-height: 60vh;">
+                <div id="routesContent" class="dashboard-section">
+                    <p style="text-align: center; color: #999;">Loading your routes...</p>
+                </div>
+                <div id="swarmsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your swarms...</p>
+                </div>
+                <div id="eventsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your events...</p>
+                </div>
+                <div id="likesContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your likes...</p>
+                </div>
+            </div>
         </div>
     </div>
 </body>

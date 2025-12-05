@@ -2725,15 +2725,25 @@
                     }
                 } else if (sectionId === 'swarms') {
                     const mapElement = document.getElementById('swarm-map');
-                    if (mapElement && !swarmMap) {
-                        swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                             tileSize: 512,
-                            zoomOffset: -1
-                        }).addTo(swarmMap);
-                        L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(swarmMap);
+                    if (mapElement) {
+                        // Initialize map if it doesn't exist
+                        if (!swarmMap) {
+                            swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
+                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                 tileSize: 512,
+                                zoomOffset: -1
+                            }).addTo(swarmMap);
+                            L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(swarmMap);
+                        } else {
+                            // Map exists - clear all existing markers before reloading
+                            swarmMap.eachLayer(function (layer) {
+                                if (layer instanceof L.Marker) {
+                                    swarmMap.removeLayer(layer);
+                                }
+                            });
+                        }
                         
-                        // Load swarms from Firebase
+                        // Always load/reload swarms from Firebase (even if map already exists)
                         getAllSwarms().then(swarms => {
                             
                             if (swarms.length === 0) {
@@ -2894,15 +2904,25 @@
                 } else if (sectionId === 'events') {
                     // Initialize event map
                     const eventMapElement = document.getElementById('event-map');
-                    if (eventMapElement && !eventMap) {
-                        eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
+                    if (eventMapElement) {
+                        // Initialize map if it doesn't exist
+                        if (!eventMap) {
+                            eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
                         L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
                              tileSize: 512,
                             zoomOffset: -1
                         }).addTo(eventMap);
                         L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(eventMap);
+                        } else {
+                            // Map exists - clear all existing markers before reloading
+                            eventMap.eachLayer(function (layer) {
+                                if (layer instanceof L.Marker) {
+                                    eventMap.removeLayer(layer);
+                                }
+                            });
+                        }
                         
-                        // Load events from Firebase
+                        // Always load/reload events from Firebase (even if map already exists)
                         getAllEvents().then(events => {
                             
                             if (events.length === 0) {

@@ -1246,10 +1246,12 @@
                         return database.ref('usernames/' + usernameLower).set(user.uid);
                     }).then(() => {
                         // Send verification email
+                        console.log('Sending verification email to:', user.email);
                         return user.sendEmailVerification();
                     });
                 })
                 .then(() => {
+                    console.log('Sign-up complete, verification email sent');
                     showToast('Account created! Please check your email to verify.');
                 })
                 .catch((error) => {
@@ -1413,14 +1415,24 @@
         function resendVerificationEmail() {
             const user = auth.currentUser;
             if (user && !user.emailVerified) {
+                console.log('Attempting to send verification email to:', user.email);
                 user.sendEmailVerification()
                     .then(() => {
+                        console.log('Verification email sent successfully');
                         showToast('Verification email sent! Check your inbox.');
                     })
                     .catch((error) => {
                         console.error('Error sending verification:', error);
-                        showToast('Error sending verification email');
+                        console.error('Error code:', error.code);
+                        console.error('Error message:', error.message);
+                        showToast('Error: ' + (error.message || 'Failed to send verification email'));
                     });
+            } else if (user && user.emailVerified) {
+                console.log('User is already verified');
+                showToast('Email already verified!');
+            } else {
+                console.error('No user found');
+                showToast('Please sign in first');
             }
         }
         
@@ -1659,23 +1671,51 @@
             const contentDiv = document.getElementById('likesContent');
             contentDiv.innerHTML = '<div style="text-align: center; color: #999;"><p>Loading your likes...</p></div>';
             
-            // Get all items the user has liked from localStorage
+            const user = auth.currentUser;
+            if (!user) {
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Please sign in to view your likes</p>';
+                return;
+            }
+            
+            const userId = user.uid;
             const likedItems = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('flanerie_liked_') || key.startsWith('flanerie_interested_')) {
-                    const value = localStorage.getItem(key);
-                    if (value === 'true') {
-                        const match = key.match(/flanerie_(liked|interested)_(routes|swarms|events)_(.+)/);
-                        if (match) {
+            
+            try {
+                // Get user's likes from Firebase
+                const likesSnapshot = await database.ref(`userLikes/${userId}`).once('value');
+                if (likesSnapshot.exists()) {
+                    likesSnapshot.forEach((typeSnapshot) => {
+                        const type = typeSnapshot.key; // routes, swarms, events
+                        typeSnapshot.forEach((itemSnapshot) => {
+                            const itemId = itemSnapshot.key;
                             likedItems.push({
-                                action: match[1],
-                                type: match[2],
-                                id: match[3]
+                                action: 'liked',
+                                type: type,
+                                id: itemId
                             });
-                        }
-                    }
+                        });
+                    });
                 }
+                
+                // Get user's interests from Firebase
+                const interestsSnapshot = await database.ref(`userInterests/${userId}`).once('value');
+                if (interestsSnapshot.exists()) {
+                    interestsSnapshot.forEach((typeSnapshot) => {
+                        const type = typeSnapshot.key; // swarms, events
+                        typeSnapshot.forEach((itemSnapshot) => {
+                            const itemId = itemSnapshot.key;
+                            likedItems.push({
+                                action: 'interested',
+                                type: type,
+                                id: itemId
+                            });
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading user likes:', error);
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading likes</p>';
+                return;
             }
             
             if (likedItems.length === 0) {
@@ -3532,23 +3572,26 @@
         
         // Interest Button Handler
         async function toggleInterest(type, id) {
-            // Check if user is signed in
-            if (!auth.currentUser) {
-                showSignInModal();
+            // Check if user is signed in AND verified
+            if (!checkAuthAndVerification()) {
                 return;
             }
             
-            const storageKey = `flanerie_interested_${type}_${id}`;
-            const alreadyInterested = localStorage.getItem(storageKey);
-            
-            if (alreadyInterested) {
-                showToast('You already marked interest in this!');
-                return;
-            }
+            const user = auth.currentUser;
+            const userId = user.uid;
             
             try {
                 if (!window.database) {
                     throw new Error('Firebase database not initialized');
+                }
+                
+                // Check if user already marked interest in Firebase (not localStorage)
+                const userInterestRef = window.database.ref(`userInterests/${userId}/${type}/${id}`);
+                const interestSnapshot = await userInterestRef.once('value');
+                
+                if (interestSnapshot.exists()) {
+                    showToast('You already marked interest in this!');
+                    return;
                 }
                 
                 // Get current count and increment
@@ -3557,8 +3600,11 @@
                 const currentCount = snapshot.val() || 0;
                 const newCount = currentCount + 1;
                 
-                // Update Firebase
+                // Update Firebase item count
                 await itemRef.set(newCount);
+                
+                // Save user's interest in Firebase (per user)
+                await userInterestRef.set(true);
                 
                 // Update displayed count
                 const countElement = document.getElementById(`${type.slice(0, -1)}-interest-count-${id}`);
@@ -3575,9 +3621,6 @@
                     btnElement.disabled = true;
                 }
                 
-                // Save to localStorage to prevent duplicates
-                localStorage.setItem(storageKey, 'true');
-                
                 showToast('Thanks for your interest!');
             } catch (error) {
                 console.error('Error updating interest:', error);
@@ -3588,23 +3631,26 @@
         
         // Like Button Handler (for routes)
         async function toggleLike(type, id) {
-            // Check if user is signed in
-            if (!auth.currentUser) {
-                showSignInModal();
+            // Check if user is signed in AND verified
+            if (!checkAuthAndVerification()) {
                 return;
             }
             
-            const storageKey = `flanerie_liked_${type}_${id}`;
-            const alreadyLiked = localStorage.getItem(storageKey);
-            
-            if (alreadyLiked) {
-                showToast('You already liked this route!');
-                return;
-            }
+            const user = auth.currentUser;
+            const userId = user.uid;
             
             try {
                 if (!window.database) {
                     throw new Error('Firebase database not initialized');
+                }
+                
+                // Check if user already liked in Firebase (not localStorage)
+                const userLikeRef = window.database.ref(`userLikes/${userId}/${type}/${id}`);
+                const likeSnapshot = await userLikeRef.once('value');
+                
+                if (likeSnapshot.exists()) {
+                    showToast('You already liked this route!');
+                    return;
                 }
                 
                 // Get current count and increment
@@ -3613,8 +3659,11 @@
                 const currentCount = snapshot.val() || 0;
                 const newCount = currentCount + 1;
                 
-                // Update Firebase
+                // Update Firebase item count
                 await itemRef.set(newCount);
+                
+                // Save user's like in Firebase (per user)
+                await userLikeRef.set(true);
                 
                 // Update displayed count
                 const countElement = document.getElementById(`${type.slice(0, -1)}-like-count-${id}`);
@@ -3630,9 +3679,6 @@
                     btnElement.style.cursor = 'default';
                     btnElement.disabled = true;
                 }
-                
-                // Save to localStorage to prevent duplicates
-                localStorage.setItem(storageKey, 'true');
                 
                 showToast('Route liked! Thanks for exploring! ❤️');
             } catch (error) {

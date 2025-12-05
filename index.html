@@ -2757,9 +2757,14 @@
                             let validCount = 0;
                             let invalidCount = 0;
                             
+                            console.log('Loading swarms from Firebase, total count:', swarms.length);
+                            
                             swarms.forEach(swarm => {
+                                console.log('Checking swarm:', swarm.title, 'lat:', swarm.lat, 'lng:', swarm.lng, 'date:', swarm.date, 'time:', swarm.time);
+                                
                                 // Skip swarms without coordinates
                                 if (!swarm.lat || !swarm.lng) {
+                                    console.log('❌ Skipping swarm - no coordinates:', swarm.title);
                                     invalidCount++;
                                     return;
                                 }
@@ -2773,7 +2778,9 @@
                                     
                                     // Compare to current moment (not just today at midnight)
                                     const now = new Date();
+                                    console.log('Swarm datetime:', swarmDateTime, 'Now:', now, 'Is past?', swarmDateTime < now);
                                     if (swarmDateTime < now) {
+                                        console.log('❌ Skipping swarm - date/time is in the past:', swarm.title);
                                         invalidCount++;
                                         return;
                                     }
@@ -2788,6 +2795,7 @@
                                 }
                                 
                                 validCount++;
+                                console.log('✅ Swarm is valid, adding to map:', swarm.title);
                                 
                                 const isHighlighted = highlightId !== null && swarm.id === highlightId;
                                 
@@ -2867,6 +2875,11 @@
                                 }
                             });
                         });
+                        
+                        console.log('=== SWARMS LOADING COMPLETE ===');
+                        console.log('Valid swarms displayed:', validCount);
+                        console.log('Invalid swarms filtered out:', invalidCount);
+                        console.log('Total swarms in Firebase:', swarms.length);
                         
                         // Add search autocomplete functionality for swarms
                         const swarmSearchInput = document.getElementById('swarmLocationSearch');
@@ -4193,6 +4206,11 @@
                 createdByName: displayName,
                 createdByEmail: user.email
             };
+            
+            console.log('=== SAVING SWARM TO FIREBASE ===');
+            console.log('Swarm data:', swarmData);
+            console.log('Lat/Lng:', swarmData.lat, swarmData.lng);
+            console.log('Date/Time:', swarmData.date, swarmData.time);
             
             // Save to Firebase (also keeps localStorage as backup)
             const newSwarmId = await saveSwarmToFirebase(swarmData);

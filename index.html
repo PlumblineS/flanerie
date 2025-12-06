@@ -3903,10 +3903,6 @@
             
             // Load all content
             try {
-                console.log('=== PROFILE DEBUG START ===');
-                console.log('Loading profile for userId:', userId);
-                console.log('Loading profile for username:', username);
-                
                 const [routesSnap, swarmsSnap, eventsSnap] = await Promise.all([
                     database.ref('routes').orderByChild('createdBy').equalTo(userId).once('value'),
                     database.ref('swarms').orderByChild('createdBy').equalTo(userId).once('value'),
@@ -3917,29 +3913,9 @@
                 const swarms = [];
                 const events = [];
                 
-                console.log('Routes snapshot exists:', routesSnap.exists());
-                console.log('Routes snapshot numChildren:', routesSnap.numChildren());
-                routesSnap.forEach(snap => {
-                    console.log('  Route found:', snap.key, snap.val().name, 'createdBy:', snap.val().createdBy);
-                    routes.push({ id: snap.key, ...snap.val(), type: 'route' });
-                });
-                
-                console.log('Swarms snapshot exists:', swarmsSnap.exists());
-                console.log('Swarms snapshot numChildren:', swarmsSnap.numChildren());
-                swarmsSnap.forEach(snap => {
-                    console.log('  Swarm found:', snap.key, snap.val().title, 'createdBy:', snap.val().createdBy);
-                    swarms.push({ id: snap.key, ...snap.val(), type: 'swarm' });
-                });
-                
-                console.log('Events snapshot exists:', eventsSnap.exists());
-                console.log('Events snapshot numChildren:', eventsSnap.numChildren());
-                eventsSnap.forEach(snap => {
-                    console.log('  Event found:', snap.key, snap.val().name, 'createdBy:', snap.val().createdBy);
-                    events.push({ id: snap.key, ...snap.val(), type: 'event' });
-                });
-                
-                console.log('Final counts:', routes.length, 'routes,', swarms.length, 'swarms,', events.length, 'events');
-                console.log('=== PROFILE DEBUG END ===');
+                routesSnap.forEach(snap => routes.push({ id: snap.key, ...snap.val(), type: 'route' }));
+                swarmsSnap.forEach(snap => swarms.push({ id: snap.key, ...snap.val(), type: 'swarm' }));
+                eventsSnap.forEach(snap => events.push({ id: snap.key, ...snap.val(), type: 'event' }));
                 
                 const allContent = [...routes, ...swarms, ...events].sort((a, b) => 
                     new Date(b.created) - new Date(a.created)
@@ -4205,6 +4181,9 @@
             if (infoPanel) {
                 infoPanel.style.display = 'none';
             }
+            
+            // Reload swarms section to show all markers (removes highlightId effect)
+            toggleSection('swarms');
         }
         window.closeSwarmInfo = closeSwarmInfo;
         
@@ -4214,6 +4193,9 @@
             if (infoPanel) {
                 infoPanel.style.display = 'none';
             }
+            
+            // Reload events section to show all markers (removes highlightId effect)
+            toggleSection('events');
         }
         window.closeEventInfo = closeEventInfo;
         

@@ -808,6 +808,7 @@
     <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
         <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
             ✅ You're signed in! 📧 Check your email and click the verification link to start posting. 
+            <a href="javascript:void(0)" onclick="checkVerificationStatus()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer; margin-left: 1rem;">↻ Refresh Status</a> | 
             <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer;">Resend email</a>
         </p>
     </div>
@@ -1133,7 +1134,7 @@
         // ===== FIREBASE AUTHENTICATION =====
         
         // Auth state listener - runs when user signs in/out
-        auth.onAuthStateChanged(function(user) {
+        auth.onAuthStateChanged(async function(user) {
             if (user) {
                 // User is signed in
                 console.log('User signed in:', user.email);
@@ -1142,9 +1143,9 @@
                 document.getElementById('sign-in-btn').style.display = 'none';
                 document.getElementById('user-info').style.display = 'flex';
                 
-                // Show display name or email
-                const displayName = user.displayName || user.email.split('@')[0];
-                document.getElementById('user-name').textContent = `Hi, ${displayName}!`;
+                // Show username instead of email
+                const username = await getUsernameFromId(user.uid);
+                document.getElementById('user-name').textContent = `Hi, ${username}!`;
                 
                 // Show verification banner if email not verified (only for email/password users)
                 const isEmailPasswordUser = user.providerData[0].providerId === 'password';
@@ -1167,6 +1168,27 @@
                 
                 // Hide verification banner
                 document.getElementById('verification-banner').style.display = 'none';
+            }
+        });
+        
+        // Refresh auth state when user returns to tab (to detect email verification)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && auth.currentUser) {
+                // Tab became visible, reload the user's auth state
+                auth.currentUser.reload().then(() => {
+                    const user = auth.currentUser;
+                    const isEmailPasswordUser = user.providerData[0].providerId === 'password';
+                    const verificationBanner = document.getElementById('verification-banner');
+                    
+                    // Update verification banner based on current state
+                    if (isEmailPasswordUser && !user.emailVerified) {
+                        verificationBanner.style.display = 'block';
+                    } else {
+                        verificationBanner.style.display = 'none';
+                    }
+                }).catch(error => {
+                    console.error('Error reloading user:', error);
+                });
             }
         });
         
@@ -1435,6 +1457,32 @@
                 showToast('Please sign in first');
             }
         }
+        
+        // Check verification status manually
+        function checkVerificationStatus() {
+            const user = auth.currentUser;
+            if (!user) {
+                showToast('Please sign in first');
+                return;
+            }
+            
+            showToast('Checking verification status...');
+            user.reload().then(() => {
+                const updatedUser = auth.currentUser;
+                const verificationBanner = document.getElementById('verification-banner');
+                
+                if (updatedUser.emailVerified) {
+                    verificationBanner.style.display = 'none';
+                    showToast('✅ Email verified! You can now start posting.');
+                } else {
+                    showToast('Email not yet verified. Please check your inbox and click the link.');
+                }
+            }).catch((error) => {
+                console.error('Error checking verification:', error);
+                showToast('Error checking verification status');
+            });
+        }
+        window.checkVerificationStatus = checkVerificationStatus;
         
         // Switch between Sign In and Sign Up tabs
         function switchAuthTab(tab) {

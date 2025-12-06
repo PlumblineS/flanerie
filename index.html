@@ -3737,6 +3737,9 @@
                 
                 document.getElementById('saveRouteModal').remove();
                 showToast(`Route "${name}" saved successfully!`);
+                
+                // Lock the map from further editing
+                lockMapAfterSave('journey');
             } catch (error) {
                 console.error('❌ Error saving route:', error);
                 console.error('Route data:', routeData);
@@ -3750,6 +3753,42 @@
         window.clearEvent = clearEvent;
         window.openSaveRouteModal = openSaveRouteModal;
         window.confirmSaveRoute = confirmSaveRoute;
+        
+        // Lock map after successful save to prevent confusion
+        function lockMapAfterSave(mapType) {
+            if (mapType === 'journey') {
+                // Disable map click event
+                if (journeyMap) {
+                    journeyMap.off('click');
+                }
+                
+                // Hide Save and Clear buttons
+                const saveBtn = document.querySelector('#fullscreen-journey-map .feature-btn[onclick*="openSaveRouteModal"]');
+                const clearBtn = document.querySelector('#fullscreen-journey-map .feature-btn[onclick*="clearRoute"]');
+                
+                if (saveBtn) saveBtn.style.display = 'none';
+                if (clearBtn) clearBtn.style.display = 'none';
+                
+                // Add a "Done" button to close the map
+                const controlPanel = document.querySelector('#fullscreen-journey-map .feature-btn')?.parentElement;
+                if (controlPanel) {
+                    const doneBtn = document.createElement('button');
+                    doneBtn.className = 'feature-btn';
+                    doneBtn.textContent = 'Done';
+                    doneBtn.style.cssText = 'background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white;';
+                    doneBtn.onclick = () => {
+                        const modal = document.getElementById('fullscreen-journey-map');
+                        if (modal) {
+                            modal.remove();
+                            document.body.classList.remove('choreography-active');
+                            journeyMap = null;
+                        }
+                    };
+                    controlPanel.appendChild(doneBtn);
+                }
+            }
+        }
+        window.lockMapAfterSave = lockMapAfterSave;
         
         // Helper function to get username from userId
         async function getUsernameFromId(userId) {
@@ -4317,6 +4356,7 @@
                            id="swarmBusinessLabel${markerNumber}" 
                            placeholder="Loading business name..."
                            maxlength="50"
+                           required
                            style="flex: 1; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(107, 155, 158, 0.3); border-radius: 8px; color: white; font-size: 0.9rem;">
                 `;
                 labelsList.appendChild(labelInput);
@@ -4325,7 +4365,20 @@
                 const input = document.getElementById(`swarmBusinessLabel${markerNumber}`);
                 input.addEventListener('input', (e) => {
                     window.swarmBusinessLabels[markerNumber - 1] = e.target.value;
+                    // Visual feedback for empty labels
+                    if (e.target.value.trim() === '') {
+                        e.target.style.borderColor = 'rgba(220, 38, 38, 0.6)';
+                    } else {
+                        e.target.style.borderColor = 'rgba(107, 155, 158, 0.3)';
+                    }
                 });
+                
+                // Initial check if label is empty after timeout (allows auto-fill to work)
+                setTimeout(() => {
+                    if (!input.value || input.value.trim() === '') {
+                        input.style.borderColor = 'rgba(220, 38, 38, 0.6)';
+                    }
+                }, 500);
             }
         }
         window.addSwarmLabelInput = addSwarmLabelInput;
@@ -4360,6 +4413,18 @@
             // Check if locations have been pinned
             if (!window.swarmLocations || window.swarmLocations.length === 0) {
                 showToast('Please pin at least one location on the map first!');
+                return;
+            }
+            
+            // Validate that all businesses have labels BEFORE opening modal
+            if (!window.swarmBusinessLabels || window.swarmBusinessLabels.length !== window.swarmLocations.length) {
+                showToast('Please label all businesses before saving!');
+                return;
+            }
+            
+            const emptyLabels = window.swarmBusinessLabels.filter((label, idx) => !label || label.trim() === '');
+            if (emptyLabels.length > 0) {
+                showToast('Please label all businesses before saving!');
                 return;
             }
             

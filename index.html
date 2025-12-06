@@ -1152,14 +1152,10 @@
                 const verificationBanner = document.getElementById('verification-banner');
                 if (isEmailPasswordUser && !user.emailVerified) {
                     verificationBanner.style.display = 'block';
-                    // Start auto-checking verification status
-                    console.log('Starting auto-verification check...');
                     startVerificationAutoCheck();
                 } else {
                     verificationBanner.style.display = 'none';
-                    // Stop auto-checking if it's running
                     if (verificationCheckInterval) {
-                        console.log('Stopping auto-verification check');
                         clearInterval(verificationCheckInterval);
                         verificationCheckInterval = null;
                     }
@@ -1183,29 +1179,18 @@
         // Refresh auth state when user returns to tab (to detect email verification)
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden && auth.currentUser) {
-                console.log('Tab became visible, checking verification status...');
-                // Tab became visible, reload the user's auth state
                 auth.currentUser.reload().then(() => {
                     const user = auth.currentUser;
                     const isEmailPasswordUser = user.providerData[0].providerId === 'password';
                     const verificationBanner = document.getElementById('verification-banner');
                     
-                    console.log('User state reloaded:', {
-                        isEmailPassword: isEmailPasswordUser,
-                        emailVerified: user.emailVerified,
-                        bannerCurrentlyVisible: verificationBanner.style.display !== 'none'
-                    });
-                    
-                    // Update verification banner based on current state
                     if (isEmailPasswordUser && !user.emailVerified) {
                         if (verificationBanner.style.display === 'none') {
-                            console.log('Showing verification banner');
                             verificationBanner.style.display = 'block';
                             startVerificationAutoCheck();
                         }
                     } else {
                         if (verificationBanner.style.display !== 'none') {
-                            console.log('Hiding verification banner (verified!)');
                             verificationBanner.style.display = 'none';
                             showToast('✅ Email verified! You can now start posting.');
                         }
@@ -1216,44 +1201,28 @@
             }
         });
         
-        // Auto-check verification status every 3 seconds when banner is visible
+        // Auto-check verification status every 2 seconds when banner is visible
         let verificationCheckInterval = null;
         
         function startVerificationAutoCheck() {
-            // Clear any existing interval
             if (verificationCheckInterval) {
-                console.log('Clearing existing verification check interval');
                 clearInterval(verificationCheckInterval);
             }
-            
-            console.log('Starting new verification check interval (every 3 seconds)');
             
             verificationCheckInterval = setInterval(() => {
                 const user = auth.currentUser;
                 const verificationBanner = document.getElementById('verification-banner');
                 
-                console.log('Auto-check running...', {
-                    userExists: !!user,
-                    bannerVisible: verificationBanner.style.display !== 'none',
-                    emailVerified: user ? user.emailVerified : null
-                });
-                
-                // Only check if banner is visible and user exists
                 if (!user || verificationBanner.style.display === 'none') {
-                    console.log('Stopping auto-check (no user or banner hidden)');
                     clearInterval(verificationCheckInterval);
                     verificationCheckInterval = null;
                     return;
                 }
                 
-                // Check if verified
-                console.log('Reloading user auth state...');
                 user.reload().then(() => {
                     const updatedUser = auth.currentUser;
-                    console.log('User reloaded. Verified:', updatedUser.emailVerified);
                     
                     if (updatedUser.emailVerified) {
-                        console.log('✅ Email is now verified! Hiding banner.');
                         verificationBanner.style.display = 'none';
                         clearInterval(verificationCheckInterval);
                         verificationCheckInterval = null;
@@ -2330,7 +2299,7 @@
                     
                     <!-- Waypoint Labels (only shows for journey mode) -->
                     <div id="waypointLabelsContainer" style="display: none; padding: 1rem 2rem; background: rgba(25, 25, 25, 0.95); max-height: 200px; overflow-y: auto;">
-                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops *</h4>
+                        <h4 style="color: var(--accent-color); margin-bottom: 0.75rem; font-size: 0.95rem;">📍 Label Your Stops (Required)</h4>
                         <div id="waypointLabelsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
                     </div>
                     
@@ -3363,6 +3332,7 @@
                            id="waypointLabel${waypointNumber}" 
                            placeholder="Loading location..."
                            maxlength="50"
+                           required
                            style="flex: 1; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(107, 155, 158, 0.3); border-radius: 8px; color: white; font-size: 0.9rem;">
                 `;
                 labelsList.appendChild(labelInput);
@@ -3384,7 +3354,18 @@
                 // Update waypointLabels array when input changes
                 input.addEventListener('input', (e) => {
                     waypointLabels[waypointNumber - 1] = e.target.value;
+                    // Visual feedback for empty labels
+                    if (e.target.value.trim() === '') {
+                        e.target.style.borderColor = 'rgba(220, 38, 38, 0.6)';
+                    } else {
+                        e.target.style.borderColor = 'rgba(107, 155, 158, 0.3)';
+                    }
                 });
+                
+                // Initial check if label is empty
+                if (!input.value || input.value.trim() === '') {
+                    input.style.borderColor = 'rgba(220, 38, 38, 0.6)';
+                }
             }
             
             if (routePath) {
@@ -3601,6 +3582,13 @@
         function openSaveRouteModal() {
             if (routeCoordinates.length < 2) {
                 showToast('Please add at least 2 waypoints!');
+                return;
+            }
+            
+            // Validate that all waypoints have labels BEFORE opening modal
+            const emptyLabels = waypointLabels.filter((label, idx) => !label || label.trim() === '');
+            if (emptyLabels.length > 0) {
+                showToast('Please label all waypoints before saving!');
                 return;
             }
             

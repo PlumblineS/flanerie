@@ -807,8 +807,8 @@
     <!-- Email Verification Banner -->
     <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
         <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
-            📧 Please verify your email to start posting. 
-            <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer;">Resend verification email</a>
+            ✅ You're signed in! 📧 Check your email and click the verification link to start posting. 
+            <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer;">Resend email</a>
         </p>
     </div>
     
@@ -1252,7 +1252,7 @@
                 })
                 .then(() => {
                     console.log('Sign-up complete, verification email sent');
-                    showToast('Account created! Please check your email to verify.');
+                    showToast('Account created! You\'re signed in. Check your email for verification link.');
                 })
                 .catch((error) => {
                     console.error('Sign-up error:', error);
@@ -2543,7 +2543,7 @@
                                             
                                             // Get route count for this user
                                             const routeCount = await getUserRouteCount(route.createdBy);
-                                            const username = route.createdByName || 'Unknown User';
+                                            const username = await getUsernameFromId(route.createdBy);
                                             const userDisplay = username === 'Deleted User' ? 
                                                 `<span style="color: #999; font-size: 0.85rem;">👤 Deleted User</span>` :
                                                 `<span style="color: var(--accent-light); font-size: 0.85rem; cursor: pointer; text-decoration: underline;" onclick="viewUserRoutes('${route.createdBy}', '${username}')" title="View all routes by ${username}">👤 ${username}(${routeCount})</span>`;
@@ -2910,7 +2910,7 @@
                                         
                                         // Get swarm count for this user
                                         const swarmCount = await getUserSwarmCount(swarm.createdBy);
-                                        const username = swarm.createdByName || 'Unknown User';
+                                        const username = await getUsernameFromId(swarm.createdBy);
                                         const userDisplay = username === 'Deleted User' ? 
                                             `<p style="color: #999; font-size: 0.85rem; margin: 0.5rem 0;">👤 Deleted User</p>` :
                                             `<p style="color: var(--accent-light); font-size: 0.85rem; margin: 0.5rem 0; cursor: pointer; text-decoration: underline;" onclick="showToast('Filtering by user coming soon!')" title="View all swarms by ${username}">👤 Organized by: ${username}(${swarmCount})</p>`;
@@ -3111,7 +3111,7 @@
                                         
                                         // Get event count for this user
                                         const eventCount = await getUserEventCount(event.createdBy);
-                                        const username = event.createdByName || 'Unknown User';
+                                        const username = await getUsernameFromId(event.createdBy);
                                         const userDisplay = username === 'Deleted User' ? 
                                             `<p style="color: #999; font-size: 0.85rem; margin: 0.5rem 0;">👤 Deleted User</p>` :
                                             `<p style="color: var(--accent-light); font-size: 0.85rem; margin: 0.5rem 0; cursor: pointer; text-decoration: underline;" onclick="showToast('Filtering by user coming soon!')" title="View all events by ${username}">👤 Posted by: ${username}(${eventCount})</p>`;
@@ -3620,6 +3620,24 @@
         window.clearEvent = clearEvent;
         window.openSaveRouteModal = openSaveRouteModal;
         window.confirmSaveRoute = confirmSaveRoute;
+        
+        // Helper function to get username from userId
+        async function getUsernameFromId(userId) {
+            try {
+                // Search usernames database for this userId
+                const snapshot = await database.ref('usernames').once('value');
+                let foundUsername = null;
+                snapshot.forEach((child) => {
+                    if (child.val() === userId) {
+                        foundUsername = child.key;
+                    }
+                });
+                return foundUsername || 'Unknown User';
+            } catch (error) {
+                console.error('Error getting username:', error);
+                return 'Unknown User';
+            }
+        }
         
         // Helper function to count user's total routes
         async function getUserRouteCount(userId) {

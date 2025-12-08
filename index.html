@@ -51,8 +51,9 @@
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            position: relative;
         }
         
         .nav-links {
@@ -77,6 +78,9 @@
         .nav-auth {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
+            position: absolute;
+            right: 0;
         }
         
         .auth-btn {
@@ -2567,8 +2571,18 @@
                             
                             routes.forEach((route, index) => {
                                 if (route.waypoints && route.waypoints.length >= 2) {
+                                    // Use street-following geometry if available, otherwise use waypoints
+                                    let routePath;
+                                    if (route.streetGeometry && route.streetGeometry.length > 0) {
+                                        // Convert Mapbox coordinates [lng, lat] to Leaflet format [lat, lng]
+                                        routePath = route.streetGeometry.map(coord => [coord[1], coord[0]]);
+                                    } else {
+                                        // Fall back to straight lines between waypoints
+                                        routePath = route.waypoints;
+                                    }
+                                    
                                     // Create polyline (don't add to map yet)
-                                    const polyline = L.polyline(route.waypoints, { 
+                                    const polyline = L.polyline(routePath, { 
                                         color: "#8DBCC0", 
                                         weight: 4, 
                                         opacity: 0.7 
@@ -3726,11 +3740,37 @@
             const user = auth.currentUser;
             const displayName = user.displayName || user.email.split('@')[0];
             
+            // Get street-following route geometry from Mapbox Directions API
+            showToast('Calculating route along streets...');
+            let streetGeometry = null;
+            
+            try {
+                // Format coordinates for Mapbox API (lng,lat format)
+                const coords = routeCoordinates.map(c => `${c[1]},${c[0]}`).join(';');
+                const mapboxToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+                const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxToken}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.routes && data.routes.length > 0) {
+                    // Store the street-following geometry
+                    streetGeometry = data.routes[0].geometry.coordinates;
+                    console.log('✅ Street route calculated:', streetGeometry.length, 'points');
+                } else {
+                    console.warn('⚠️ No route returned from Mapbox, using straight lines');
+                }
+            } catch (error) {
+                console.error('❌ Error getting street route:', error);
+                showToast('Note: Route will use straight lines (street routing unavailable)');
+            }
+            
             const routeData = {
                 name: name,
                 description: description,
                 category: category,
-                waypoints: routeCoordinates,
+                waypoints: routeCoordinates, // Original waypoints for markers
+                streetGeometry: streetGeometry, // Street-following path for line
                 waypointLabels: waypointLabels, // Save custom labels
                 waypointCount: routeCoordinates.length,
                 likes: 0, // Initialize likes counter

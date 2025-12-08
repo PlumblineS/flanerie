@@ -3935,26 +3935,17 @@
                 const swarms = [];
                 const events = [];
                 
-                // DEBUG: Log what Firebase returns
-                console.log('=== PROFILE DEBUG ===');
-                console.log('Searching for userId:', userId);
-                console.log('Routes returned:', routesSnap.numChildren());
-                console.log('Swarms returned:', swarmsSnap.numChildren());
-                console.log('Events returned:', eventsSnap.numChildren());
-                
                 routesSnap.forEach(snap => {
                     routes.push({ id: snap.key, ...snap.val(), type: 'route' });
-                    console.log('  - Route:', snap.val().name, 'by', snap.val().createdBy);
                 });
+                
                 swarmsSnap.forEach(snap => {
                     swarms.push({ id: snap.key, ...snap.val(), type: 'swarm' });
-                    console.log('  - Swarm:', snap.val().title, 'by', snap.val().createdBy);
                 });
+                
                 eventsSnap.forEach(snap => {
                     events.push({ id: snap.key, ...snap.val(), type: 'event' });
-                    console.log('  - Event:', snap.val().name, 'by', snap.val().createdBy);
                 });
-                console.log('=== END DEBUG ===');
                 
                 const allContent = [...routes, ...swarms, ...events].sort((a, b) => 
                     new Date(b.created) - new Date(a.created)
@@ -4031,35 +4022,6 @@
             }
         }
         window.viewUserProfile = viewUserProfile;
-        
-        // TEMPORARY: Check what's actually in Firebase
-        window.checkFirebase = async function() {
-            console.log('=== CHECKING FIREBASE ===');
-            const user = auth.currentUser;
-            console.log('Current user UID:', user ? user.uid : 'NOT LOGGED IN');
-            
-            const allRoutes = await database.ref('routes').once('value');
-            console.log('\nALL ROUTES IN DATABASE:', allRoutes.numChildren());
-            allRoutes.forEach(snap => {
-                const r = snap.val();
-                console.log(`  ${snap.key}: "${r.name}" by ${r.createdBy} (${r.createdByName})`);
-            });
-            
-            const allSwarms = await database.ref('swarms').once('value');
-            console.log('\nALL SWARMS IN DATABASE:', allSwarms.numChildren());
-            allSwarms.forEach(snap => {
-                const s = snap.val();
-                console.log(`  ${snap.key}: "${s.title}" by ${s.createdBy} (${s.createdByName})`);
-            });
-            
-            const allEvents = await database.ref('events').once('value');
-            console.log('\nALL EVENTS IN DATABASE:', allEvents.numChildren());
-            allEvents.forEach(snap => {
-                const e = snap.val();
-                console.log(`  ${snap.key}: "${e.name}" by ${e.createdBy} (${e.createdByName})`);
-            });
-            console.log('=== END CHECK ===');
-        };
         
         // Helper function to count user's total swarms
         async function getUserSwarmCount(userId) {

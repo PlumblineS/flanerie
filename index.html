@@ -1603,6 +1603,7 @@
             }
             
             document.getElementById('dashboardModal').style.display = 'flex';
+            updateUnreadBadge(); // Update message badge
             switchDashboardTab('routes');
         }
         
@@ -1636,6 +1637,8 @@
                 loadMyEvents();
             } else if (tab === 'likes') {
                 loadMyLikes();
+            } else if (tab === 'messages') {
+                loadMyMessages();
             }
         }
         
@@ -1883,6 +1886,84 @@
             
             html += '</div>';
             contentDiv.innerHTML = html;
+        }
+        
+        // Load user's messages
+        async function loadMyMessages() {
+            const contentDiv = document.getElementById('messagesContent');
+            contentDiv.innerHTML = '<div style="text-align: center; color: #999;"><p>Loading your messages...</p></div>';
+            
+            const user = auth.currentUser;
+            if (!user) {
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Please sign in to view your messages</p>';
+                return;
+            }
+            
+            try {
+                const messages = await loadMessages();
+                
+                if (messages.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">No messages yet. When someone contacts you about your swarms or events, they\'ll appear here!</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+                
+                messages.forEach(msg => {
+                    const isUnread = !msg.read;
+                    const timestamp = new Date(msg.timestamp).toLocaleString();
+                    
+                    html += `
+                        <div style="background: ${isUnread ? 'rgba(107, 155, 158, 0.15)' : 'rgba(30, 30, 30, 0.8)'}; border: 2px solid ${isUnread ? 'var(--accent-color)' : 'rgba(107, 155, 158, 0.3)'}; border-radius: 15px; padding: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                <div style="flex: 1;">
+                                    ${isUnread ? '<span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; margin-right: 0.5rem; font-weight: 600;">NEW</span>' : ''}
+                                    <span style="color: var(--accent-light); font-weight: 600; font-size: 1.1rem;">${msg.subject}</span>
+                                </div>
+                                <button onclick="deleteMessage('${msg.id}')" style="background: rgba(255, 70, 70, 0.2); border: none; color: #ff4646; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 70, 70, 0.4)'" onmouseout="this.style.background='rgba(255, 70, 70, 0.2)'">Delete</button>
+                            </div>
+                            
+                            <div style="color: #999; font-size: 0.85rem; margin-bottom: 0.8rem;">
+                                <strong style="color: var(--accent-light);">From:</strong> ${msg.fromName} (${msg.fromEmail})<br>
+                                <strong style="color: var(--accent-light);">About:</strong> ${msg.itemName} (${msg.type})<br>
+                                <strong style="color: var(--accent-light);">Sent:</strong> ${timestamp}
+                            </div>
+                            
+                            <div style="color: #d4d4d4; line-height: 1.6; white-space: pre-wrap; background: rgba(10, 10, 10, 0.5); padding: 1rem; border-radius: 10px; border-left: 3px solid var(--accent-color);">
+                                ${msg.message}
+                            </div>
+                            
+                            ${isUnread ? `<button onclick="markMessageRead('${msg.id}'); loadMyMessages();" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; margin-top: 1rem; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Mark as Read</button>` : ''}
+                            
+                            <a href="mailto:${msg.fromEmail}?subject=Re: ${encodeURIComponent(msg.subject)}" style="display: inline-block; background: rgba(107, 155, 158, 0.2); color: var(--accent-light); border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; margin-top: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(107, 155, 158, 0.2)'">📧 Reply via Email</a>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                contentDiv.innerHTML = html;
+                
+                // Update unread badge
+                updateUnreadBadge();
+                
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading messages</p>';
+            }
+        }
+        
+        // Update unread message badge
+        async function updateUnreadBadge() {
+            const count = await getUnreadMessageCount();
+            const badge = document.getElementById('unreadBadge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
         }
         
         // View items from dashboard on map
@@ -3070,7 +3151,7 @@
                                             ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${swarm.description}</p>` : ''}
                                             ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
                                             ${swarm.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">👤 Organizer:</strong> ${swarm.postedBy}</p>` : ''}
-                                            ${swarm.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact:</strong> ${swarm.contact}</p>` : ''}
+                                            ${swarm.createdBy !== (user ? user.uid : null) ? `<button onclick="openMessageModal('${swarm.createdBy}', '${username}', 'swarm', '${swarm.title}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin: 0.5rem 0; font-size: 0.9rem;">📧 Contact Organizer</button>` : ''}
                                             <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
                                                 <p id="swarm-interest-count-${swarm.id}" style="color: var(--accent-light); font-weight: 600; margin: 0;">👥 ${participants} flâneurs interested</p>
                                                 ${btnState}
@@ -3268,7 +3349,7 @@
                                             <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${dateTimeStr}</p>
                                             ${event.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${event.description}</p>` : ''}
                                             ${event.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">👤 Contact Name:</strong> ${event.postedBy}</p>` : ''}
-                                            ${event.contact ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📧 Contact Email:</strong> ${event.contact}</p>` : ''}
+                                            ${event.createdBy !== (user ? user.uid : null) ? `<button onclick="openMessageModal('${event.createdBy}', '${username}', 'event', '${event.name}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin: 0.5rem 0; font-size: 0.9rem;">📧 Contact Organizer</button>` : ''}
                                             ${event.website ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔗 Website:</strong> <a href="${event.website}" target="_blank" style="color: var(--accent-light); word-break: break-all;">${event.website}</a></p>` : ''}
                                             ${event.maxParticipants ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">👥 Max Participants:</strong> ${event.maxParticipants}</p>` : ''}
                                             <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
@@ -4797,7 +4878,6 @@
                 time: formData.get('swarmTime'),
                 description: formData.get('swarmDescription'),
                 postedBy: formData.get('swarmPostedBy'),
-                contact: formData.get('swarmContact'),
                 duration: formData.get('swarmDuration'),
                 identifier: formData.get('swarmIdentifier'),
                 interested: 0,
@@ -4863,7 +4943,6 @@
                 endDate: formData.get('eventEndDate'),
                 endTime: formData.get('eventEndTime'),
                 description: formData.get('eventDescription'),
-                contact: formData.get('eventContact'),
                 website: formData.get('eventWebsite'),
                 maxParticipants: formData.get('eventMaxParticipants'),
                 postedBy: formData.get('eventPostedBy'),
@@ -5038,6 +5117,160 @@
         if (typeof confirmSaveRoute !== 'undefined') window.confirmSaveRoute = confirmSaveRoute;
         if (typeof toggleCustomEventType !== 'undefined') window.toggleCustomEventType = toggleCustomEventType;
         if (typeof toggleCustomRouteCategory !== 'undefined') window.toggleCustomRouteCategory = toggleCustomRouteCategory;
+        
+        // === MESSAGING SYSTEM ===
+        
+        // Open message modal
+        function openMessageModal(recipientId, recipientName, type, itemName) {
+            if (!auth.currentUser) {
+                showToast('Please sign in to send messages');
+                return;
+            }
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'messageModal';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+            
+            modal.innerHTML = `
+                <div style="background: rgba(25, 25, 25, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 20px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--accent-color); margin: 0;">📧 Contact ${recipientName}</h3>
+                        <button onclick="document.getElementById('messageModal').remove()" style="background: none; border: none; color: var(--accent-light); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    
+                    <p style="color: #d4d4d4; margin-bottom: 1rem;">About: <strong>${itemName}</strong></p>
+                    
+                    <form id="messageForm" onsubmit="sendMessage(event, '${recipientId}', '${recipientName}', '${type}', '${itemName}')">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Subject *</label>
+                            <input type="text" id="messageSubject" required maxlength="100" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Question about the ${type}">
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Message *</label>
+                            <textarea id="messageText" required maxlength="1000" rows="6" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Hi, I'm interested in..."></textarea>
+                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">Note: Your username and email will be shared with the organizer</p>
+                        </div>
+                        
+                        <button type="submit" class="feature-btn" style="width: 100%;">Send Message</button>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        window.openMessageModal = openMessageModal;
+        
+        // Send message
+        async function sendMessage(event, recipientId, recipientName, type, itemName) {
+            event.preventDefault();
+            
+            const user = auth.currentUser;
+            if (!user) {
+                showToast('Please sign in to send messages');
+                return;
+            }
+            
+            const subject = document.getElementById('messageSubject').value;
+            const messageText = document.getElementById('messageText').value;
+            
+            const messageData = {
+                from: user.uid,
+                fromName: user.displayName || user.email.split('@')[0],
+                fromEmail: user.email,
+                to: recipientId,
+                toName: recipientName,
+                subject: subject,
+                message: messageText,
+                type: type,
+                itemName: itemName,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            try {
+                await database.ref('messages').push(messageData);
+                showToast('Message sent successfully!');
+                document.getElementById('messageModal').remove();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('Error sending message: ' + error.message);
+            }
+        }
+        window.sendMessage = sendMessage;
+        
+        // Load user's messages (inbox)
+        async function loadMessages() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            try {
+                const messagesSnapshot = await database.ref('messages').orderByChild('to').equalTo(user.uid).once('value');
+                const messages = [];
+                
+                messagesSnapshot.forEach(snap => {
+                    messages.push({ id: snap.key, ...snap.val() });
+                });
+                
+                // Sort by newest first
+                messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                return messages;
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                return [];
+            }
+        }
+        window.loadMessages = loadMessages;
+        
+        // Get unread message count
+        async function getUnreadMessageCount() {
+            const user = auth.currentUser;
+            if (!user) return 0;
+            
+            try {
+                const messagesSnapshot = await database.ref('messages').orderByChild('to').equalTo(user.uid).once('value');
+                let unreadCount = 0;
+                
+                messagesSnapshot.forEach(snap => {
+                    const msg = snap.val();
+                    if (!msg.read) unreadCount++;
+                });
+                
+                return unreadCount;
+            } catch (error) {
+                console.error('Error counting messages:', error);
+                return 0;
+            }
+        }
+        window.getUnreadMessageCount = getUnreadMessageCount;
+        
+        // Mark message as read
+        async function markMessageRead(messageId) {
+            try {
+                await database.ref(`messages/${messageId}`).update({ read: true });
+            } catch (error) {
+                console.error('Error marking message as read:', error);
+            }
+        }
+        window.markMessageRead = markMessageRead;
+        
+        // Delete message
+        async function deleteMessage(messageId) {
+            if (!confirm('Delete this message?')) return;
+            
+            try {
+                await database.ref(`messages/${messageId}`).remove();
+                showToast('Message deleted');
+                openDashboard(); // Refresh dashboard
+            } catch (error) {
+                console.error('Error deleting message:', error);
+                showToast('Error deleting message');
+            }
+        }
+        window.deleteMessage = deleteMessage;
+        
     </script>
 
     <!-- Create Swarm Modal -->
@@ -5097,11 +5330,6 @@
                     <input type="text" name="swarmPostedBy" maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Your name or organization">
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Contact Email/Phone (Optional)</label>
-                    <input type="text" name="swarmContact" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="email@example.com or phone">
-                </div>
-
                 <button type="submit" id="createSwarmBtn" class="feature-btn" style="width: 100%; margin-top: 1rem;" disabled>Create Swarm</button>
             </form>
         </div>
@@ -5159,14 +5387,10 @@
                 </div>
 
                 <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Contact Info (Optional)</label>
-                    <input type="text" name="eventContact" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="email@example.com or phone">
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Website/Link (Optional)</label>
                     <input type="text" name="eventWebsite" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="www.example.com or https://example.com">
                 </div>
+
 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Max Participants (Optional)</label>
@@ -5279,6 +5503,9 @@
                 <button id="likesTab" class="dashboard-tab" onclick="switchDashboardTab('likes')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
                     My Likes & Interests
                 </button>
+                <button id="messagesTab" class="dashboard-tab" onclick="switchDashboardTab('messages')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    <span id="messagesTabLabel">Messages</span> <span id="unreadBadge" style="display: none; background: #ff4444; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.75rem; margin-left: 0.3rem;"></span>
+                </button>
             </div>
             
             <!-- Dashboard Content -->
@@ -5294,6 +5521,10 @@
                 </div>
                 <div id="likesContent" class="dashboard-section" style="display: none;">
                     <p style="text-align: center; color: #999;">Loading your likes...</p>
+                </div>
+                
+                <div id="messagesContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your messages...</p>
                 </div>
             </div>
         </div>

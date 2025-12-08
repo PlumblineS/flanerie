@@ -2377,7 +2377,7 @@
                         </select>
                     </div>
                     
-                    <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="searchInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">
@@ -2400,7 +2400,7 @@
                         <button class="feature-btn" onclick="showToast('Searching swarms...')">Search</button>
                     </div>
                     
-                    <div id="swarm-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    <div id="swarm-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="swarmInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">
@@ -2423,7 +2423,7 @@
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>
                     
-                    <div id="event-map" style="height: 500px; border-radius: 15px; margin: 1rem 0;"></div>
+                    <div id="event-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="eventInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">
@@ -2542,19 +2542,21 @@
                 } else if (sectionId === 'search') {
                     const mapElement = document.getElementById('search-map');
                     if (mapElement && !searchMap) {
-                        searchMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                            tileSize: 512,
-                            zoomOffset: -1
-                        }).addTo(searchMap);
-                        
-                        // Add clean Mapbox attribution
-                        L.control.attribution({ position: "bottomright", prefix: false }).addAttribution("© <a href=\"https://www.mapbox.com/\">Mapbox</a>").addTo(searchMap);
-                        // Load routes from Firebase
-                        allRoutesData = []; // Reset
-                        selectedRoute = null; // Reset
-                        
-                        getAllRoutes().then(routes => {
+                        // Get user location before initializing map
+                        getUserLocation().then(location => {
+                            searchMap = L.map(mapElement).setView([location.lat, location.lng], location.zoom);
+                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                tileSize: 512,
+                                zoomOffset: -1
+                            }).addTo(searchMap);
+                            
+                            // Add clean Mapbox attribution
+                            L.control.attribution({ position: "bottomright", prefix: false }).addAttribution("© <a href=\"https://www.mapbox.com/\">Mapbox</a>").addTo(searchMap);
+                            // Load routes from Firebase
+                            allRoutesData = []; // Reset
+                            selectedRoute = null; // Reset
+                            
+                            getAllRoutes().then(routes => {
                             allRoutesData = []; // Reset global array
                             
                             routes.forEach((route, index) => {
@@ -2905,18 +2907,20 @@
                                 }
                             });
                         }
+                        }); // Close getUserLocation().then()
                     }
                 } else if (sectionId === 'swarms') {
                     const mapElement = document.getElementById('swarm-map');
                     if (mapElement) {
                         // Initialize map if it doesn't exist
                         if (!swarmMap) {
-                            swarmMap = L.map(mapElement).setView([39.7392, -104.9903], 13);
-                            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                                 tileSize: 512,
-                                zoomOffset: -1
-                            }).addTo(swarmMap);
-                            L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(swarmMap);
+                            getUserLocation().then(location => {
+                                swarmMap = L.map(mapElement).setView([location.lat, location.lng], location.zoom);
+                                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                    tileSize: 512,
+                                    zoomOffset: -1
+                                }).addTo(swarmMap);
+                                L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(swarmMap);
                         } else {
                             // Map exists - clear all existing markers before reloading
                             swarmMap.eachLayer(function (layer) {
@@ -2927,6 +2931,7 @@
                         }
                         
                         // Always load/reload swarms from Firebase (even if map already exists)
+                        window.allSwarmMarkersArray = []; // Reset marker array
                         getAllSwarms().then(swarms => {
                             
                             if (swarms.length === 0) {
@@ -2986,6 +2991,7 @@
                                 
                                 const participants = swarm.interested || 0;
                                 const marker = L.marker([swarm.lat, swarm.lng], { icon: swarmPinIcon }).addTo(swarmMap);
+                                window.allSwarmMarkersArray.push(marker); // Store for zoom out
                                 
                                 // Add additional markers if multiple locations exist
                                 if (swarm.locations && swarm.locations.length > 1) {
@@ -3100,6 +3106,7 @@
                                 }
                             });
                         }
+                            }); // Close getUserLocation().then()
                     }
                 } else if (sectionId === 'events') {
                     // Initialize event map
@@ -3107,12 +3114,13 @@
                     if (eventMapElement) {
                         // Initialize map if it doesn't exist
                         if (!eventMap) {
-                            eventMap = L.map(eventMapElement).setView([39.7392, -104.9903], 13);
-                        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
-                             tileSize: 512,
-                            zoomOffset: -1
-                        }).addTo(eventMap);
-                        L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(eventMap);
+                            getUserLocation().then(location => {
+                                eventMap = L.map(eventMapElement).setView([location.lat, location.lng], location.zoom);
+                                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg', {
+                                    tileSize: 512,
+                                    zoomOffset: -1
+                                }).addTo(eventMap);
+                                L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© <a href="https://www.mapbox.com/">Mapbox</a>').addTo(eventMap);
                         } else {
                             // Map exists - clear all existing markers before reloading
                             eventMap.eachLayer(function (layer) {
@@ -3124,6 +3132,8 @@
                         
                         // Always load/reload events from Firebase (even if map already exists)
                         getAllEvents().then(events => {
+                            
+                            window.allEventMarkersArray = []; // Reset marker array
                             
                             if (events.length === 0) {
                                 return;
@@ -3197,6 +3207,7 @@
                                 });
                                 
                                 const marker = L.marker([event.lat, event.lng], { icon: eventPinIcon }).addTo(eventMap);
+                                window.allEventMarkersArray.push(marker); // Store for zoom out
                                 
                                 // Click handler to populate info panel
                                 marker.on('click', async function() {
@@ -3301,6 +3312,7 @@
                             }
                         });
                     }
+                            }); // Close getUserLocation().then()
                 }
             }, 500);
         }
@@ -3752,6 +3764,11 @@
                         modal.remove();
                         document.body.classList.remove('choreography-active');
                         journeyMap = null;
+                        
+                        // Clear route data so it doesn't persist on next create
+                        routeCoordinates = [];
+                        waypointLabels = [];
+                        routeMarkers = [];
                     }
                     // Open browse routes immediately showing the new route
                     toggleSection('search', newRouteId);
@@ -4171,6 +4188,12 @@
                 }
             });
             
+            // Zoom out to show all routes
+            if (allRoutesData.length > 0) {
+                const group = L.featureGroup(allRoutesData.map(r => r.polyline));
+                searchMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+            }
+            
             selectedRoute = null;
         }
         window.closeRouteInfo = closeRouteInfo;
@@ -4181,6 +4204,12 @@
             if (infoPanel) {
                 infoPanel.style.display = 'none';
             }
+            
+            // Zoom out to show all swarms
+            if (window.allSwarmMarkersArray && window.allSwarmMarkersArray.length > 0 && swarmMap) {
+                const group = L.featureGroup(window.allSwarmMarkersArray);
+                swarmMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+            }
         }
         window.closeSwarmInfo = closeSwarmInfo;
         
@@ -4190,8 +4219,39 @@
             if (infoPanel) {
                 infoPanel.style.display = 'none';
             }
+            
+            // Zoom out to show all events
+            if (window.allEventMarkersArray && window.allEventMarkersArray.length > 0 && eventMap) {
+                const group = L.featureGroup(window.allEventMarkersArray);
+                eventMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+            }
         }
         window.closeEventInfo = closeEventInfo;
+        
+        // Helper function to get user's location or default to Denver
+        function getUserLocation() {
+            return new Promise((resolve) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            resolve({
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                                zoom: 13
+                            });
+                        },
+                        () => {
+                            // Geolocation failed, use Denver
+                            resolve({ lat: 39.7392, lng: -104.9903, zoom: 11 });
+                        },
+                        { timeout: 5000 }
+                    );
+                } else {
+                    // Geolocation not supported, use Denver
+                    resolve({ lat: 39.7392, lng: -104.9903, zoom: 11 });
+                }
+            });
+        }
         
         // Toast Notification
         function showToast(message) {

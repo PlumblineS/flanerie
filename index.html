@@ -1158,6 +1158,20 @@
                 const username = await getUsernameFromId(user.uid);
                 document.getElementById('user-name').textContent = `Hi, ${username}!`;
                 
+                // Check if user is banned
+                const isBanned = await checkIfBanned();
+                if (isBanned) {
+                    // Show suspension banner
+                    showSuspensionBanner();
+                    // Hide all create/action buttons
+                    disableUserActions();
+                } else {
+                    // Hide suspension banner
+                    hideSuspensionBanner();
+                    // Enable all buttons
+                    enableUserActions();
+                }
+                
                 // Show verification banner if email not verified (only for email/password users)
                 const isEmailPasswordUser = user.providerData[0].providerId === 'password';
                 const verificationBanner = document.getElementById('verification-banner');
@@ -1184,6 +1198,9 @@
                 
                 // Hide verification banner
                 document.getElementById('verification-banner').style.display = 'none';
+                
+                // Hide suspension banner
+                hideSuspensionBanner();
             }
         });
         
@@ -5212,6 +5229,55 @@
         }
         window.checkIfBanned = checkIfBanned;
         
+        // Show suspension banner
+        function showSuspensionBanner() {
+            let banner = document.getElementById('suspension-banner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'suspension-banner';
+                banner.style.cssText = 'background: rgba(255, 70, 70, 0.2); border: 2px solid #ff4646; color: #ff4646; padding: 1rem 2rem; text-align: center; font-weight: 600; position: fixed; top: 80px; left: 0; right: 0; z-index: 9999;';
+                banner.innerHTML = '🚫 Your account has been suspended. You can browse but cannot create content or send messages. Contact support for assistance.';
+                document.body.appendChild(banner);
+            }
+            banner.style.display = 'block';
+        }
+        
+        // Hide suspension banner
+        function hideSuspensionBanner() {
+            const banner = document.getElementById('suspension-banner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+        }
+        
+        // Disable user actions (hide buttons that create/send content)
+        function disableUserActions() {
+            // Add CSS to hide action buttons
+            let style = document.getElementById('ban-style');
+            if (!style) {
+                style = document.createElement('style');
+                style.id = 'ban-style';
+                document.head.appendChild(style);
+            }
+            style.textContent = `
+                button[onclick*="openSaveRouteModal"],
+                button[onclick*="openCreateSwarmModal"],
+                button[onclick*="openCreateEventModal"],
+                button[onclick*="openMessageModal"],
+                button[onclick*="replyToMessage"] {
+                    display: none !important;
+                }
+            `;
+        }
+        
+        // Enable user actions (show buttons)
+        function enableUserActions() {
+            const style = document.getElementById('ban-style');
+            if (style) {
+                style.remove();
+            }
+        }
+        
         // === MESSAGING SYSTEM ===
         
         // Open message modal
@@ -5578,17 +5644,34 @@
             const user = auth.currentUser;
             if (!user) return;
             
-            const reportData = {
-                messageId: messageId,
-                reportedBy: user.uid,
-                reportedByEmail: user.email,
-                reportedUser: reportedUserId,
-                messageSubject: subject,
-                timestamp: new Date().toISOString(),
-                status: 'pending'
-            };
-            
             try {
+                // Fetch the full message content
+                const messageSnapshot = await database.ref(`messages/${messageId}`).once('value');
+                const messageData = messageSnapshot.val();
+                
+                if (!messageData) {
+                    showToast('Message not found');
+                    return;
+                }
+                
+                // Include full message details in report for easy admin review
+                const reportData = {
+                    messageId: messageId,
+                    reportedBy: user.uid,
+                    reportedByEmail: user.email,
+                    reportedByName: user.displayName || user.email.split('@')[0],
+                    reportedUser: reportedUserId,
+                    reportedUserName: messageData.fromName,
+                    reportedUserEmail: messageData.fromEmail,
+                    messageSubject: subject,
+                    messageContent: messageData.message, // Full message text
+                    messageType: messageData.type,
+                    itemName: messageData.itemName,
+                    originalTimestamp: messageData.timestamp,
+                    reportTimestamp: new Date().toISOString(),
+                    status: 'pending'
+                };
+                
                 await database.ref('reports').push(reportData);
                 showToast('Message reported. Thank you for helping keep our community safe.');
             } catch (error) {

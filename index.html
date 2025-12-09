@@ -3840,6 +3840,13 @@
         }
         
         async function confirmSaveRoute() {
+            // Check if user is banned
+            const isBanned = await checkIfBanned();
+            if (isBanned) {
+                showToast('Your account has been suspended. Contact support for assistance.');
+                return;
+            }
+            
             const name = document.getElementById('routeName').value;
             if (!name) {
                 showToast('Please enter a route name!');
@@ -4896,6 +4903,14 @@
         // Submit handlers
         async function submitSwarm(event) {
             event.preventDefault();
+            
+            // Check if user is banned
+            const isBanned = await checkIfBanned();
+            if (isBanned) {
+                showToast('Your account has been suspended. Contact support for assistance.');
+                return;
+            }
+            
             const formData = new FormData(event.target);
             
             // Get coordinates from the pins (first one is primary meeting point)
@@ -4973,6 +4988,14 @@
 
         async function submitEvent(event) {
             event.preventDefault();
+            
+            // Check if user is banned
+            const isBanned = await checkIfBanned();
+            if (isBanned) {
+                showToast('Your account has been suspended. Contact support for assistance.');
+                return;
+            }
+            
             const formData = new FormData(event.target);
             
             // Get coordinates from the pin
@@ -5172,6 +5195,23 @@
         if (typeof toggleCustomEventType !== 'undefined') window.toggleCustomEventType = toggleCustomEventType;
         if (typeof toggleCustomRouteCategory !== 'undefined') window.toggleCustomRouteCategory = toggleCustomRouteCategory;
         
+        // === BAN SYSTEM ===
+        
+        // Check if user is banned
+        async function checkIfBanned() {
+            const user = auth.currentUser;
+            if (!user) return false;
+            
+            try {
+                const banSnapshot = await database.ref(`bannedUsers/${user.uid}`).once('value');
+                return banSnapshot.exists();
+            } catch (error) {
+                console.error('Error checking ban status:', error);
+                return false;
+            }
+        }
+        window.checkIfBanned = checkIfBanned;
+        
         // === MESSAGING SYSTEM ===
         
         // Open message modal
@@ -5208,7 +5248,7 @@
                         <div style="margin-bottom: 1.5rem;">
                             <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Message *</label>
                             <textarea id="messageText" required maxlength="1000" rows="6" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Hi, I'm interested in..."></textarea>
-                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Your username and email will be shared with the organizer. Messages about events/swarms will be automatically deleted 7 days after the event date.</p>
+                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">💡 Your username will be visible to the organizer. Messages are private and only visible between you and the recipient. Event/swarm messages auto-delete 30 days after the event.</p>
                         </div>
                         
                         <!-- Honeypot field (hidden from humans, bots will fill it) -->
@@ -5230,6 +5270,15 @@
             const user = auth.currentUser;
             if (!user) {
                 showToast('Please sign in to send messages');
+                return;
+            }
+            
+            // Check if user is banned
+            const isBanned = await checkIfBanned();
+            if (isBanned) {
+                showToast('Your account has been suspended. Contact support for assistance.');
+                const modal = document.getElementById('messageModal');
+                if (modal) modal.remove();
                 return;
             }
             
@@ -5436,6 +5485,15 @@
             const user = auth.currentUser;
             if (!user) {
                 showToast('Please sign in to send messages');
+                return;
+            }
+            
+            // Check if user is banned
+            const isBanned = await checkIfBanned();
+            if (isBanned) {
+                showToast('Your account has been suspended. Contact support for assistance.');
+                const modal = document.getElementById('replyModal');
+                if (modal) modal.remove();
                 return;
             }
             

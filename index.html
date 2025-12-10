@@ -1229,6 +1229,12 @@
                 const username = await getUsernameFromId(user.uid);
                 document.getElementById('user-name').textContent = `Hi, ${username}!`;
                 
+                // Force layout recalculation on mobile (fixes alignment after login)
+                const navContainer = document.querySelector('.nav-container');
+                if (navContainer) {
+                    void navContainer.offsetHeight; // Force reflow
+                }
+                
                 // Check if user is banned
                 const isBanned = await checkIfBanned();
                 if (isBanned) {
@@ -1266,6 +1272,12 @@
                 // Update UI
                 document.getElementById('sign-in-btn').style.display = 'block';
                 document.getElementById('user-info').style.display = 'none';
+                
+                // Force layout recalculation on mobile
+                const navContainer = document.querySelector('.nav-container');
+                if (navContainer) {
+                    void navContainer.offsetHeight; // Force reflow
+                }
                 
                 // Hide verification banner
                 document.getElementById('verification-banner').style.display = 'none';

@@ -26,6 +26,10 @@
             color: #8DBCC0;
             --accent-color: #6B9B9E;
             --accent-light: #8DBCC0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: rgba(107, 155, 158, 0.2);
+            touch-action: manipulation;
         }
         
         body.choreography-active {
@@ -41,6 +45,7 @@
             top: 0;
             width: 100%;
             background: rgba(10, 10, 10, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             padding: 1.5rem 2rem;
             z-index: 1000;
@@ -127,6 +132,7 @@
             width: 100%;
             height: 100%;
             background: rgba(10, 10, 10, 0.6);
+            -webkit-backdrop-filter: blur(6px);
             backdrop-filter: blur(6px);
             z-index: 1;
         }
@@ -652,34 +658,255 @@
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            /* Hero Section */
             .hero h1 {
-                font-size: 3.5rem;
+                font-size: 2.5rem;
             }
             
             .hero-subtitle {
-                font-size: 1.2rem;
+                font-size: 1rem;
+                padding: 0 1rem;
             }
             
             .hero-logo-btn {
-                width: 150px;
-                height: 150px;
+                width: 120px;
+                height: 120px;
+            }
+            
+            /* Navigation - Stack vertically */
+            nav {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
             }
             
             .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
+                flex-direction: column;
+                gap: 0.75rem;
+                font-size: 1rem;
+                width: 100%;
+                text-align: center;
             }
             
+            .nav-links a {
+                padding: 0.75rem;
+                display: block;
+            }
+            
+            /* Auth section - Center below nav */
+            #user-info {
+                position: static !important;
+                justify-content: center;
+                margin-top: 0.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            #user-info button {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            /* Make all buttons touch-friendly */
+            button,
+            .feature-btn {
+                min-height: 44px;
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            /* Container adjustments */
             .container {
                 padding: 0 1rem;
             }
             
             #welcome-section {
-                padding: 2rem;
+                padding: 2rem 1rem;
             }
             
             .definition-box-animated h2 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+            
+            /* Modals - Full screen friendly */
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                max-height: 85vh !important;
+                margin: 1rem !important;
+                padding: 1.5rem !important;
+                overflow-y: auto;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.5rem !important;
+            }
+            
+            /* Close button bigger */
+            .close {
+                font-size: 2rem !important;
+                top: 0.5rem !important;
+                right: 0.5rem !important;
+                width: 44px;
+                height: 44px;
+            }
+            
+            /* Dashboard tabs - Stack better */
+            .dashboard-tab {
+                flex: 1;
+                min-width: auto;
+                padding: 0.75rem 0.5rem !important;
+                font-size: 0.85rem !important;
+                white-space: nowrap;
+            }
+            
+            #dashboardContent {
+                max-height: 50vh !important;
+            }
+            
+            /* Maps - Better mobile height */
+            #map {
+                height: 50vh !important;
+            }
+            
+            #search-map,
+            #swarm-map,
+            #event-map {
+                height: 300px !important;
+            }
+            
+            /* Form inputs - Larger, easier to tap */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="date"],
+            input[type="time"],
+            textarea,
+            select {
+                font-size: 16px !important; /* Prevents iOS zoom */
+                padding: 0.75rem !important;
+                min-height: 44px;
+            }
+            
+            /* Feature cards */
+            .feature-card {
+                padding: 1.5rem !important;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.25rem !important;
+            }
+            
+            /* Footer */
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            
+            /* Info panels */
+            #searchInfoPanel,
+            #swarmInfoPanel,
+            #eventInfoPanel {
+                max-width: 90% !important;
+                margin: 0.5rem auto !important;
+                padding: 1rem !important;
+            }
+            
+            /* Category dropdowns */
+            select {
+                max-height: 200px;
+            }
+        }
+        
+        /* Extra small phones (320px - 480px) */
+        @media (max-width: 480px) {
+            /* Hero even smaller */
+            .hero h1 {
+                font-size: 2rem;
+                line-height: 1.2;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .hero-logo-btn {
+                width: 100px;
+                height: 100px;
+            }
+            
+            /* Single column footer */
+            .footer-content {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Full width buttons */
+            .feature-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            /* Smaller modal padding */
+            .modal-content {
+                padding: 1rem !important;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.25rem !important;
+            }
+            
+            /* Dashboard tabs smaller text */
+            .dashboard-tab {
+                font-size: 0.75rem !important;
+                padding: 0.5rem 0.25rem !important;
+            }
+            
+            /* Maps shorter on small screens */
+            #map {
+                height: 40vh !important;
+            }
+            
+            #search-map,
+            #swarm-map,
+            #event-map {
+                height: 250px !important;
+            }
+            
+            /* Tighter spacing */
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            #welcome-section {
+                padding: 1.5rem 0.5rem;
+            }
+        }
+        
+        /* Safari-specific fixes */
+        @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+            .modal-content,
+            nav,
+            .hero {
+                -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            /* Remove hover effects on touch devices */
+            .feature-card:hover,
+            button:hover,
+            a:hover {
+                transform: none;
+            }
+            
+            /* Larger tap targets */
+            button,
+            a,
+            .feature-btn {
+                min-height: 44px;
+                min-width: 44px;
             }
         }
         

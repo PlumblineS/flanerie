@@ -2387,7 +2387,7 @@
             };
             
             const content = document.createElement('div');
-            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto; padding-bottom: 4rem; height: 100vh; overflow-y: auto;';
+            content.style.cssText = 'padding: 3rem; max-width: 1600px; margin: 0 auto; padding-bottom: 4rem; height: 100vh; overflow: hidden;';
             
             // Create content based on section
             const mapMode = sectionId.includes('swarm') ? 'swarm' : sectionId.includes('event') ? 'event' : 'journey';
@@ -2532,7 +2532,7 @@
                         </select>
                     </div>
                     
-                    <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                    <div style="margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="mapSearch" placeholder="👉 Enter your zip code to find routes near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
@@ -2541,7 +2541,7 @@
                         <button class="feature-btn" onclick="showToast('Searching routes...')">Search</button>
                     </div>
                     
-                    <div id="search-map" style="height: 600px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
+                    <div id="search-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="searchInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">
@@ -2564,7 +2564,7 @@
                         <button class="feature-btn" onclick="showToast('Searching swarms...')">Search</button>
                     </div>
                     
-                    <div id="swarm-map" style="height: 600px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
+                    <div id="swarm-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="swarmInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">
@@ -2587,7 +2587,7 @@
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>
                     
-                    <div id="event-map" style="height: 600px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
+                    <div id="event-map" style="height: 500px; border-radius: 15px; margin: 1rem 0; background: #1a1a1a;"></div>
                     
                     <!-- Info Panel -->
                     <div id="eventInfoPanel" style="display: none; padding: 1.5rem; background: rgba(25, 25, 25, 0.95); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; margin: 1rem auto 0 auto; max-width: 500px;">

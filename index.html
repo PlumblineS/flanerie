@@ -2468,10 +2468,15 @@
             contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
             
             try {
-                const snapshot = await database.ref('routeDrafts').orderByChild('createdBy').equalTo(user.uid).once('value');
+                // Get all drafts, then filter client-side (avoids Firebase indexing requirement)
+                const snapshot = await database.ref('routeDrafts').once('value');
                 const drafts = [];
+                
                 snapshot.forEach(child => {
-                    drafts.push({ id: child.key, ...child.val() });
+                    const draft = child.val();
+                    if (draft.createdBy === user.uid) {
+                        drafts.push({ id: child.key, ...draft });
+                    }
                 });
                 
                 if (drafts.length === 0) {
@@ -2514,7 +2519,7 @@
                 
             } catch (error) {
                 console.error('Error loading drafts:', error);
-                contentDiv.innerHTML = '<p style="text-align: center; color: #d9534f;">Error loading drafts</p>';
+                contentDiv.innerHTML = `<p style="text-align: center; color: #d9534f;">Error loading drafts: ${error.message}</p>`;
             }
         }
         
@@ -6413,9 +6418,6 @@
                 <button id="routesTab" class="dashboard-tab active" onclick="switchDashboardTab('routes')" style="padding: 1rem 1.5rem; background: none; border: none; color: var(--accent-light); font-weight: 600; cursor: pointer; border-bottom: 3px solid var(--accent-color); transition: all 0.3s ease;">
                     My Routes
                 </button>
-                <button id="draftsTab" class="dashboard-tab" onclick="switchDashboardTab('drafts')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
-                    My Drafts
-                </button>
                 <button id="swarmsTab" class="dashboard-tab" onclick="switchDashboardTab('swarms')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
                     My Swarms
                 </button>
@@ -6424,6 +6426,9 @@
                 </button>
                 <button id="likesTab" class="dashboard-tab" onclick="switchDashboardTab('likes')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
                     My Likes & Interests
+                </button>
+                <button id="draftsTab" class="dashboard-tab" onclick="switchDashboardTab('drafts')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Drafts
                 </button>
                 <button id="messagesTab" class="dashboard-tab" onclick="switchDashboardTab('messages')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
                     <span id="messagesTabLabel">Messages</span> <span id="unreadBadge" style="display: none; background: #ff4444; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.75rem; margin-left: 0.3rem;"></span>
@@ -6435,9 +6440,6 @@
                 <div id="routesContent" class="dashboard-section">
                     <p style="text-align: center; color: #999;">Loading your routes...</p>
                 </div>
-                <div id="draftsContent" class="dashboard-section" style="display: none;">
-                    <p style="text-align: center; color: #999;">Loading your drafts...</p>
-                </div>
                 <div id="swarmsContent" class="dashboard-section" style="display: none;">
                     <p style="text-align: center; color: #999;">Loading your swarms...</p>
                 </div>
@@ -6447,7 +6449,9 @@
                 <div id="likesContent" class="dashboard-section" style="display: none;">
                     <p style="text-align: center; color: #999;">Loading your likes...</p>
                 </div>
-                
+                <div id="draftsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your drafts...</p>
+                </div>
                 <div id="messagesContent" class="dashboard-section" style="display: none;">
                     <p style="text-align: center; color: #999;">Loading your messages...</p>
                 </div>

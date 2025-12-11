@@ -1045,27 +1045,29 @@
                 <p>The art of urban wandering.</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
+                <h4>Legal & Info</h4>
                 <ul>
                     <li><a href="about.html">About Us</a></li>
-                    <li><a href="#contact">Contact</a></li>
                     <li><a href="for-businesses.html">For Businesses</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Community</h4>
                 <ul>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#stories">Stories</a></li>
-                    <li><a href="#events">Events</a></li>
+                    <li><a href="javascript:void(0)" onclick="openStorySubmissionModal()">Submit Your Story</a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToExplore()">Explore Routes</a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('events')">Browse Events</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Connect</h4>
-                <ul>
-                    <li><a href="#instagram">Instagram</a></li>
-                    <li><a href="#twitter">Twitter</a></li>
-                </ul>
+                <div style="display: flex; gap: 1.5rem; font-size: 1.8rem; margin-top: 1rem;">
+                    <a href="https://instagram.com" target="_blank" title="Instagram" style="color: var(--accent-light); transition: color 0.3s;">📷</a>
+                    <a href="https://facebook.com" target="_blank" title="Facebook" style="color: var(--accent-light); transition: color 0.3s;">👥</a>
+                    <a href="https://x.com" target="_blank" title="X (Twitter)" style="color: var(--accent-light); transition: color 0.3s;">🐦</a>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -1220,9 +1222,25 @@
             document.getElementById('features-content').scrollIntoView({ behavior: 'smooth' });
         }
         
+        // Scroll to any section by ID
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Story submission modal (placeholder - will build full modal later)
+        function openStorySubmissionModal() {
+            showToast('Story submission feature coming soon!');
+            // TODO: Build full story submission modal with admin approval system
+        }
+        
         // Make globally accessible
         window.scrollToContent = scrollToContent;
         window.scrollToExplore = scrollToExplore;
+        window.scrollToSection = scrollToSection;
+        window.openStorySubmissionModal = openStorySubmissionModal;
     </script>
     
     <!-- Leaflet JavaScript -->

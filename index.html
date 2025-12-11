@@ -1056,9 +1056,9 @@
             <div class="footer-section">
                 <h4>Community</h4>
                 <ul>
-                    <li><a href="javascript:void(0)" onclick="openStorySubmissionModal()">Submit Your Story</a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToExplore()">Explore Routes</a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToSection('events')">Browse Events</a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('swarms')">Discover Swarms</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1230,17 +1230,10 @@
             }
         }
         
-        // Story submission modal (placeholder - will build full modal later)
-        function openStorySubmissionModal() {
-            showToast('Story submission feature coming soon!');
-            // TODO: Build full story submission modal with admin approval system
-        }
-        
         // Make globally accessible
         window.scrollToContent = scrollToContent;
         window.scrollToExplore = scrollToExplore;
         window.scrollToSection = scrollToSection;
-        window.openStorySubmissionModal = openStorySubmissionModal;
     </script>
     
     <!-- Leaflet JavaScript -->
@@ -5552,7 +5545,11 @@
                 const messages = [];
                 
                 messagesSnapshot.forEach(snap => {
-                    messages.push({ id: snap.key, ...snap.val() });
+                    const msg = snap.val();
+                    // Filter out hidden messages (hidden after 30 days but retained for 3 years)
+                    if (!msg.hidden) {
+                        messages.push({ id: snap.key, ...msg });
+                    }
                 });
                 
                 // Sort by newest first
@@ -5571,28 +5568,39 @@
             try {
                 const allMessagesSnapshot = await database.ref('messages').once('value');
                 const now = new Date();
+                const hidePromises = [];
                 const deletePromises = [];
                 
                 allMessagesSnapshot.forEach(snap => {
                     const msg = snap.val();
+                    const messageDate = new Date(msg.timestamp);
+                    const daysSinceMessage = (now - messageDate) / (1000 * 60 * 60 * 24);
                     
-                    // Only auto-delete event/swarm messages, not direct replies
-                    if (msg.type === 'event' || msg.type === 'swarm') {
-                        // Parse itemName to try to get the event/swarm ID
-                        // For now, we'll just check message age (30 days old = delete)
-                        const messageDate = new Date(msg.timestamp);
-                        const daysSinceMessage = (now - messageDate) / (1000 * 60 * 60 * 24);
-                        
-                        if (daysSinceMessage > 30) {
-                            console.log('Deleting old message:', snap.key);
-                            deletePromises.push(database.ref(`messages/${snap.key}`).remove());
-                        }
+                    // HIDE messages after 30 days (for privacy - hides from user view)
+                    // Only hide event/swarm messages, not direct replies
+                    if ((msg.type === 'event' || msg.type === 'swarm') && daysSinceMessage > 30 && !msg.hidden) {
+                        console.log('Hiding message from user view:', snap.key);
+                        hidePromises.push(database.ref(`messages/${snap.key}`).update({ hidden: true }));
+                    }
+                    
+                    // ACTUALLY DELETE messages after 3 years (1095 days) for legal retention
+                    // This applies to ALL message types (event, swarm, reply)
+                    if (daysSinceMessage > 1095) {
+                        console.log('Permanently deleting message (3 year retention expired):', snap.key);
+                        deletePromises.push(database.ref(`messages/${snap.key}`).remove());
                     }
                 });
                 
+                // Execute hide operations
+                if (hidePromises.length > 0) {
+                    await Promise.all(hidePromises);
+                    console.log(`Hidden ${hidePromises.length} messages from user view (30+ days old)`);
+                }
+                
+                // Execute delete operations
                 if (deletePromises.length > 0) {
                     await Promise.all(deletePromises);
-                    console.log(`Cleaned up ${deletePromises.length} old messages`);
+                    console.log(`Permanently deleted ${deletePromises.length} messages (3+ years old)`);
                 }
             } catch (error) {
                 console.error('Error cleaning up messages:', error);

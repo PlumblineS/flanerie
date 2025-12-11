@@ -1234,6 +1234,146 @@
         window.scrollToContent = scrollToContent;
         window.scrollToExplore = scrollToExplore;
         window.scrollToSection = scrollToSection;
+        
+        // === GPS LOCATION FEATURES (Mobile Only) ===
+        
+        // Detect if user is on mobile device
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Get user's current GPS location
+        function getUserLocation(callback) {
+            if (!navigator.geolocation) {
+                showToast('❌ GPS not supported on this device');
+                return;
+            }
+            
+            showToast('📍 Getting your location...');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    callback({ lat, lng });
+                },
+                (error) => {
+                    let message = '❌ Could not get your location';
+                    if (error.code === error.PERMISSION_DENIED) {
+                        message = '❌ Location permission denied. Enable in settings.';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        message = '❌ Location unavailable. Check GPS settings.';
+                    } else if (error.code === error.TIMEOUT) {
+                        message = '❌ Location request timed out. Try again.';
+                    }
+                    showToast(message);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        // GPS button for Journey mode (adds waypoint at current location)
+        function useMyLocationForJourney() {
+            getUserLocation((coords) => {
+                const latlng = { lat: coords.lat, lng: coords.lng };
+                addWaypoint(latlng);
+                journeyMap.setView([coords.lat, coords.lng], 16);
+                showToast('✅ Waypoint added at your location!');
+            });
+        }
+        
+        // GPS button for Swarm mode (places pin at current location)
+        function useMyLocationForSwarm() {
+            getUserLocation((coords) => {
+                // Simulate a map click at the GPS coordinates
+                const latlng = { lat: coords.lat, lng: coords.lng };
+                
+                // Same logic as addSwarmMarker function
+                if (swarmMarkers.length > 0) {
+                    swarmMarkers.forEach(marker => journeyMap.removeLayer(marker));
+                    swarmMarkers = [];
+                }
+                
+                if (swarmLocations.length >= 5) {
+                    showToast('Maximum 5 locations reached');
+                    return;
+                }
+                
+                const marker = L.marker(latlng).addTo(journeyMap);
+                swarmMarkers.push(marker);
+                swarmLocations.push({ lat: coords.lat, lng: coords.lng });
+                journeyMap.setView([coords.lat, coords.lng], 16);
+                
+                const saveBtn = document.getElementById('saveSwarmMapBtn');
+                if (saveBtn) saveBtn.disabled = false;
+                
+                document.getElementById('multiBusinessContainer').style.display = 'block';
+                
+                createSwarmBusinessLabel(swarmLocations.length);
+                
+                showToast(`📍 Location ${swarmLocations.length} pinned at your location!`);
+            });
+        }
+        
+        // GPS button for Event mode (places pin at current location)
+        function useMyLocationForEvent() {
+            getUserLocation((coords) => {
+                // Same logic as clicking the map in event mode
+                const latlng = { lat: coords.lat, lng: coords.lng };
+                
+                if (window.eventMarker) {
+                    journeyMap.removeLayer(window.eventMarker);
+                }
+                
+                // Create custom pin icon to match event style
+                const eventPinIcon = L.divIcon({
+                    className: 'event-marker-pin',
+                    html: '<div style="background: #0056b3; color: white; border-radius: 50% 50% 50% 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><span style="transform: rotate(45deg);">📍</span></div>',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                });
+                
+                window.eventMarker = L.marker([coords.lat, coords.lng], { icon: eventPinIcon }).addTo(journeyMap);
+                
+                // Store location with reverse geocoding for address
+                reverseGeocode(coords.lat, coords.lng).then(address => {
+                    window.eventLocation = { 
+                        lat: coords.lat, 
+                        lng: coords.lng,
+                        address: address
+                    };
+                });
+                
+                journeyMap.setView([coords.lat, coords.lng], 16);
+                
+                const saveBtn = document.getElementById('saveEventMapBtn');
+                if (saveBtn) saveBtn.disabled = false;
+                
+                showToast('✅ Event location pinned at your location!');
+            });
+        }
+        
+        // Route GPS button click to appropriate function based on mode
+        function handleGPSClick(mode) {
+            if (mode === 'journey') {
+                useMyLocationForJourney();
+            } else if (mode === 'swarm') {
+                useMyLocationForSwarm();
+            } else if (mode === 'event') {
+                useMyLocationForEvent();
+            }
+        }
+        
+        // Make GPS functions globally accessible
+        window.isMobileDevice = isMobileDevice;
+        window.useMyLocationForJourney = useMyLocationForJourney;
+        window.useMyLocationForSwarm = useMyLocationForSwarm;
+        window.useMyLocationForEvent = useMyLocationForEvent;
+        window.handleGPSClick = handleGPSClick;
     </script>
     
     <!-- Leaflet JavaScript -->
@@ -2556,6 +2696,12 @@
                         <div style="max-width: 600px; margin: 0 auto;">
                             <input type="text" id="mapSearch" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
                             <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            
+                            <!-- GPS Button (Mobile Only) -->
+                            <button id="gpsLocationBtn" onclick="handleGPSClick('${mapMode}')" style="display: none; margin-top: 0.75rem; width: 100%; padding: 0.75rem; background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.3s ease;">
+                                📍 Use My Current Location
+                            </button>
+                            
                             <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">${hints[mapMode]}</p>
                         </div>
                         <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
@@ -2824,6 +2970,12 @@
                                     suggestionsDiv.style.display = 'none';
                                 }
                             });
+                        }
+                        
+                        // Show GPS button only on mobile devices
+                        const gpsBtn = document.getElementById('gpsLocationBtn');
+                        if (gpsBtn && isMobileDevice()) {
+                            gpsBtn.style.display = 'block';
                         }
                     }
              

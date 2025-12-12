@@ -1,10 +1,10 @@
 // Service Worker for Flânerie PWA
 const CACHE_NAME = 'flanerie-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/privacy.html',
-  '/terms.html',
+  '/pathpals/',
+  '/pathpals/index.html',
+  '/pathpals/privacy.html',
+  '/pathpals/terms.html',
   // Add any critical CSS/JS files here if you have separate files
 ];
 

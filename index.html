@@ -5236,6 +5236,14 @@
                         const date = new Date(item.created).toLocaleDateString();
                         const sectionMap = { 'route': 'search', 'swarm': 'swarms', 'event': 'events' };
                         
+                        // Add recurring badge for events
+                        const recurringBadge = item.type === 'event' && item.isRecurring ? 
+                            `<span style="display: inline-block; background: rgba(107, 155, 158, 0.3); color: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">🔄 Recurring</span>` : '';
+                        
+                        // Add event-specific date/time if it's an event
+                        const eventDateTime = item.type === 'event' && item.startDate ? 
+                            `<p style="color: var(--accent-light); font-size: 0.85rem; margin: 0.5rem 0; font-weight: 600;">📅 ${item.startDate} at ${item.startTime || 'TBD'}</p>` : '';
+                        
                         html += `
                             <div onclick="document.getElementById('user-profile-modal').remove(); toggleSection('${sectionMap[item.type]}', '${item.id}')" 
                                  style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem; cursor: pointer; transition: all 0.3s;"
@@ -5245,9 +5253,11 @@
                                     <div style="font-size: 2rem; line-height: 1;">${emoji}</div>
                                     <div style="flex: 1;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                            <h3 style="color: var(--accent-light); margin: 0; font-size: 1.1rem;">${title}</h3>
+                                            <h3 style="color: var(--accent-light); margin: 0; font-size: 1.1rem;">${title}${recurringBadge}</h3>
                                             <span style="background: rgba(107, 155, 158, 0.2); color: var(--accent-light); padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">${typeLabel}</span>
                                         </div>
+                                        ${eventDateTime}
+                                        ${item.recurrenceInfo ? `<p style="color: #999; font-size: 0.8rem; font-style: italic; margin: 0.5rem 0;">${item.recurrenceInfo}</p>` : ''}
                                         <p style="color: #d4d4d4; font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.4;">${desc.substring(0, 150)}${desc.length > 150 ? '...' : ''}</p>
                                         <p style="color: #999; font-size: 0.8rem; margin: 0.5rem 0 0 0;">📅 Posted ${date}</p>
                                     </div>

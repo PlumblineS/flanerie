@@ -1412,19 +1412,26 @@
             if (user) {
                 // User is signed in
                 console.log('User signed in:', user.email);
+                console.log('User displayName:', user.displayName);
+                console.log('User UID:', user.uid);
                 
                 // Get username from database or use displayName
                 let username = await getUsernameFromId(user.uid);
+                console.log('Username from getUsernameFromId:', username);
                 
                 // If no username set up yet, use displayName or email prefix
                 if (username === 'Unknown User') {
                     if (user.displayName) {
                         username = user.displayName;
+                        console.log('Using displayName as fallback:', username);
                     } else if (user.email) {
                         // Use email prefix as temporary display
                         username = user.email.split('@')[0];
+                        console.log('Using email prefix as fallback:', username);
                     }
                 }
+                
+                console.log('Final username to display:', username);
                 
                 // Update UI
                 document.getElementById('sign-in-btn').style.display = 'none';
@@ -2448,35 +2455,59 @@
                     return;
                 }
                 
-                // Get old username from displayName
-                const oldUsername = user.displayName;
-                
-                // Remove old username mapping if it exists
-                if (oldUsername && oldUsername !== newUsername) {
-                    const oldUsernameLower = oldUsername.toLowerCase();
-                    try {
-                        await database.ref('usernames/' + oldUsernameLower).remove();
-                    } catch (error) {
-                        console.log('No old username to remove:', error);
+                // Find ALL old username entries for this user ID
+                const allUsernamesSnap = await database.ref('usernames').once('value');
+                const oldEntries = [];
+                allUsernamesSnap.forEach((child) => {
+                    if (child.val() === user.uid && child.key !== newUsernameLower) {
+                        oldEntries.push(child.key);
                     }
+                });
+                
+                console.log('Old username entries to remove:', oldEntries);
+                
+                // Remove ALL old entries concurrently
+                if (oldEntries.length > 0) {
+                    await Promise.all(
+                        oldEntries.map(oldEntry => database.ref('usernames/' + oldEntry).remove())
+                    );
+                    console.log('Removed old entries:', oldEntries);
                 }
                 
-                // Update Firebase Auth displayName (this is what we'll use for lookups)
-                await user.updateProfile({ displayName: newUsername });
-                
-                // Add new username mapping (for availability checks)
+                // Add new username mapping
                 await database.ref('usernames/' + newUsernameLower).set(user.uid);
+                console.log('Set new username:', newUsernameLower, '→', user.uid);
                 
-                // Force reload user data
-                await user.reload();
+                // Update Firebase Auth displayName
+                await user.updateProfile({ displayName: newUsername });
+                console.log('Updated displayName to:', newUsername);
+                
+                // DON'T reload immediately - it might fetch old data before update propagates
+                // The update is already applied locally
+                
+                // Verify the update worked
+                const verifySnap = await database.ref('usernames').once('value');
+                let foundEntries = [];
+                verifySnap.forEach((child) => {
+                    if (child.val() === user.uid) {
+                        foundEntries.push(child.key);
+                    }
+                });
+                console.log('Verification - usernames for this user:', foundEntries);
                 
                 // Update UI immediately
                 document.getElementById('user-name').textContent = `Hi, ${newUsername}!`;
                 
                 showToast('✅ Username updated successfully!');
+                
+                // Suggest refresh to see changes on routes
+                setTimeout(() => {
+                    showToast('💡 Refresh the page to see your new username on all your posts!');
+                }, 2000);
+                
             } catch (error) {
                 console.error('Error updating username:', error);
-                showToast('❌ Error updating username: ' + (error.message || 'Unknown error'));
+                showToast('❌ Error: ' + (error.message || 'Unknown error'));
             }
         }
         
@@ -5054,12 +5085,21 @@
         // Helper function to get username from userId
         async function getUsernameFromId(userId) {
             try {
-                // First: Search usernames database for this userId
+                // PRIORITY 1: If it's the current user, always use their displayName first
+                if (auth.currentUser && auth.currentUser.uid === userId) {
+                    if (auth.currentUser.displayName) {
+                        console.log('Using displayName for current user:', auth.currentUser.displayName);
+                        return auth.currentUser.displayName;
+                    }
+                }
+                
+                // PRIORITY 2: Search usernames database for this userId
                 const snapshot = await database.ref('usernames').once('value');
                 let foundUsername = null;
                 snapshot.forEach((child) => {
                     if (child.val() === userId) {
                         foundUsername = child.key;
+                        console.log('Found username in database:', foundUsername, 'for userId:', userId);
                     }
                 });
                 
@@ -5067,14 +5107,8 @@
                     return foundUsername;
                 }
                 
-                // Second: If it's the current user, use their displayName
-                if (auth.currentUser && auth.currentUser.uid === userId) {
-                    if (auth.currentUser.displayName) {
-                        return auth.currentUser.displayName;
-                    }
-                }
-                
-                // Last resort: return Unknown User
+                // PRIORITY 3: Last resort
+                console.log('No username found for userId:', userId);
                 return 'Unknown User';
             } catch (error) {
                 console.error('Error getting username:', error);

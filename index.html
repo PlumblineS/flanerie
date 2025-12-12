@@ -1413,12 +1413,22 @@
                 // User is signed in
                 console.log('User signed in:', user.email);
                 
+                // Migrate/ensure username is in user profile
+                const username = await getUsernameFromId(user.uid);
+                if (username !== 'Unknown User') {
+                    // Check if username exists in user profile
+                    const profileCheck = await database.ref('users/' + user.uid + '/username').once('value');
+                    if (!profileCheck.exists()) {
+                        // Migrate: store username in profile for faster future lookups
+                        await database.ref('users/' + user.uid + '/username').set(username);
+                    }
+                }
+                
                 // Update UI
                 document.getElementById('sign-in-btn').style.display = 'none';
                 document.getElementById('user-info').style.display = 'flex';
                 
                 // Show username instead of email
-                const username = await getUsernameFromId(user.uid);
                 document.getElementById('user-name').textContent = `Hi, ${username}!`;
                 
                 // Force layout recalculation on mobile (fixes alignment after login)
@@ -1653,8 +1663,11 @@
                     return user.updateProfile({
                         displayName: displayName
                     }).then(() => {
-                        // Save username to database
-                        return database.ref('usernames/' + usernameLower).set(user.uid);
+                        // Save username to database (both in usernames mapping and user profile)
+                        return Promise.all([
+                            database.ref('usernames/' + usernameLower).set(user.uid),
+                            database.ref('users/' + user.uid + '/username').set(displayName)
+                        ]);
                     }).then(() => {
                         // Send verification email
                         console.log('Sending verification email to:', user.email);
@@ -2417,11 +2430,24 @@
             }
             
             try {
+                // Get old username first
+                const oldUsername = await getUsernameFromId(user.uid);
+                
+                // Update Firebase Auth displayName
                 await user.updateProfile({ displayName: newUsername });
                 
-                // Update username in database
-                const usernameLower = newUsername.toLowerCase();
-                await database.ref('usernames/' + usernameLower).set(user.uid);
+                // Remove old username mapping if it exists and isn't 'Unknown User'
+                if (oldUsername && oldUsername !== 'Unknown User') {
+                    const oldUsernameLower = oldUsername.toLowerCase();
+                    await database.ref('usernames/' + oldUsernameLower).remove();
+                }
+                
+                // Add new username mapping
+                const newUsernameLower = newUsername.toLowerCase();
+                await database.ref('usernames/' + newUsernameLower).set(user.uid);
+                
+                // Store username in user profile for quick lookup
+                await database.ref('users/' + user.uid + '/username').set(newUsername);
                 
                 // Force reload user data
                 await user.reload();
@@ -5010,7 +5036,13 @@
         // Helper function to get username from userId
         async function getUsernameFromId(userId) {
             try {
-                // Search usernames database for this userId
+                // First try to get username from user profile (faster)
+                const profileSnapshot = await database.ref('users/' + userId + '/username').once('value');
+                if (profileSnapshot.exists()) {
+                    return profileSnapshot.val();
+                }
+                
+                // Fallback: Search usernames database for this userId
                 const snapshot = await database.ref('usernames').once('value');
                 let foundUsername = null;
                 snapshot.forEach((child) => {

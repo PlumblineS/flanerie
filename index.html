@@ -2119,10 +2119,15 @@
                     const editButton = !isPastDate ?
                         `<button onclick="editEvent('${event.id}')" style="padding: 0.5rem 1rem; background: #5bc0de; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Edit</button>` : '';
                     
+                    // Show recurring badge if this is a recurring event
+                    const recurringBadge = event.isRecurring ? 
+                        `<span style="display: inline-block; background: rgba(107, 155, 158, 0.3); color: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">🔄 Recurring</span>` : '';
+                    
                     html += `
                         <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
-                            <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${event.name}</h3>
+                            <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${event.name}${recurringBadge}</h3>
                             <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 0.5rem;">${event.description || 'No description'}</p>
+                            ${event.recurrenceInfo ? `<p style="color: #999; font-size: 0.8rem; font-style: italic; margin-bottom: 0.5rem;">${event.recurrenceInfo}</p>` : ''}
                             <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
                                 📍 ${event.location}<br>
                                 📅 ${event.startDate} at ${event.startTime}${isPastDate ? ' <span style="color: #ff6b6b;">(Past)</span>' : ''}<br>
@@ -2413,6 +2418,17 @@
             
             try {
                 await user.updateProfile({ displayName: newUsername });
+                
+                // Update username in database
+                const usernameLower = newUsername.toLowerCase();
+                await database.ref('usernames/' + usernameLower).set(user.uid);
+                
+                // Force reload user data
+                await user.reload();
+                
+                // Update UI immediately
+                document.getElementById('user-name').textContent = `Hi, ${newUsername}!`;
+                
                 showToast('✅ Username updated successfully!');
             } catch (error) {
                 console.error('Error updating username:', error);
@@ -2433,7 +2449,18 @@
             
             try {
                 await user.updateEmail(newEmail);
-                showToast('✅ Email updated successfully! Please verify your new email.');
+                
+                // Send verification email to new address
+                await user.sendEmailVerification();
+                
+                showToast('✅ Email updated! Please verify your new email.');
+                
+                // Show verification banner if not verified
+                const verificationBanner = document.getElementById('verification-banner');
+                if (verificationBanner && !user.emailVerified) {
+                    verificationBanner.style.display = 'block';
+                    startVerificationAutoCheck();
+                }
             } catch (error) {
                 console.error('Error updating email:', error);
                 if (error.code === 'auth/requires-recent-login') {
@@ -3706,6 +3733,10 @@
                                         });
                                         selectedRoute = route;
                                         
+                                        // Zoom to the selected route
+                                        const bounds = polyline.getBounds();
+                                        searchMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+                                        
                                         // Check if user already liked this route in Firebase
                                         const user = auth.currentUser;
                                         let alreadyLiked = false;
@@ -3741,8 +3772,8 @@
                                             // Get username without count for display
                                             const username = await getUsernameFromId(route.createdBy);
                                             const userDisplay = username === 'Deleted User' ? 
-                                                `<span style="color: #999; font-size: 0.85rem;">👤 Deleted User</span>` :
-                                                `<span style="color: var(--accent-light); font-size: 0.85rem; cursor: pointer; text-decoration: underline;" onclick="viewUserProfile('${route.createdBy}', '${username}')" title="View ${username}'s profile">👤 ${username}</span>`;
+                                                `<span style="color: #999; font-size: 0.85rem;">👤 Posted by: Deleted User</span>` :
+                                                `<span style="color: var(--accent-light); font-size: 0.85rem; cursor: pointer; text-decoration: underline;" onclick="viewUserProfile('${route.createdBy}', '${username}')" title="View ${username}'s profile">👤 Posted by: ${username}</span>`;
                                             
                                             infoContent.innerHTML = `
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 2px solid rgba(107, 155, 158, 0.3);">
@@ -4905,6 +4936,11 @@
                         modal.style.display = 'none';
                         modal.remove();
                         document.body.classList.remove('choreography-active');
+                        
+                        // Remove all map click handlers before nulling
+                        if (journeyMap) {
+                            journeyMap.off('click');
+                        }
                         journeyMap = null;
                         
                         // Clear route data
@@ -4932,6 +4968,11 @@
                             modal.style.display = 'none';
                             modal.remove();
                             document.body.classList.remove('choreography-active');
+                            
+                            // Remove all map click handlers before nulling
+                            if (journeyMap) {
+                                journeyMap.off('click');
+                            }
                             journeyMap = null;
                             
                             // Clear route data so it doesn't persist on next create
@@ -5366,10 +5407,11 @@
                 }
             });
             
-            // Zoom out to show all routes
+            // Zoom out to city level (zoom 12) instead of fitting bounds
             if (allRoutesData.length > 0) {
-                const group = L.featureGroup(allRoutesData.map(r => r.polyline));
-                searchMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+                // Use first route's coordinates to center, or default to Denver
+                const centerCoords = allRoutesData[0]?.route?.waypoints?.[0] || [39.7392, -104.9903];
+                searchMap.setView(centerCoords, 12);
             }
             
             selectedRoute = null;
@@ -5978,6 +6020,11 @@
                         modal.style.display = 'none';
                         modal.remove();
                         document.body.classList.remove('choreography-active');
+                        
+                        // Remove all map click handlers before nulling
+                        if (journeyMap) {
+                            journeyMap.off('click');
+                        }
                         journeyMap = null;
                     }
                     // Open browse swarms immediately (no delay needed)
@@ -6096,6 +6143,11 @@
                     modal.style.display = 'none';
                     modal.remove();
                     document.body.classList.remove('choreography-active');
+                    
+                    // Remove all map click handlers before nulling
+                    if (journeyMap) {
+                        journeyMap.off('click');
+                    }
                     journeyMap = null;
                 }
                 toggleSection('events');
@@ -6120,6 +6172,11 @@
                         modal.style.display = 'none';
                         modal.remove();
                         document.body.classList.remove('choreography-active');
+                        
+                        // Remove all map click handlers before nulling
+                        if (journeyMap) {
+                            journeyMap.off('click');
+                        }
                         journeyMap = null;
                     }
                     // Open browse events immediately (no delay needed)

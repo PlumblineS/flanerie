@@ -261,6 +261,8 @@
             animation: slideDown 0.5s ease-out;
             max-width: 90%;
             text-align: center;
+            /* Auto-hide after 10 seconds */
+            animation: slideDown 0.5s ease-out, fadeOut 1s ease 10s forwards;
         }
         
         .pwa-install-banner.show {
@@ -299,13 +301,23 @@
             }
         }
         
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+        
         @media (max-width: 768px) {
             .pwa-install-banner {
                 font-size: 0.85rem;
                 padding: 0.6rem 1rem;
                 top: auto;
                 bottom: 80px;
-                animation: slideUp 0.5s ease-out;
+                animation: slideUp 0.5s ease-out, fadeOut 1s ease 10s forwards;
             }
             .pwa-install-banner button {
                 padding: 0.4rem 1rem;
@@ -321,6 +333,16 @@
             to {
                 bottom: 80px;
                 opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOutMobile {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                pointer-events: none;
             }
         }
         
@@ -897,10 +919,16 @@
                 -webkit-overflow-scrolling: touch;
             }
             
-            /* FIX: Map cards in search results cut off at bottom */
+            /* FIX: Leaflet map preview sizing in cards */
             .leaflet-container {
                 min-height: 250px !important;
                 height: 250px !important;
+            }
+            
+            /* FIX: Ensure card content isn't cut off */
+            div[style*="cursor: pointer"][style*="margin-bottom"] {
+                max-height: none !important;
+                overflow: visible !important;
             }
             
             /* FIX: Modal close button overlapping content */
@@ -4462,10 +4490,12 @@
                         
                         // Always load/reload events from Firebase
                         getAllEvents().then(events => {
+                            console.log('PWA DEBUG: Loading events for map, total count:', events.length);
                             
                             window.allEventMarkersArray = []; // Reset marker array
                             
                             if (events.length === 0) {
+                                console.log('PWA DEBUG: No events found in database');
                                 return;
                             }
                             
@@ -4479,6 +4509,7 @@
                             events.forEach(event => {
                                 // Skip events without coordinates
                                 if (!event.lat || !event.lng) {
+                                    console.log('PWA DEBUG: Skipping event (no coordinates):', event.name);
                                     invalidCount++;
                                     return;
                                 }
@@ -4537,6 +4568,7 @@
                                 });
                                 
                                 const marker = L.marker([event.lat, event.lng], { icon: eventPinIcon }).addTo(eventMap);
+                                console.log('PWA DEBUG: Added marker for event:', event.name, 'at', event.lat, event.lng);
                                 window.allEventMarkersArray.push(marker); // Store for zoom out
                                 
                                 // Click handler to populate info panel
@@ -4604,6 +4636,8 @@
                                     eventMap.setView([event.lat, event.lng], 11); // City level zoom
                                 }
                             });
+                            
+                            console.log('PWA DEBUG: Event loading complete. Valid events:', validCount, 'Invalid/filtered:', invalidCount, 'Total markers:', window.allEventMarkersArray.length);
                         });
                     }
                     

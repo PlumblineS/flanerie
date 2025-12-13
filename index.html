@@ -4417,6 +4417,9 @@
                                 
                                 // Click handler to populate info panel
                                 marker.on('click', async function() {
+                                    // Zoom to pin location at street level
+                                    swarmMap.setView([swarm.lat, swarm.lng], 15);
+                                    
                                     const infoPanel = document.getElementById('swarmInfoPanel');
                                     const infoContent = document.getElementById('swarmInfoContent');
                                     
@@ -4477,7 +4480,7 @@
                                 // Auto-show info for highlighted swarm
                                 if (isHighlighted) {
                                     marker.fire('click');
-                                    swarmMap.setView([swarm.lat, swarm.lng], 11); // City level zoom
+                                    swarmMap.setView([swarm.lat, swarm.lng], 15); // Street level zoom to match click behavior
                                 }
                             });
                         });
@@ -4649,6 +4652,9 @@
                                 
                                 // Click handler to populate info panel
                                 marker.on('click', async function() {
+                                    // Zoom to pin location at street level
+                                    eventMap.setView([event.lat, event.lng], 15);
+                                    
                                     const infoPanel = document.getElementById('eventInfoPanel');
                                     const infoContent = document.getElementById('eventInfoContent');
                                     
@@ -4710,7 +4716,7 @@
                                 // Auto-show info for highlighted event
                                 if (isHighlighted) {
                                     marker.fire('click');
-                                    eventMap.setView([event.lat, event.lng], 11); // City level zoom
+                                    eventMap.setView([event.lat, event.lng], 15); // Street level zoom to match click behavior
                                 }
                             });
                             

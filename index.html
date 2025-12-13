@@ -6432,9 +6432,19 @@
                     await saveEventToFirebase(eventOccurrence);
                 }
                 
-                // IMMEDIATELY disable the save button and map clicks (like Journey does)
+                // IMMEDIATELY disable both buttons and map clicks (like Journey does)
                 const saveBtn = document.getElementById('saveEventMapBtn');
                 if (saveBtn) saveBtn.disabled = true;
+                
+                // Find and disable Clear Event button
+                const clearBtns = document.querySelectorAll('button');
+                clearBtns.forEach(btn => {
+                    if (btn.textContent.includes('Clear Event')) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    }
+                });
                 
                 // Remove map click handler IMMEDIATELY
                 if (journeyMap) {
@@ -6445,21 +6455,35 @@
                 closeCreateEventModal();
                 
                 // Close the creation map and open browse events
+                console.log('PWA DEBUG: Closing recurring event modal');
                 const modal = document.getElementById('fullscreen-event-map-v2');
+                console.log('PWA DEBUG: Found modal?', !!modal);
                 if (modal) {
                     modal.style.display = 'none';
                     modal.remove();
                     document.body.classList.remove('choreography-active');
                     journeyMap = null;
+                    console.log('PWA DEBUG: Recurring modal removed');
                 }
                 toggleSection('events');
+                console.log('PWA DEBUG: toggleSection(events) called for recurring');
             } else {
                 // CREATE single event
                 const newEventId = await saveEventToFirebase(eventData);
                 
-                // IMMEDIATELY disable the save button and map clicks (like Journey does)
+                // IMMEDIATELY disable both buttons and map clicks (like Journey does)
                 const saveBtn = document.getElementById('saveEventMapBtn');
                 if (saveBtn) saveBtn.disabled = true;
+                
+                // Find and disable Clear Event button
+                const clearBtns = document.querySelectorAll('button');
+                clearBtns.forEach(btn => {
+                    if (btn.textContent.includes('Clear Event')) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    }
+                });
                 
                 // Remove map click handler IMMEDIATELY
                 if (journeyMap) {
@@ -6476,17 +6500,21 @@
                 
                 // Close the creation map and open browse events with the new event highlighted
                 if (newEventId) {
+                    console.log('PWA DEBUG: Closing creation modal and opening browse events');
                     // Close creation section without triggering scroll
                     const modal = document.getElementById('fullscreen-event-map-v2');
+                    console.log('PWA DEBUG: Found modal?', !!modal);
                     if (modal) {
                         // Remove modal directly without triggering closeBtn onclick
                         modal.style.display = 'none';
                         modal.remove();
                         document.body.classList.remove('choreography-active');
                         journeyMap = null;
+                        console.log('PWA DEBUG: Modal removed, calling toggleSection');
                     }
                     // Open browse events immediately (no delay needed)
                     toggleSection('events', newEventId);
+                    console.log('PWA DEBUG: toggleSection called with events and', newEventId);
                 }
             }
         }

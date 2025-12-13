@@ -4413,7 +4413,7 @@
                                             ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
                                             ${swarm.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">👤 Organizer:</strong> ${swarm.postedBy}</p>` : ''}
                                             ${swarm.createdBy !== (user ? user.uid : null) ? `<button onclick="openMessageModal('${swarm.createdBy}', '${username.replace(/'/g, "\\'")}', 'swarm', '${(swarm.title || '').replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin: 0.5rem 0; font-size: 0.9rem;">📧 Contact Organizer</button>` : ''}
-                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">>
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
                                                 <p id="swarm-interest-count-${swarm.id}" style="color: var(--accent-light); font-weight: 600; margin: 0;">👥 ${participants} flâneurs interested</p>
                                                 ${btnState}
                                             </div>

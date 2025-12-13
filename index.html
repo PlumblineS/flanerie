@@ -6375,9 +6375,6 @@
                 createdByEmail: user.email
             };
             
-            // Check if this is a recurring event
-            const isRecurring = document.getElementById('recurringEventCheckbox')?.checked;
-            
             // Save to Firebase (also keeps localStorage as backup)
             if (window.editingEventId) {
                 // UPDATE existing event
@@ -6386,87 +6383,6 @@
                 window.editingEventId = null; // Clear editing flag
                 closeCreateEventModal();
                 openDashboard(); // Show updated event in dashboard
-            } else if (isRecurring) {
-                // CREATE RECURRING EVENTS
-                const interval = parseInt(formData.get('eventRecurrenceInterval')) || 1;
-                const frequency = formData.get('eventRecurrenceFrequency') || 'weeks';
-                const recurrenceEnd = formData.get('eventRecurrenceEnd');
-                
-                if (!recurrenceEnd) {
-                    showToast('Please select an end date for recurring events');
-                    return;
-                }
-                
-                const startDate = new Date(eventData.startDate);
-                const endDate = new Date(recurrenceEnd);
-                const events = [];
-                let currentDate = new Date(startDate);
-                let occurrenceCount = 0;
-                
-                // Generate all occurrences
-                while (currentDate <= endDate && occurrenceCount < 100) {
-                    const eventCopy = {
-                        ...eventData,
-                        startDate: currentDate.toISOString().split('T')[0],
-                        isRecurring: true,
-                        recurrenceInfo: `Part of recurring series (every ${interval} ${frequency})`
-                    };
-                    
-                    events.push(eventCopy);
-                    occurrenceCount++;
-                    
-                    // Calculate next occurrence
-                    if (frequency === 'days') {
-                        currentDate.setDate(currentDate.getDate() + interval);
-                    } else if (frequency === 'weeks') {
-                        currentDate.setDate(currentDate.getDate() + (interval * 7));
-                    } else if (frequency === 'months') {
-                        currentDate.setMonth(currentDate.getMonth() + interval);
-                    }
-                }
-                
-                // Save all occurrences to Firebase
-                showToast(`Creating ${occurrenceCount} recurring events...`);
-                
-                for (const eventOccurrence of events) {
-                    await saveEventToFirebase(eventOccurrence);
-                }
-                
-                // IMMEDIATELY disable both buttons and map clicks (like Journey does)
-                const saveBtn = document.getElementById('saveEventMapBtn');
-                if (saveBtn) saveBtn.disabled = true;
-                
-                // Find and disable Clear Event button
-                const clearBtns = document.querySelectorAll('button');
-                clearBtns.forEach(btn => {
-                    if (btn.textContent.includes('Clear Event')) {
-                        btn.disabled = true;
-                        btn.style.opacity = '0.5';
-                        btn.style.cursor = 'not-allowed';
-                    }
-                });
-                
-                // Remove map click handler IMMEDIATELY
-                if (journeyMap) {
-                    journeyMap.off('click');
-                }
-                
-                showToast(`✅ ${occurrenceCount} recurring events created successfully!`);
-                closeCreateEventModal();
-                
-                // Close the creation map and open browse events
-                console.log('PWA DEBUG: Closing recurring event modal');
-                const modal = document.getElementById('fullscreen-event-map-v2');
-                console.log('PWA DEBUG: Found modal?', !!modal);
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.remove();
-                    document.body.classList.remove('choreography-active');
-                    journeyMap = null;
-                    console.log('PWA DEBUG: Recurring modal removed');
-                }
-                toggleSection('events');
-                console.log('PWA DEBUG: toggleSection(events) called for recurring');
             } else {
                 // CREATE single event
                 const newEventId = await saveEventToFirebase(eventData);
@@ -6571,67 +6487,6 @@
         window.submitEvent = submitEvent;
         
         // Toggle recurring event options visibility
-        function toggleRecurringOptions() {
-            const checkbox = document.getElementById('recurringEventCheckbox');
-            const options = document.getElementById('recurringOptions');
-            
-            if (checkbox && options) {
-                options.style.display = checkbox.checked ? 'block' : 'none';
-                if (checkbox.checked) {
-                    updateOccurrencePreview();
-                }
-            }
-        }
-        
-        // Update occurrence preview when recurrence settings change
-        function updateOccurrencePreview() {
-            const startDate = document.querySelector('input[name="eventStartDate"]')?.value;
-            const interval = document.getElementById('recurrenceInterval')?.value || 1;
-            const frequency = document.getElementById('recurrenceFrequency')?.value || 'weeks';
-            const endDate = document.getElementById('recurrenceEndDate')?.value;
-            
-            const preview = document.getElementById('occurrencePreview');
-            if (!preview || !startDate || !endDate) return;
-            
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            
-            if (end <= start) {
-                preview.textContent = '⚠️ End date must be after start date';
-                preview.style.color = '#ff6b6b';
-                return;
-            }
-            
-            // Calculate number of occurrences
-            let count = 0;
-            let currentDate = new Date(start);
-            
-            while (currentDate <= end && count < 100) { // Cap at 100 to prevent infinite loops
-                count++;
-                
-                // Add interval based on frequency
-                if (frequency === 'days') {
-                    currentDate.setDate(currentDate.getDate() + parseInt(interval));
-                } else if (frequency === 'weeks') {
-                    currentDate.setDate(currentDate.getDate() + (parseInt(interval) * 7));
-                } else if (frequency === 'months') {
-                    currentDate.setMonth(currentDate.getMonth() + parseInt(interval));
-                }
-            }
-            
-            const frequencyText = frequency === 'days' ? 'day' : frequency === 'weeks' ? 'week' : 'month';
-            const intervalText = interval == 1 ? frequencyText : `${interval} ${frequencyText}s`;
-            
-            preview.textContent = `✓ This will create ${count} event${count !== 1 ? 's' : ''} (every ${intervalText})`;
-            preview.style.color = 'var(--accent-color)';
-            
-            if (count >= 100) {
-                preview.textContent += ' - Maximum 100 occurrences allowed';
-            }
-        }
-        
-        window.toggleRecurringOptions = toggleRecurringOptions;
-        window.updateOccurrencePreview = updateOccurrencePreview;
         window.addInterest = addInterest;
         window.shareItem = shareItem;
 
@@ -7340,45 +7195,6 @@
                     <div>
                         <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Time</label>
                         <input type="time" name="eventEndTime" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
-                    </div>
-                </div>
-
-                <!-- Recurring Event Options -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 10px; border: 1px solid rgba(107, 155, 158, 0.2);">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" id="recurringEventCheckbox" onchange="toggleRecurringOptions()" style="width: 20px; height: 20px; cursor: pointer;">
-                        🔄 Recurring Event
-                    </label>
-                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem; margin-bottom: 1rem;">Check if this event repeats (weekly farmers market, monthly meetup, etc.)</p>
-                    
-                    <div id="recurringOptions" style="display: none; margin-top: 1rem;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Repeat Every</label>
-                                <select name="eventRecurrenceInterval" id="recurrenceInterval" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; cursor: pointer;">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Frequency</label>
-                                <select name="eventRecurrenceFrequency" id="recurrenceFrequency" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; cursor: pointer;">
-                                    <option value="days">Day(s)</option>
-                                    <option value="weeks" selected>Week(s)</option>
-                                    <option value="months">Month(s)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Repeat Until</label>
-                            <input type="date" name="eventRecurrenceEnd" id="recurrenceEndDate" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
-                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">Last date this event will occur</p>
-                        </div>
-                        
-                        <p id="occurrencePreview" style="color: var(--accent-color); font-size: 0.9rem; margin-top: 1rem; font-weight: 600;"></p>
                     </div>
                 </div>
 

@@ -100,15 +100,13 @@
             align-items: center;
             gap: 0.5rem;
             position: absolute;
-            right: 0;
-            margin-left: 6rem;
+            right: 2rem;
+
         }
         
         #user-name {
             font-size: 0.85rem;
             margin-right: 0.5rem;
-            position: relative;
-            top: 1px;
         }
         
         .auth-btn {
@@ -1083,7 +1081,7 @@
     </nav>
     
     <!-- Email Verification Banner -->
-    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
+    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 2rem; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
         <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
             ✅ You're signed in! 📧 Check your email and click the verification link to start posting. 
             <span style="color: #000; font-size: 0.85rem; opacity: 0.8;">(Auto-checking...)</span>
@@ -3640,7 +3638,7 @@
                         <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">${titles[mapMode]}</h2>
                         <div style="max-width: 600px; margin: 0 auto;">
                             <input type="text" id="mapSearch" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 2rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                             
                             <!-- GPS Button (Mobile Only) -->
                             <button id="gpsLocationBtn" onclick="handleGPSClick('${mapMode}')" style="display: none; margin-top: 0.75rem; width: 100%; padding: 0.75rem; background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.3s ease;">
@@ -3751,7 +3749,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 0.5rem; position: relative;">
                             <input type="text" id="mapSearch" placeholder="👉 Enter your zip code to find routes near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 2rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching routes...')">Search</button>
                     </div>
@@ -3774,7 +3772,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="swarmLocationSearch" placeholder="👉 Enter your zip code to find swarms near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="swarmSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="swarmSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 2rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching swarms...')">Search</button>
                     </div>
@@ -3797,7 +3795,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="eventLocationSearch" placeholder="👉 Enter your zip code to find events near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="eventSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="eventSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 2rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>
@@ -5861,7 +5859,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -5940,7 +5938,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -6669,7 +6667,7 @@
             if (!banner) {
                 banner = document.createElement('div');
                 banner.id = 'suspension-banner';
-                banner.style.cssText = 'background: rgba(255, 70, 70, 0.2); border: 2px solid #ff4646; color: #ff4646; padding: 1rem 2rem; text-align: center; font-weight: 600; position: fixed; top: 80px; left: 0; right: 0; z-index: 9999;';
+                banner.style.cssText = 'background: rgba(255, 70, 70, 0.2); border: 2px solid #ff4646; color: #ff4646; padding: 1rem 2rem; text-align: center; font-weight: 600; position: fixed; top: 80px; left: 0; right: 2rem; z-index: 9999;';
                 banner.innerHTML = '🚫 Your account has been suspended. You can browse but cannot create content or send messages. Contact support for assistance.';
                 document.body.appendChild(banner);
             }
@@ -6724,7 +6722,7 @@
             // Create modal
             const modal = document.createElement('div');
             modal.id = 'messageModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
             
             // Escape strings for HTML
             const escapedRecipientName = recipientName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -6994,7 +6992,7 @@
             // Create modal
             const modal = document.createElement('div');
             modal.id = 'replyModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
             
             modal.innerHTML = `
                 <div style="background: rgba(25, 25, 25, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 20px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;">
@@ -7167,7 +7165,7 @@
     </script>
 
     <!-- Create Swarm Modal -->
-    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
         <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
             <button onclick="closeCreateSwarmModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
             
@@ -7229,7 +7227,7 @@
     </div>
 
     <!-- Create Event Modal -->
-    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: 2rem; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
         <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
             <button onclick="closeCreateEventModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
             

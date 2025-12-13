@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flânerie - The Art of Urban Wandering</title>
     
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Discover and share urban walking routes, swarms, and events in your city with Flânerie">
+    <meta name="theme-color" content="#6b9b9e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Flânerie">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/pathpals/manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/pathpals/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/pathpals/icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/pathpals/icons/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/pathpals/icons/icon-72x72.png">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -82,12 +100,16 @@
             align-items: center;
             gap: 0.5rem;
             position: absolute;
-            right: 0;
+            right: -4rem;
+
         }
         
         #user-name {
             font-size: 0.85rem;
             margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            line-height: 1;
         }
         
         .auth-btn {
@@ -225,6 +247,107 @@
         @keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        /* PWA Install Banner */
+        .pwa-install-banner {
+            display: none;
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-color), #5a8a8d);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(107, 155, 158, 0.4);
+            z-index: 999;
+            animation: slideDown 0.5s ease-out;
+            max-width: 90%;
+            text-align: center;
+            /* Auto-hide after 10 seconds */
+            animation: slideDown 0.5s ease-out, fadeOut 1s ease 10s forwards;
+        }
+        
+        .pwa-install-banner.show {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pwa-install-banner button {
+            background: white;
+            color: var(--accent-color);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .pwa-install-banner .close-banner {
+            background: transparent;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        @keyframes slideDown {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 140px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .pwa-install-banner {
+                font-size: 0.85rem;
+                padding: 0.6rem 1rem;
+                top: auto;
+                bottom: 80px;
+                animation: slideUp 0.5s ease-out, fadeOut 1s ease 10s forwards;
+            }
+            .pwa-install-banner button {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                bottom: -100px;
+                opacity: 0;
+            }
+            to {
+                bottom: 80px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOutMobile {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                pointer-events: none;
+            }
         }
         
         /* Main Content */
@@ -629,7 +752,7 @@
         .slideshow-controls {
             position: fixed;
             bottom: 2rem;
-            right: 2rem;
+            right: -4rem;
             z-index: 10001;
             display: flex;
             gap: 1rem;
@@ -793,6 +916,39 @@
             #slide-paragraph-with-image .image-section img {
                 max-height: 30vh !important;
             }
+            
+            /* FIX: Profile modal content cutoff */
+            .modal-content {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* FIX: Leaflet map preview sizing in cards */
+            .leaflet-container {
+                min-height: 250px !important;
+                height: 250px !important;
+            }
+            
+            /* FIX: Ensure card content isn't cut off */
+            div[style*="cursor: pointer"][style*="margin-bottom"] {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            
+            /* FIX: Modal close button overlapping content */
+            .close {
+                position: absolute !important;
+                top: 10px !important;
+                right: 10px !important;
+                z-index: 10001 !important;
+                background: rgba(0,0,0,0.5) !important;
+                border-radius: 50% !important;
+                width: 35px !important;
+                height: 35px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
         }
         
         /* Modal Styles */
@@ -928,12 +1084,26 @@
     </nav>
     
     <!-- Email Verification Banner -->
-    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
+    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: -4rem; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
         <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
             ✅ You're signed in! 📧 Check your email and click the verification link to start posting. 
             <span style="color: #000; font-size: 0.85rem; opacity: 0.8;">(Auto-checking...)</span>
             <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer; margin-left: 1rem;">Resend email</a>
         </p>
+    </div>
+    
+    <!-- PWA Install Banner (Shows device-specific instructions) -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <!-- Android instructions -->
+        <span id="pwa-android-text" style="display: none;">
+            📱 Install Flânerie app! Tap the <strong>Install</strong> button below or use <strong>Menu → Install app</strong>
+        </span>
+        <!-- iPhone instructions -->
+        <span id="pwa-ios-text" style="display: none;">
+            📱 Install Flânerie app! Tap <strong>Share ⬆️</strong> then <strong>Add to Home Screen</strong>
+        </span>
+        <button id="pwa-install-btn" style="display: none;">Install</button>
+        <button class="close-banner" onclick="document.getElementById('pwa-install-banner').classList.remove('show')">✕</button>
     </div>
     
     <!-- Hero Section -->
@@ -2069,30 +2239,44 @@
                 }
                 
                 const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
+                const now = new Date();
+                
+                // Filter out swarms that are past (with 2-hour buffer)
+                const activeSwarms = swarms.filter(swarm => {
+                    if (swarm.date && swarm.time) {
+                        const [year, month, day] = swarm.date.split('-');
+                        const [hours, minutes] = swarm.time.split(':');
+                        const swarmDateTime = new Date(year, month - 1, day, hours, minutes);
+                        const swarmEndWithBuffer = new Date(swarmDateTime.getTime() + 7200000); // 2 hour buffer
+                        return swarmEndWithBuffer >= now;
+                    } else if (swarm.date) {
+                        const swarmDate = new Date(swarm.date);
+                        swarmDate.setHours(0, 0, 0, 0);
+                        return swarmDate >= today;
+                    }
+                    return true; // Keep swarms without dates
+                });
+                
+                if (activeSwarms.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t created any active swarms.<br><span style="font-size: 0.85rem; color: #777;">(Past swarms are automatically hidden)</span></p>';
+                    return;
+                }
                 
                 let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
-                swarms.forEach(swarm => {
-                    const swarmDate = new Date(swarm.date);
-                    const isPastDate = swarmDate < today;
-                    
-                    // Show Edit button only if date hasn't passed
-                    const editButton = !isPastDate ? 
-                        `<button onclick="editSwarm('${swarm.id}')" style="padding: 0.5rem 1rem; background: #5bc0de; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Edit</button>` : '';
-                    
+                activeSwarms.forEach(swarm => {
                     html += `
                         <div style="background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; padding: 1.5rem;">
                             <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">${swarm.title}</h3>
                             <p style="color: #d4d4d4; font-size: 0.9rem; margin-bottom: 0.5rem;">${swarm.description || 'No description'}</p>
                             <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
                                 📍 ${swarm.locationCount || 1} location${swarm.locationCount > 1 ? 's' : ''}<br>
-                                📅 ${swarm.date} at ${swarm.time}${isPastDate ? ' <span style="color: #ff6b6b;">(Past)</span>' : ''}<br>
+                                📅 ${swarm.date} at ${swarm.time}<br>
                                 👥 ${swarm.interested || 0} flâneurs interested<br>
                                 ⏱️ ${swarm.duration || 'TBD'}
                             </p>
                             <div style="display: flex; gap: 0.5rem;">
                                 <button onclick="viewSwarmFromDashboard('${swarm.id}')" style="flex: 1; padding: 0.5rem; background: var(--accent-color); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">View on Map</button>
-                                ${editButton}
+                                <button onclick="editSwarm('${swarm.id}')" style="padding: 0.5rem 1rem; background: #5bc0de; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Edit</button>
                                 <button onclick="deleteSwarm('${swarm.id}')" style="padding: 0.5rem 1rem; background: #d9534f; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Delete</button>
                             </div>
                         </div>
@@ -2127,17 +2311,44 @@
                 }
                 
                 const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
+                const now = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                // Filter out events that are past (with 2-hour buffer)
+                const activeEvents = events.filter(event => {
+                    if (event.endDate && event.endTime) {
+                        const [year, month, day] = event.endDate.split('-');
+                        const [hours, minutes] = event.endTime.split(':');
+                        const endDateTime = new Date(year, month - 1, day, hours, minutes);
+                        const endWithBuffer = new Date(endDateTime.getTime() + 7200000); // 2 hour buffer
+                        return endWithBuffer >= now;
+                    } else if (event.endDate) {
+                        const [year, month, day] = event.endDate.split('-');
+                        const endDate = new Date(year, month - 1, day, 23, 59, 59);
+                        const endWithBuffer = new Date(endDate.getTime() + 7200000);
+                        return endWithBuffer >= now;
+                    } else if (event.startDate && event.startTime) {
+                        const [year, month, day] = event.startDate.split('-');
+                        const [hours, minutes] = event.startTime.split(':');
+                        const startDateTime = new Date(year, month - 1, day, hours, minutes);
+                        const startWithBuffer = new Date(startDateTime.getTime() + 7200000);
+                        return startWithBuffer >= now;
+                    } else if (event.startDate) {
+                        const eventDate = new Date(event.startDate);
+                        eventDate.setHours(23, 59, 59);
+                        const eventWithBuffer = new Date(eventDate.getTime() + 7200000);
+                        return eventWithBuffer >= now;
+                    }
+                    return true; // Keep events without dates
+                });
+                
+                if (activeEvents.length === 0) {
+                    contentDiv.innerHTML = '<p style="text-align: center; color: #999;">You haven\'t created any active events.<br><span style="font-size: 0.85rem; color: #777;">(Past events are automatically hidden)</span></p>';
+                    return;
+                }
                 
                 let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">';
-                events.forEach(event => {
-                    const eventDate = new Date(event.startDate);
-                    const isPastDate = eventDate < today;
-                    
-                    // Show Edit button only if date hasn't passed
-                    const editButton = !isPastDate ?
-                        `<button onclick="editEvent('${event.id}')" style="padding: 0.5rem 1rem; background: #5bc0de; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Edit</button>` : '';
-                    
+                activeEvents.forEach(event => {
                     // Show recurring badge if this is a recurring event
                     const recurringBadge = event.isRecurring ? 
                         `<span style="display: inline-block; background: rgba(107, 155, 158, 0.3); color: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">🔄 Recurring</span>` : '';
@@ -2149,12 +2360,12 @@
                             ${event.recurrenceInfo ? `<p style="color: #999; font-size: 0.8rem; font-style: italic; margin-bottom: 0.5rem;">${event.recurrenceInfo}</p>` : ''}
                             <p style="color: #999; font-size: 0.85rem; margin-bottom: 1rem;">
                                 📍 ${event.location}<br>
-                                📅 ${event.startDate} at ${event.startTime}${isPastDate ? ' <span style="color: #ff6b6b;">(Past)</span>' : ''}<br>
+                                📅 ${event.startDate} at ${event.startTime}<br>
                                 👥 ${event.interested || 0} flâneurs interested
                             </p>
                             <div style="display: flex; gap: 0.5rem;">
                                 <button onclick="viewEventFromDashboard('${event.id}')" style="flex: 1; padding: 0.5rem; background: var(--accent-color); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">View on Map</button>
-                                ${editButton}
+                                <button onclick="editEvent('${event.id}')" style="padding: 0.5rem 1rem; background: #5bc0de; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Edit</button>
                                 <button onclick="deleteEvent('${event.id}')" style="padding: 0.5rem 1rem; background: #d9534f; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Delete</button>
                             </div>
                         </div>
@@ -3366,7 +3577,7 @@
             
             const closeBtn = document.createElement('button');
             closeBtn.innerHTML = '&times;';
-            closeBtn.style.cssText = 'position: fixed; top: 2rem; right: 2rem; width: 50px; height: 50px; background: rgba(107, 155, 158, 0.9); border: none; border-radius: 50%; color: white; font-size: 2rem; cursor: pointer; z-index: 2001;';
+            closeBtn.style.cssText = 'position: fixed; top: 2rem; right: -4rem; width: 50px; height: 50px; background: rgba(107, 155, 158, 0.9); border: none; border-radius: 50%; color: white; font-size: 2rem; cursor: pointer; z-index: 2001;';
             closeBtn.onclick = () => {
                 modal.remove();
                 // Unlock background scrolling
@@ -3430,7 +3641,7 @@
                         <h2 style="color: var(--accent-color); margin: 0 0 1rem 0;">${titles[mapMode]}</h2>
                         <div style="max-width: 600px; margin: 0 auto;">
                             <input type="text" id="mapSearch" placeholder="Search address to zoom to location..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-size: 1rem; font-family: 'Poppins', sans-serif;">
-                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: -4rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                             
                             <!-- GPS Button (Mobile Only) -->
                             <button id="gpsLocationBtn" onclick="handleGPSClick('${mapMode}')" style="display: none; margin-top: 0.75rem; width: 100%; padding: 0.75rem; background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.3s ease;">
@@ -3541,7 +3752,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 0.5rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 0.5rem; position: relative;">
                             <input type="text" id="mapSearch" placeholder="👉 Enter your zip code to find routes near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="mapSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: -4rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching routes...')">Search</button>
                     </div>
@@ -3564,7 +3775,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="swarmLocationSearch" placeholder="👉 Enter your zip code to find swarms near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="swarmSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="swarmSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: -4rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching swarms...')">Search</button>
                     </div>
@@ -3587,7 +3798,7 @@
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="eventLocationSearch" placeholder="👉 Enter your zip code to find events near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
-                            <div id="eventSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                            <div id="eventSearchSuggestions" style="position: absolute; top: 100%; left: 0; right: -4rem; background: rgba(30, 30, 30, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-top: none; border-radius: 0 0 15px 15px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none;"></div>
                         </div>
                         <button class="feature-btn" onclick="showToast('Searching events...')">Search Events</button>
                     </div>
@@ -4147,15 +4358,19 @@
                                 }
                                 
                                 // Skip past swarms (check date AND time)
+                                // BUT keep visible for 2 hours after start time as buffer
                                 if (swarm.date && swarm.time) {
                                     // Combine date and time into full datetime
                                     const [year, month, day] = swarm.date.split('-');
                                     const [hours, minutes] = swarm.time.split(':');
                                     const swarmDateTime = new Date(year, month - 1, day, hours, minutes);
                                     
-                                    // Compare to current moment (not just today at midnight)
+                                    // Add 2-hour buffer (7200000 ms = 2 hours)
+                                    const swarmEndWithBuffer = new Date(swarmDateTime.getTime() + 7200000);
+                                    
+                                    // Compare to current moment
                                     const now = new Date();
-                                    if (swarmDateTime < now) {
+                                    if (swarmEndWithBuffer < now) {
                                         invalidCount++;
                                         return;
                                     }
@@ -4204,6 +4419,9 @@
                                 
                                 // Click handler to populate info panel
                                 marker.on('click', async function() {
+                                    // Zoom to pin location at street level
+                                    swarmMap.setView([swarm.lat, swarm.lng], 15);
+                                    
                                     const infoPanel = document.getElementById('swarmInfoPanel');
                                     const infoContent = document.getElementById('swarmInfoContent');
                                     
@@ -4242,12 +4460,13 @@
                                             <p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📍 Meeting Location:</strong> ${swarm.meetingLocation || swarm.location || 'Location TBD'}</p>
                                             ${swarm.locationCount && swarm.locationCount > 1 ? `<p style="color: var(--accent-color); margin: 0.5rem 0; font-weight: 600;"><strong>🎯 Multi-Business Swarm:</strong> ${swarm.locationCount} locations</p>` : ''}
                                             <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${swarm.date} at ${swarm.time}</p>
+                                            <p style="color: #999; font-size: 0.85rem; margin: 0.3rem 0 0.5rem 0; font-style: italic;">⏰ Time shown in organizer's local timezone</p>
                                             ${swarm.duration ? `<p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">⏱️ Duration:</strong> ${swarm.duration}</p>` : ''}
                                             ${swarm.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${swarm.description}</p>` : ''}
                                             ${swarm.identifier ? `<p style="color: #d4d4d4; margin: 0.8rem 0 0 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">🔍 Look for:</strong> ${swarm.identifier}</p>` : ''}
                                             ${swarm.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">👤 Organizer:</strong> ${swarm.postedBy}</p>` : ''}
                                             ${swarm.createdBy !== (user ? user.uid : null) ? `<button onclick="openMessageModal('${swarm.createdBy}', '${username.replace(/'/g, "\\'")}', 'swarm', '${(swarm.title || '').replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin: 0.5rem 0; font-size: 0.9rem;">📧 Contact Organizer</button>` : ''}
-                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">>
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.2);">
                                                 <p id="swarm-interest-count-${swarm.id}" style="color: var(--accent-light); font-weight: 600; margin: 0;">👥 ${participants} flâneurs interested</p>
                                                 ${btnState}
                                             </div>
@@ -4263,7 +4482,7 @@
                                 // Auto-show info for highlighted swarm
                                 if (isHighlighted) {
                                     marker.fire('click');
-                                    swarmMap.setView([swarm.lat, swarm.lng], 11); // City level zoom
+                                    swarmMap.setView([swarm.lat, swarm.lng], 15); // Street level zoom to match click behavior
                                 }
                             });
                         });
@@ -4324,10 +4543,12 @@
                         
                         // Always load/reload events from Firebase
                         getAllEvents().then(events => {
+                            console.log('PWA DEBUG: Loading events for map, total count:', events.length);
                             
                             window.allEventMarkersArray = []; // Reset marker array
                             
                             if (events.length === 0) {
+                                console.log('PWA DEBUG: No events found in database');
                                 return;
                             }
                             
@@ -4341,50 +4562,79 @@
                             events.forEach(event => {
                                 // Skip events without coordinates
                                 if (!event.lat || !event.lng) {
+                                    console.log('PWA DEBUG: Skipping event (no coordinates):', event.name);
                                     invalidCount++;
                                     return;
                                 }
                                 
                                 // Skip past events (check end time first, then start time)
+                                // BUT keep visible for 2 hours after end time as buffer
                                 const now = new Date();
                                 
+                                console.log('PWA DEBUG: Checking event:', event.name, {
+                                    startDate: event.startDate,
+                                    startTime: event.startTime,
+                                    endDate: event.endDate,
+                                    endTime: event.endTime,
+                                    recurring: event.recurring
+                                });
+                                
                                 if (event.endDate && event.endTime) {
-                                    // Event has end date+time - use that
+                                    // Event has end date+time - use that PLUS 2-hour buffer
                                     const [year, month, day] = event.endDate.split('-');
                                     const [hours, minutes] = event.endTime.split(':');
                                     const endDateTime = new Date(year, month - 1, day, hours, minutes);
-                                    if (endDateTime < now) {
+                                    
+                                    // Add 2-hour buffer (7200000 ms = 2 hours)
+                                    const endWithBuffer = new Date(endDateTime.getTime() + 7200000);
+                                    
+                                    console.log('PWA DEBUG: Comparing endDateTime+buffer:', endWithBuffer, 'vs now:', now, 'isPast:', endWithBuffer < now);
+                                    if (endWithBuffer < now) {
+                                        console.log('PWA DEBUG: FILTERED - Event ended (has endDate+endTime)');
                                         invalidCount++;
                                         return;
                                     }
                                 } else if (event.endDate) {
-                                    // Event has end date only
+                                    // Event has end date only - add buffer to end of day
                                     const [year, month, day] = event.endDate.split('-');
-                                    const endDate = new Date(year, month - 1, day);
-                                    if (endDate < today) {
+                                    const endDate = new Date(year, month - 1, day, 23, 59, 59);
+                                    const endWithBuffer = new Date(endDate.getTime() + 7200000);
+                                    
+                                    console.log('PWA DEBUG: Comparing endDate+buffer:', endWithBuffer, 'vs now:', now, 'isPast:', endWithBuffer < now);
+                                    if (endWithBuffer < now) {
+                                        console.log('PWA DEBUG: FILTERED - Event ended (has endDate only)');
                                         invalidCount++;
                                         return;
                                     }
                                 } else if (event.startDate && event.startTime) {
-                                    // No end date - use start date+time
+                                    // No end date - use start date+time PLUS 2-hour buffer
                                     const [year, month, day] = event.startDate.split('-');
                                     const [hours, minutes] = event.startTime.split(':');
                                     const startDateTime = new Date(year, month - 1, day, hours, minutes);
-                                    if (startDateTime < now) {
+                                    const startWithBuffer = new Date(startDateTime.getTime() + 7200000);
+                                    
+                                    console.log('PWA DEBUG: Comparing startDateTime+buffer:', startWithBuffer, 'vs now:', now, 'isPast:', startWithBuffer < now);
+                                    if (startWithBuffer < now) {
+                                        console.log('PWA DEBUG: FILTERED - Event started in past (has startDate+startTime, no end)');
                                         invalidCount++;
                                         return;
                                     }
                                 } else if (event.startDate) {
-                                    // Only start date, no times
+                                    // Only start date, no times - use end of day + buffer
                                     const [year, month, day] = event.startDate.split('-');
-                                    const startDate = new Date(year, month - 1, day);
-                                    if (startDate < today) {
+                                    const startDate = new Date(year, month - 1, day, 23, 59, 59);
+                                    const startWithBuffer = new Date(startDate.getTime() + 7200000);
+                                    
+                                    console.log('PWA DEBUG: Comparing startDate+buffer:', startWithBuffer, 'vs now:', now, 'isPast:', startWithBuffer < now);
+                                    if (startWithBuffer < now) {
+                                        console.log('PWA DEBUG: FILTERED - Event date in past (has startDate only)');
                                         invalidCount++;
                                         return;
                                     }
                                 }
                                 
                                 validCount++;
+                                console.log('PWA DEBUG: ✓ Event PASSED all filters:', event.name);
                                 
                                 const isHighlighted = highlightId !== null && event.id === highlightId;
                                 
@@ -4399,10 +4649,14 @@
                                 });
                                 
                                 const marker = L.marker([event.lat, event.lng], { icon: eventPinIcon }).addTo(eventMap);
+                                console.log('PWA DEBUG: Added marker for event:', event.name, 'at', event.lat, event.lng);
                                 window.allEventMarkersArray.push(marker); // Store for zoom out
                                 
                                 // Click handler to populate info panel
                                 marker.on('click', async function() {
+                                    // Zoom to pin location at street level
+                                    eventMap.setView([event.lat, event.lng], 15);
+                                    
                                     const infoPanel = document.getElementById('eventInfoPanel');
                                     const infoContent = document.getElementById('eventInfoContent');
                                     
@@ -4442,6 +4696,7 @@
                                             ${userDisplay}
                                             <p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">📍 Location:</strong> ${event.location}</p>
                                             <p style="color: #d4d4d4; margin: 0.5rem 0;"><strong style="color: var(--accent-light);">📅 When:</strong> ${dateTimeStr}</p>
+                                            <p style="color: #999; font-size: 0.85rem; margin: 0.3rem 0 0.5rem 0; font-style: italic;">⏰ Time shown in organizer's local timezone</p>
                                             ${event.description ? `<p style="color: #d4d4d4; margin: 0.8rem 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${event.description}</p>` : ''}
                                             ${event.postedBy ? `<p style="color: #d4d4d4; margin: 0.5rem 0; word-wrap: break-word;"><strong style="color: var(--accent-light);">👤 Contact Name:</strong> ${event.postedBy}</p>` : ''}
                                             ${event.createdBy !== (user ? user.uid : null) ? `<button onclick="openMessageModal('${event.createdBy}', '${username.replace(/'/g, "\\'")}', 'event', '${(event.name || '').replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: var(--accent-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin: 0.5rem 0; font-size: 0.9rem;">📧 Contact Organizer</button>` : ''}
@@ -4463,9 +4718,11 @@
                                 // Auto-show info for highlighted event
                                 if (isHighlighted) {
                                     marker.fire('click');
-                                    eventMap.setView([event.lat, event.lng], 11); // City level zoom
+                                    eventMap.setView([event.lat, event.lng], 15); // Street level zoom to match click behavior
                                 }
                             });
+                            
+                            console.log('PWA DEBUG: Event loading complete. Valid events:', validCount, 'Invalid/filtered:', invalidCount, 'Total markers:', window.allEventMarkersArray.length);
                         });
                     }
                     
@@ -5535,10 +5792,12 @@
                 infoPanel.style.display = 'none';
             }
             
-            // Zoom out to show all swarms
+            // Zoom out to city level (zoom 12) like Journey does
             if (window.allSwarmMarkersArray && window.allSwarmMarkersArray.length > 0 && swarmMap) {
-                const group = L.featureGroup(window.allSwarmMarkersArray);
-                swarmMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+                // Use first swarm's coordinates to center, or default to Denver
+                const firstMarker = window.allSwarmMarkersArray[0];
+                const centerCoords = firstMarker ? firstMarker.getLatLng() : [39.7392, -104.9903];
+                swarmMap.setView(centerCoords, 12);
             }
         }
         window.closeSwarmInfo = closeSwarmInfo;
@@ -5550,10 +5809,12 @@
                 infoPanel.style.display = 'none';
             }
             
-            // Zoom out to show all events
+            // Zoom out to city level (zoom 12) like Journey does
             if (window.allEventMarkersArray && window.allEventMarkersArray.length > 0 && eventMap) {
-                const group = L.featureGroup(window.allEventMarkersArray);
-                eventMap.fitBounds(group.getBounds(), { padding: [50, 50] });
+                // Use first event's coordinates to center, or default to Denver
+                const firstMarker = window.allEventMarkersArray[0];
+                const centerCoords = firstMarker ? firstMarker.getLatLng() : [39.7392, -104.9903];
+                eventMap.setView(centerCoords, 12);
             }
         }
         window.closeEventInfo = closeEventInfo;
@@ -5561,7 +5822,7 @@
         // Toast Notification
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.style.cssText = 'position: fixed; bottom: 2rem; right: 2rem; background: rgba(107, 155, 158, 0.95); color: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); z-index: 3000;';
+            toast.style.cssText = 'position: fixed; bottom: 2rem; right: -4rem; background: rgba(107, 155, 158, 0.95); color: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); z-index: 3000;';
             toast.textContent = message;
             document.body.appendChild(toast);
             
@@ -5601,7 +5862,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -5680,7 +5941,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -6039,7 +6300,6 @@
         window.closeCreateSwarmModal = closeCreateSwarmModal;
         window.openCreateEventModal = openCreateEventModal;
         window.closeCreateEventModal = closeCreateEventModal;
-        window.toggleCustomEventType = toggleCustomEventType;
         window.toggleCustomRouteCategory = toggleCustomRouteCategory;
 
         // Submit handlers
@@ -6187,9 +6447,6 @@
                 createdByEmail: user.email
             };
             
-            // Check if this is a recurring event
-            const isRecurring = document.getElementById('recurringEventCheckbox')?.checked;
-            
             // Save to Firebase (also keeps localStorage as backup)
             if (window.editingEventId) {
                 // UPDATE existing event
@@ -6198,72 +6455,28 @@
                 window.editingEventId = null; // Clear editing flag
                 closeCreateEventModal();
                 openDashboard(); // Show updated event in dashboard
-            } else if (isRecurring) {
-                // CREATE RECURRING EVENTS
-                const interval = parseInt(formData.get('eventRecurrenceInterval')) || 1;
-                const frequency = formData.get('eventRecurrenceFrequency') || 'weeks';
-                const recurrenceEnd = formData.get('eventRecurrenceEnd');
-                
-                if (!recurrenceEnd) {
-                    showToast('Please select an end date for recurring events');
-                    return;
-                }
-                
-                const startDate = new Date(eventData.startDate);
-                const endDate = new Date(recurrenceEnd);
-                const events = [];
-                let currentDate = new Date(startDate);
-                let occurrenceCount = 0;
-                
-                // Generate all occurrences
-                while (currentDate <= endDate && occurrenceCount < 100) {
-                    const eventCopy = {
-                        ...eventData,
-                        startDate: currentDate.toISOString().split('T')[0],
-                        isRecurring: true,
-                        recurrenceInfo: `Part of recurring series (every ${interval} ${frequency})`
-                    };
-                    
-                    events.push(eventCopy);
-                    occurrenceCount++;
-                    
-                    // Calculate next occurrence
-                    if (frequency === 'days') {
-                        currentDate.setDate(currentDate.getDate() + interval);
-                    } else if (frequency === 'weeks') {
-                        currentDate.setDate(currentDate.getDate() + (interval * 7));
-                    } else if (frequency === 'months') {
-                        currentDate.setMonth(currentDate.getMonth() + interval);
-                    }
-                }
-                
-                // Save all occurrences to Firebase
-                showToast(`Creating ${occurrenceCount} recurring events...`);
-                
-                for (const eventOccurrence of events) {
-                    await saveEventToFirebase(eventOccurrence);
-                }
-                
-                showToast(`✅ ${occurrenceCount} recurring events created successfully!`);
-                closeCreateEventModal();
-                
-                // Close the creation map and open browse events
-                const modal = document.getElementById('fullscreen-event-map-v2');
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.remove();
-                    document.body.classList.remove('choreography-active');
-                    
-                    // Remove all map click handlers before nulling
-                    if (journeyMap) {
-                        journeyMap.off('click');
-                    }
-                    journeyMap = null;
-                }
-                toggleSection('events');
             } else {
                 // CREATE single event
                 const newEventId = await saveEventToFirebase(eventData);
+                
+                // IMMEDIATELY disable both buttons and map clicks (like Journey does)
+                const saveBtn = document.getElementById('saveEventMapBtn');
+                if (saveBtn) saveBtn.disabled = true;
+                
+                // Find and disable Clear Event button
+                const clearBtns = document.querySelectorAll('button');
+                clearBtns.forEach(btn => {
+                    if (btn.textContent.includes('Clear Event')) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    }
+                });
+                
+                // Remove map click handler IMMEDIATELY
+                if (journeyMap) {
+                    journeyMap.off('click');
+                }
                 
                 // Also save to localStorage as backup
                 let events = JSON.parse(localStorage.getItem('events') || '[]');
@@ -6275,22 +6488,21 @@
                 
                 // Close the creation map and open browse events with the new event highlighted
                 if (newEventId) {
+                    console.log('PWA DEBUG: Closing creation modal and opening browse events');
                     // Close creation section without triggering scroll
                     const modal = document.getElementById('fullscreen-event-map-v2');
+                    console.log('PWA DEBUG: Found modal?', !!modal);
                     if (modal) {
                         // Remove modal directly without triggering closeBtn onclick
                         modal.style.display = 'none';
                         modal.remove();
                         document.body.classList.remove('choreography-active');
-                        
-                        // Remove all map click handlers before nulling
-                        if (journeyMap) {
-                            journeyMap.off('click');
-                        }
                         journeyMap = null;
+                        console.log('PWA DEBUG: Modal removed, calling toggleSection');
                     }
                     // Open browse events immediately (no delay needed)
                     toggleSection('events', newEventId);
+                    console.log('PWA DEBUG: toggleSection called with events and', newEventId);
                 }
             }
         }
@@ -6347,67 +6559,6 @@
         window.submitEvent = submitEvent;
         
         // Toggle recurring event options visibility
-        function toggleRecurringOptions() {
-            const checkbox = document.getElementById('recurringEventCheckbox');
-            const options = document.getElementById('recurringOptions');
-            
-            if (checkbox && options) {
-                options.style.display = checkbox.checked ? 'block' : 'none';
-                if (checkbox.checked) {
-                    updateOccurrencePreview();
-                }
-            }
-        }
-        
-        // Update occurrence preview when recurrence settings change
-        function updateOccurrencePreview() {
-            const startDate = document.querySelector('input[name="eventStartDate"]')?.value;
-            const interval = document.getElementById('recurrenceInterval')?.value || 1;
-            const frequency = document.getElementById('recurrenceFrequency')?.value || 'weeks';
-            const endDate = document.getElementById('recurrenceEndDate')?.value;
-            
-            const preview = document.getElementById('occurrencePreview');
-            if (!preview || !startDate || !endDate) return;
-            
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            
-            if (end <= start) {
-                preview.textContent = '⚠️ End date must be after start date';
-                preview.style.color = '#ff6b6b';
-                return;
-            }
-            
-            // Calculate number of occurrences
-            let count = 0;
-            let currentDate = new Date(start);
-            
-            while (currentDate <= end && count < 100) { // Cap at 100 to prevent infinite loops
-                count++;
-                
-                // Add interval based on frequency
-                if (frequency === 'days') {
-                    currentDate.setDate(currentDate.getDate() + parseInt(interval));
-                } else if (frequency === 'weeks') {
-                    currentDate.setDate(currentDate.getDate() + (parseInt(interval) * 7));
-                } else if (frequency === 'months') {
-                    currentDate.setMonth(currentDate.getMonth() + parseInt(interval));
-                }
-            }
-            
-            const frequencyText = frequency === 'days' ? 'day' : frequency === 'weeks' ? 'week' : 'month';
-            const intervalText = interval == 1 ? frequencyText : `${interval} ${frequencyText}s`;
-            
-            preview.textContent = `✓ This will create ${count} event${count !== 1 ? 's' : ''} (every ${intervalText})`;
-            preview.style.color = 'var(--accent-color)';
-            
-            if (count >= 100) {
-                preview.textContent += ' - Maximum 100 occurrences allowed';
-            }
-        }
-        
-        window.toggleRecurringOptions = toggleRecurringOptions;
-        window.updateOccurrencePreview = updateOccurrencePreview;
         window.addInterest = addInterest;
         window.shareItem = shareItem;
 
@@ -6519,7 +6670,7 @@
             if (!banner) {
                 banner = document.createElement('div');
                 banner.id = 'suspension-banner';
-                banner.style.cssText = 'background: rgba(255, 70, 70, 0.2); border: 2px solid #ff4646; color: #ff4646; padding: 1rem 2rem; text-align: center; font-weight: 600; position: fixed; top: 80px; left: 0; right: 0; z-index: 9999;';
+                banner.style.cssText = 'background: rgba(255, 70, 70, 0.2); border: 2px solid #ff4646; color: #ff4646; padding: 1rem 2rem; text-align: center; font-weight: 600; position: fixed; top: 80px; left: 0; right: -4rem; z-index: 9999;';
                 banner.innerHTML = '🚫 Your account has been suspended. You can browse but cannot create content or send messages. Contact support for assistance.';
                 document.body.appendChild(banner);
             }
@@ -6574,7 +6725,7 @@
             // Create modal
             const modal = document.createElement('div');
             modal.id = 'messageModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
             
             // Escape strings for HTML
             const escapedRecipientName = recipientName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -6844,7 +6995,7 @@
             // Create modal
             const modal = document.createElement('div');
             modal.id = 'replyModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; background: rgba(10, 10, 10, 0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
             
             modal.innerHTML = `
                 <div style="background: rgba(25, 25, 25, 0.98); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 20px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;">
@@ -7017,7 +7168,7 @@
     </script>
 
     <!-- Create Swarm Modal -->
-    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
         <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
             <button onclick="closeCreateSwarmModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
             
@@ -7079,7 +7230,7 @@
     </div>
 
     <!-- Create Event Modal -->
-    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: -4rem; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
         <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
             <button onclick="closeCreateEventModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
             
@@ -7116,45 +7267,6 @@
                     <div>
                         <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Time</label>
                         <input type="time" name="eventEndTime" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
-                    </div>
-                </div>
-
-                <!-- Recurring Event Options -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 10px; border: 1px solid rgba(107, 155, 158, 0.2);">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" id="recurringEventCheckbox" onchange="toggleRecurringOptions()" style="width: 20px; height: 20px; cursor: pointer;">
-                        🔄 Recurring Event
-                    </label>
-                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem; margin-bottom: 1rem;">Check if this event repeats (weekly farmers market, monthly meetup, etc.)</p>
-                    
-                    <div id="recurringOptions" style="display: none; margin-top: 1rem;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Repeat Every</label>
-                                <select name="eventRecurrenceInterval" id="recurrenceInterval" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; cursor: pointer;">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Frequency</label>
-                                <select name="eventRecurrenceFrequency" id="recurrenceFrequency" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; cursor: pointer;">
-                                    <option value="days">Day(s)</option>
-                                    <option value="weeks" selected>Week(s)</option>
-                                    <option value="months">Month(s)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Repeat Until</label>
-                            <input type="date" name="eventRecurrenceEnd" id="recurrenceEndDate" onchange="updateOccurrencePreview()" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
-                            <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">Last date this event will occur</p>
-                        </div>
-                        
-                        <p id="occurrencePreview" style="color: var(--accent-color); font-size: 0.9rem; margin-top: 1rem; font-weight: 600;"></p>
                     </div>
                 </div>
 
@@ -7324,5 +7436,134 @@
             </div>
         </div>
     </div>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/pathpals/service-worker.js')
+                    .then((registration) => {
+                        console.log('PWA: Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('PWA: Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // PWA Install Prompt Handler with Device Detection
+        let deferredPrompt;
+        const installBanner = document.getElementById('pwa-install-banner');
+        const installBtn = document.getElementById('pwa-install-btn');
+        const androidText = document.getElementById('pwa-android-text');
+        const iosText = document.getElementById('pwa-ios-text');
+        
+        // Detect device type
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Check for iOS (includes iPhone, iPad, iPod)
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            
+            // Check for Android (includes emulators like Bluestacks)
+            const isAndroid = /android/i.test(userAgent);
+            
+            console.log('PWA: Device detection -', { isIOS, isAndroid, userAgent });
+            
+            return { isIOS, isAndroid };
+        }
+        
+        // Show appropriate banner content based on device
+        function showDeviceSpecificBanner() {
+            const { isIOS, isAndroid } = detectDevice();
+            
+            if (isIOS) {
+                // iPhone/iPad - Show manual instructions (no install button)
+                iosText.style.display = 'inline';
+                androidText.style.display = 'none';
+                installBtn.style.display = 'none';
+                console.log('PWA: Showing iOS instructions');
+            } else if (isAndroid) {
+                // Android - Show install button
+                androidText.style.display = 'inline';
+                iosText.style.display = 'none';
+                installBtn.style.display = 'inline-block';
+                console.log('PWA: Showing Android instructions');
+            } else {
+                // Desktop or unknown - show Android version (has button)
+                androidText.style.display = 'inline';
+                iosText.style.display = 'none';
+                installBtn.style.display = 'inline-block';
+                console.log('PWA: Showing default (Android) instructions');
+            }
+            
+            // Show the banner (only on mobile/tablet)
+            if (window.innerWidth <= 1024) {
+                installBanner.classList.add('show');
+            }
+        }
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            console.log('PWA: Install prompt available');
+            
+            // Show device-specific banner
+            showDeviceSpecificBanner();
+        });
+        
+        // Handle install button click (Android only)
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                console.log('PWA: No install prompt available');
+                return;
+            }
+            
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`PWA: User ${outcome} the install`);
+            
+            // Hide banner after user responds
+            installBanner.classList.remove('show');
+            
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+        });
+        
+        // Track when app is installed
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA: App installed successfully!');
+            installBanner.classList.remove('show');
+            deferredPrompt = null;
+        });
+        
+        // For iOS: Show banner on page load (since beforeinstallprompt doesn't fire on iOS)
+        window.addEventListener('load', () => {
+            const { isIOS } = detectDevice();
+            
+            // Only show for iOS Safari users who haven't installed yet
+            if (isIOS && window.innerWidth <= 1024) {
+                // Check if already running as installed app
+                const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+                
+                if (!isStandalone) {
+                    // Not installed yet, show iOS instructions
+                    setTimeout(() => {
+                        iosText.style.display = 'inline';
+                        androidText.style.display = 'none';
+                        installBtn.style.display = 'none';
+                        installBanner.classList.add('show');
+                        console.log('PWA: Showing iOS banner on page load');
+                    }, 2000); // Show after 2 seconds to not be annoying
+                }
+            }
+        });
+    </script>
 </body>
 </html>

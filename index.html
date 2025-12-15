@@ -1581,8 +1581,10 @@
         
         // ===== SITE LOCKDOWN (Remove this section when ready to launch) =====
         // This blocks the entire site until an authorized user logs in
-        // ONLY ACTIVATES ON FIREBASE - GitHub Pages remains open for testing
-        if (window.location.hostname.includes('firebaseapp.com') || window.location.hostname.includes('web.app')) {
+        // ONLY ACTIVATES ON PRODUCTION SITES - GitHub Pages remains open for testing
+        if (window.location.hostname.includes('firebaseapp.com') || 
+            window.location.hostname.includes('web.app') || 
+            window.location.hostname.includes('pages.dev')) {
             const lockdownOverlay = document.createElement('div');
             lockdownOverlay.id = 'lockdown-overlay';
             lockdownOverlay.style.cssText = `

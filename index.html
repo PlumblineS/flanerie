@@ -608,8 +608,9 @@
             position: fixed;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100%;
-            height: 100vh;
             background: #0a0a0a;
             z-index: 10000;
             display: flex;
@@ -3637,7 +3638,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal-fullscreen show';
             modal.id = 'fullscreen-' + sectionId;
-            modal.style.cssText = 'display: block; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100vh; background-color: rgba(10, 10, 10, 0.98);';
+            modal.style.cssText = 'display: block; position: fixed; z-index: 2000; left: 0; top: 0; right: 0; bottom: 0; width: 100%; background-color: rgba(10, 10, 10, 0.98);';
             
             const closeBtn = document.createElement('button');
             closeBtn.innerHTML = '&times;';
@@ -3661,14 +3662,14 @@
             };
             
             const content = document.createElement('div');
-            content.style.cssText = 'padding: 2rem; max-width: 1600px; margin: 0 auto; padding-bottom: 3rem; height: 100vh; overflow: hidden;';
+            content.style.cssText = 'padding: 2rem; max-width: 1600px; margin: 0 auto; padding-bottom: 3rem; position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden;';
             
             // Create content based on section
             const mapMode = sectionId.includes('swarm') ? 'swarm' : sectionId.includes('event') ? 'event' : 'journey';
             
             if (sectionId === 'journey-map' || sectionId === 'swarm-map-v2' || sectionId === 'event-map-v2') {
                 // Universal map section - changes based on mode
-                content.style.cssText = 'padding: 0; max-width: none; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;';
+                content.style.cssText = 'padding: 0; max-width: none; margin: 0; position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; display: flex; flex-direction: column;';
                 
                 const titles = {
                     journey: 'Share Your Journey',
@@ -5925,7 +5926,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">
@@ -6013,7 +6014,7 @@
             // Create fullscreen map modal for pin selection
             const modal = document.createElement('div');
             modal.id = 'pinSelectionModal';
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column;';
             
             modal.innerHTML = `
                 <div style="padding: 2rem; text-align: center; background: rgba(20, 20, 20, 0.98); position: relative;">

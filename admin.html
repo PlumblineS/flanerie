@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flânerie Admin Portal - Deleted Accounts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #8DBCC0;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .warning {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #ff6b6b;
+        }
+        
+        .search-container {
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        input {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        button {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #6B9B9E, #8dbcc0);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 155, 158, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-header {
+            color: #8DBCC0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(107, 155, 158, 0.3);
+        }
+        
+        .result-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(107, 155, 158, 0.2);
+        }
+        
+        .result-label {
+            color: #8DBCC0;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            color: #e0e0e0;
+            word-break: break-all;
+        }
+        
+        .content-ids {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .id-badge {
+            background: rgba(107, 155, 158, 0.2);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+        }
+        
+        .note {
+            background: rgba(107, 155, 158, 0.1);
+            border-left: 4px solid #8DBCC0;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        #authStatus {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .unauthorized {
+            color: #ff6b6b;
+        }
+        
+        .authorized {
+            color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Flânerie Admin Portal</h1>
+        <p style="color: #999; margin-bottom: 2rem;">Deleted Accounts Search - Law Enforcement Requests</p>
+        
+        <div class="warning">
+            <strong>⚠️ RESTRICTED ACCESS</strong><br>
+            This page is for authorized administrators only. Unauthorized access is logged and may result in legal action.
+        </div>
+        
+        <div id="authStatus">Loading authentication...</div>
+        
+        <div id="mainContent" style="display: none;">
+            <div class="search-container">
+                <h2 style="color: #8DBCC0; margin-bottom: 1rem;">Search Deleted Accounts</h2>
+                
+                <div class="search-form">
+                    <input type="email" id="emailSearch" placeholder="Search by email (e.g., joe1@gmail.com)">
+                    <button onclick="searchByEmail()">Search Email</button>
+                </div>
+                
+                <div class="search-form">
+                    <input type="text" id="usernameSearch" placeholder="Search by username (e.g., joe_the_wanderer)">
+                    <button onclick="searchByUsername()">Search Username</button>
+                </div>
+            </div>
+            
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXWYOsKzqG7gMpvWR2pccPwlUQDrLMZvI",
+            authDomain: "flanerie-70dfd.firebaseapp.com",
+            databaseURL: "https://flanerie-70dfd-default-rtdb.firebaseio.com",
+            projectId: "flanerie-70dfd",
+            storageBucket: "flanerie-70dfd.firebasestorage.app",
+            messagingSenderId: "367532686554",
+            appId: "1:367532686554:web:0373f528284844cf5e79e3"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+        
+        // AUTHORIZED ADMIN UID - Replace with your actual UID
+        const AUTHORIZED_ADMIN_UID = 'YOUR_ADMIN_UID_HERE';
+        
+        // Check authorization
+        auth.onAuthStateChanged(user => {
+            const authStatus = document.getElementById('authStatus');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (!user) {
+                authStatus.innerHTML = '<span class="unauthorized">❌ Not signed in. Please sign in at flanerie.pages.dev first.</span>';
+                return;
+            }
+            
+            if (user.uid !== AUTHORIZED_ADMIN_UID) {
+                authStatus.innerHTML = `<span class="unauthorized">❌ UNAUTHORIZED ACCESS<br>Your UID: ${user.uid}<br>This incident has been logged.</span>`;
+                // Log unauthorized access attempt
+                database.ref('securityLogs').push({
+                    type: 'unauthorized_admin_access',
+                    uid: user.uid,
+                    email: user.email,
+                    timestamp: new Date().toISOString()
+                });
+                return;
+            }
+            
+            authStatus.innerHTML = `<span class="authorized">✅ Authorized Admin: ${user.email}</span>`;
+            mainContent.style.display = 'block';
+        });
+        
+        async function searchByEmail() {
+            const email = document.getElementById('emailSearch').value.trim();
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p style="text-align: center; color: #999;">Searching...</p>';
+            resultsDiv.classList.add('show');
+            
+            try {
+                const snapshot = await database.ref('deletedAccounts').once('value');
+                let found = null;
+                
+                snapshot.forEach(child => {
+                    const account = child.val();
+                    if (account.email === email) {
+                        found = { userId: child.key, ...account };
+                    }
+                });
+                
+                displayResults(found);
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="no-results">Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function searchByUsername() {
+            const username = document.getElementById('usernameSearch').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p style="text-align: center; color: #999;">Searching...</p>';
+            resultsDiv.classList.add('show');
+            
+            try {
+                const snapshot = await database.ref('deletedAccounts').once('value');
+                let found = null;
+                
+                snapshot.forEach(child => {
+                    const account = child.val();
+                    if (account.username === username) {
+                        found = { userId: child.key, ...account };
+                    }
+                });
+                
+                displayResults(found);
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="no-results">Error: ${error.message}</p>`;
+            }
+        }
+        
+        function displayResults(account) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (!account) {
+                resultsDiv.innerHTML = '<p class="no-results">❌ No deleted account found matching that search.</p>';
+                return;
+            }
+            
+            let html = `
+                <div class="result-header">🔍 Deleted Account Found</div>
+                
+                <div class="result-row">
+                    <div class="result-label">User ID:</div>
+                    <div class="result-value">${account.userId}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Email:</div>
+                    <div class="result-value">${account.email}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Username:</div>
+                    <div class="result-value">${account.username}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Display Name:</div>
+                    <div class="result-value">${account.displayName || 'N/A'}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Deleted At:</div>
+                    <div class="result-value">${new Date(account.deletedAt).toLocaleString()}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Retention Expires:</div>
+                    <div class="result-value">${new Date(account.retentionExpiresAt).toLocaleString()}</div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Routes (${account.totalRoutes}):</div>
+                    <div class="result-value content-ids">
+                        ${account.routeIds && account.routeIds.length > 0 ? 
+                            account.routeIds.map(id => `<span class="id-badge">${id}</span>`).join('') : 
+                            'None'}
+                    </div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Swarms (${account.totalSwarms}):</div>
+                    <div class="result-value content-ids">
+                        ${account.swarmIds && account.swarmIds.length > 0 ? 
+                            account.swarmIds.map(id => `<span class="id-badge">${id}</span>`).join('') : 
+                            'None'}
+                    </div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Events (${account.totalEvents}):</div>
+                    <div class="result-value content-ids">
+                        ${account.eventIds && account.eventIds.length > 0 ? 
+                            account.eventIds.map(id => `<span class="id-badge">${id}</span>`).join('') : 
+                            'None'}
+                    </div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Messages (${account.totalMessages}):</div>
+                    <div class="result-value">${account.totalMessages} messages (sent + received)</div>
+                </div>
+                
+                <div class="note">
+                    <strong>📋 Next Steps:</strong><br>
+                    1. Go to Firebase Console → Realtime Database<br>
+                    2. Navigate to routes/, swarms/, events/, or messages/<br>
+                    3. Search for the IDs listed above<br>
+                    4. Export the data for law enforcement<br><br>
+                    <strong>⚠️ Note:</strong> ${account.note || 'Messages retain their own 3-year timeline from creation date, not deletion date.'}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

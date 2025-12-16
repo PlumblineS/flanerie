@@ -2274,6 +2274,14 @@
                 return;
             }
             
+            // Run cleanup functions periodically (when dashboard is opened)
+            // These run in background and don't block the UI
+            cleanupDeletedRoutes();
+            cleanupDeletedSwarms();
+            cleanupDeletedEvents();
+            cleanupDeletedAccounts();
+            cleanupOldMessages();
+            
             // Lock background scrolling
             document.body.classList.add('choreography-active');
             
@@ -2329,9 +2337,6 @@
             const user = auth.currentUser;
             if (!user) return;
             
-            // Clean up deleted routes (6+ months old)
-            cleanupDeletedRoutes();
-            
             const contentDiv = document.getElementById('routesContent');
             contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
             
@@ -2383,9 +2388,6 @@
         async function loadMySwarms() {
             const user = auth.currentUser;
             if (!user) return;
-            
-            // Clean up deleted swarms (6+ months old)
-            cleanupDeletedSwarms();
             
             const contentDiv = document.getElementById('swarmsContent');
             contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
@@ -2462,9 +2464,6 @@
         async function loadMyEvents() {
             const user = auth.currentUser;
             if (!user) return;
-            
-            // Clean up deleted events (6+ months old)
-            cleanupDeletedEvents();
             
             const contentDiv = document.getElementById('eventsContent');
             contentDiv.innerHTML = '<p style="text-align: center; color: #999;">Loading...</p>';
@@ -2969,60 +2968,89 @@
             try {
                 const deletionDate = new Date().toISOString();
                 
-                // SOFT DELETE all user's content (keep for 3 years per privacy policy)
-                // Mark routes as deleted (3 year retention for account deletions)
-                await database.ref(`routes`).orderByChild('createdBy').equalTo(user.uid).once('value', async (snapshot) => {
-                    const updatePromises = [];
-                    snapshot.forEach(child => {
-                        updatePromises.push(database.ref(`routes/${child.key}`).update({
-                            deleted: true,
-                            deletedAt: deletionDate,
-                            deletedReason: 'account_deletion'
-                        }));
-                    });
-                    await Promise.all(updatePromises);
-                });
+                // STEP 1: Collect all content IDs for centralized log
+                const routeIds = [];
+                const swarmIds = [];
+                const eventIds = [];
                 
-                // Mark swarms as deleted (3 year retention for account deletions)
-                await database.ref(`swarms`).orderByChild('createdBy').equalTo(user.uid).once('value', async (snapshot) => {
-                    const updatePromises = [];
-                    snapshot.forEach(child => {
-                        updatePromises.push(database.ref(`swarms/${child.key}`).update({
-                            deleted: true,
-                            deletedAt: deletionDate,
-                            deletedReason: 'account_deletion'
-                        }));
-                    });
-                    await Promise.all(updatePromises);
-                });
+                const routesSnapshot = await database.ref('routes').orderByChild('createdBy').equalTo(user.uid).once('value');
+                routesSnapshot.forEach(child => routeIds.push(child.key));
                 
-                // Mark events as deleted (3 year retention for account deletions)
-                await database.ref(`events`).orderByChild('createdBy').equalTo(user.uid).once('value', async (snapshot) => {
-                    const updatePromises = [];
-                    snapshot.forEach(child => {
-                        updatePromises.push(database.ref(`events/${child.key}`).update({
-                            deleted: true,
-                            deletedAt: deletionDate,
-                            deletedReason: 'account_deletion'
-                        }));
-                    });
-                    await Promise.all(updatePromises);
-                });
+                const swarmsSnapshot = await database.ref('swarms').orderByChild('createdBy').equalTo(user.uid).once('value');
+                swarmsSnapshot.forEach(child => swarmIds.push(child.key));
                 
-                // Mark username as deleted (3 year retention for account deletions)
+                const eventsSnapshot = await database.ref('events').orderByChild('createdBy').equalTo(user.uid).once('value');
+                eventsSnapshot.forEach(child => eventIds.push(child.key));
+                
+                // Get username
+                let username = null;
                 const usernameSnapshot = await database.ref('usernames').once('value');
-                usernameSnapshot.forEach(async (child) => {
+                usernameSnapshot.forEach((child) => {
                     if (child.val() === user.uid) {
-                        await database.ref(`deletedUsernames/${child.key}`).set({
-                            userId: user.uid,
-                            deletedAt: deletionDate
-                        });
-                        await database.ref(`usernames/${child.key}`).remove();
+                        username = child.key;
                     }
                 });
                 
-                // Sign out and delete Firebase Auth account
-                // Note: Their content stays in database as soft-deleted for 3 years per privacy policy
+                // STEP 2: Create centralized deleted account log (for law enforcement/legal requests)
+                await database.ref(`deletedAccounts/${user.uid}`).set({
+                    email: user.email,
+                    username: username || 'unknown',
+                    displayName: user.displayName || null,
+                    deletedAt: deletionDate,
+                    routeIds: routeIds,
+                    swarmIds: swarmIds,
+                    eventIds: eventIds,
+                    totalRoutes: routeIds.length,
+                    totalSwarms: swarmIds.length,
+                    totalEvents: eventIds.length,
+                    retentionExpiresAt: new Date(Date.now() + (1095 * 24 * 60 * 60 * 1000)).toISOString() // 3 years from now
+                });
+                
+                // STEP 3: SOFT DELETE all user's content (keep for 3 years per privacy policy)
+                // Mark routes as deleted (3 year retention for account deletions)
+                const routeUpdatePromises = [];
+                routesSnapshot.forEach(child => {
+                    routeUpdatePromises.push(database.ref(`routes/${child.key}`).update({
+                        deleted: true,
+                        deletedAt: deletionDate,
+                        deletedReason: 'account_deletion'
+                    }));
+                });
+                await Promise.all(routeUpdatePromises);
+                
+                // Mark swarms as deleted (3 year retention for account deletions)
+                const swarmUpdatePromises = [];
+                swarmsSnapshot.forEach(child => {
+                    swarmUpdatePromises.push(database.ref(`swarms/${child.key}`).update({
+                        deleted: true,
+                        deletedAt: deletionDate,
+                        deletedReason: 'account_deletion'
+                    }));
+                });
+                await Promise.all(swarmUpdatePromises);
+                
+                // Mark events as deleted (3 year retention for account deletions)
+                const eventUpdatePromises = [];
+                eventsSnapshot.forEach(child => {
+                    eventUpdatePromises.push(database.ref(`events/${child.key}`).update({
+                        deleted: true,
+                        deletedAt: deletionDate,
+                        deletedReason: 'account_deletion'
+                    }));
+                });
+                await Promise.all(eventUpdatePromises);
+                
+                // Mark username as deleted (3 year retention for account deletions)
+                if (username) {
+                    await database.ref(`deletedUsernames/${username}`).set({
+                        userId: user.uid,
+                        deletedAt: deletionDate
+                    });
+                    await database.ref(`usernames/${username}`).remove();
+                }
+                
+                // STEP 4: Sign out and delete Firebase Auth account
+                // Note: Email and all content IDs are saved in deletedAccounts/{userId} for legal/law enforcement requests
                 await auth.signOut();
                 await user.delete();
                 
@@ -7111,6 +7139,139 @@
             }
         }
         window.cleanupDeletedEvents = cleanupDeletedEvents;
+        
+        // Cleanup deleted accounts log after 3 years retention
+        async function cleanupDeletedAccounts() {
+            try {
+                const deletedAccountsSnapshot = await database.ref('deletedAccounts').once('value');
+                const now = new Date();
+                const deletePromises = [];
+                
+                deletedAccountsSnapshot.forEach(snap => {
+                    const account = snap.val();
+                    
+                    if (account.deletedAt) {
+                        const deletedDate = new Date(account.deletedAt);
+                        const daysSinceDeletion = (now - deletedDate) / (1000 * 60 * 60 * 24);
+                        
+                        // PERMANENTLY DELETE account log after 3 years (1095 days)
+                        if (daysSinceDeletion > 1095) {
+                            console.log('Permanently deleting account log (3 year retention expired):', snap.key);
+                            deletePromises.push(database.ref(`deletedAccounts/${snap.key}`).remove());
+                            
+                            // Also clean up deletedUsernames entry
+                            if (account.username) {
+                                deletePromises.push(database.ref(`deletedUsernames/${account.username}`).remove());
+                            }
+                        }
+                    }
+                });
+                
+                // Execute delete operations
+                if (deletePromises.length > 0) {
+                    await Promise.all(deletePromises);
+                    console.log(`Permanently deleted ${deletePromises.length} account logs (3+ years old)`);
+                }
+            } catch (error) {
+                console.error('Error cleaning up deleted accounts:', error);
+            }
+        }
+        window.cleanupDeletedAccounts = cleanupDeletedAccounts;
+        
+        // ADMIN FUNCTION: Search deleted accounts by email (for law enforcement requests)
+        // Usage: Open browser console and run: searchDeletedAccountByEmail("joe1@gmail.com")
+        async function searchDeletedAccountByEmail(email) {
+            try {
+                const deletedAccountsSnapshot = await database.ref('deletedAccounts').once('value');
+                let foundAccount = null;
+                
+                deletedAccountsSnapshot.forEach(snap => {
+                    const account = snap.val();
+                    if (account.email === email) {
+                        foundAccount = {
+                            userId: snap.key,
+                            ...account
+                        };
+                    }
+                });
+                
+                if (foundAccount) {
+                    console.log('═══════════════════════════════════════════════════');
+                    console.log('DELETED ACCOUNT FOUND');
+                    console.log('═══════════════════════════════════════════════════');
+                    console.log('User ID:', foundAccount.userId);
+                    console.log('Email:', foundAccount.email);
+                    console.log('Username:', foundAccount.username);
+                    console.log('Display Name:', foundAccount.displayName || 'N/A');
+                    console.log('Deleted At:', foundAccount.deletedAt);
+                    console.log('Retention Expires:', foundAccount.retentionExpiresAt);
+                    console.log('───────────────────────────────────────────────────');
+                    console.log('Content Created:');
+                    console.log('  - Routes:', foundAccount.totalRoutes, '→', foundAccount.routeIds);
+                    console.log('  - Swarms:', foundAccount.totalSwarms, '→', foundAccount.swarmIds);
+                    console.log('  - Events:', foundAccount.totalEvents, '→', foundAccount.eventIds);
+                    console.log('═══════════════════════════════════════════════════');
+                    console.log('To retrieve full content data, use these IDs to query:');
+                    console.log('  database.ref("routes/{routeId}").once("value")');
+                    console.log('  database.ref("swarms/{swarmId}").once("value")');
+                    console.log('  database.ref("events/{eventId}").once("value")');
+                    console.log('═══════════════════════════════════════════════════');
+                    return foundAccount;
+                } else {
+                    console.log('No deleted account found with email:', email);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error searching deleted accounts:', error);
+                return null;
+            }
+        }
+        window.searchDeletedAccountByEmail = searchDeletedAccountByEmail;
+        
+        // ADMIN FUNCTION: Search deleted accounts by username (for law enforcement requests)
+        // Usage: Open browser console and run: searchDeletedAccountByUsername("joe_the_wanderer")
+        async function searchDeletedAccountByUsername(username) {
+            try {
+                const deletedAccountsSnapshot = await database.ref('deletedAccounts').once('value');
+                let foundAccount = null;
+                
+                deletedAccountsSnapshot.forEach(snap => {
+                    const account = snap.val();
+                    if (account.username === username) {
+                        foundAccount = {
+                            userId: snap.key,
+                            ...account
+                        };
+                    }
+                });
+                
+                if (foundAccount) {
+                    console.log('═══════════════════════════════════════════════════');
+                    console.log('DELETED ACCOUNT FOUND');
+                    console.log('═══════════════════════════════════════════════════');
+                    console.log('User ID:', foundAccount.userId);
+                    console.log('Email:', foundAccount.email);
+                    console.log('Username:', foundAccount.username);
+                    console.log('Display Name:', foundAccount.displayName || 'N/A');
+                    console.log('Deleted At:', foundAccount.deletedAt);
+                    console.log('Retention Expires:', foundAccount.retentionExpiresAt);
+                    console.log('───────────────────────────────────────────────────');
+                    console.log('Content Created:');
+                    console.log('  - Routes:', foundAccount.totalRoutes, '→', foundAccount.routeIds);
+                    console.log('  - Swarms:', foundAccount.totalSwarms, '→', foundAccount.swarmIds);
+                    console.log('  - Events:', foundAccount.totalEvents, '→', foundAccount.eventIds);
+                    console.log('═══════════════════════════════════════════════════');
+                    return foundAccount;
+                } else {
+                    console.log('No deleted account found with username:', username);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error searching deleted accounts:', error);
+                return null;
+            }
+        }
+        window.searchDeletedAccountByUsername = searchDeletedAccountByUsername;
         
         // Get unread message count
         async function getUnreadMessageCount() {

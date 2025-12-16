@@ -2134,6 +2134,9 @@
                 // Close modal
                 document.getElementById('usernameSetupModal').style.display = 'none';
                 
+                // Update displayed username immediately
+                document.getElementById('user-name').textContent = `Hi, ${username}!`;
+                
                 // Resolve the promise to continue auth flow
                 if (window.usernameSetupResolve) {
                     window.usernameSetupResolve();
@@ -5468,26 +5471,26 @@
         // Helper function to get username from userId
         async function getUsernameFromId(userId) {
             try {
-                // PRIORITY 1: If it's the current user, always use their displayName first
-                if (auth.currentUser && auth.currentUser.uid === userId) {
-                    if (auth.currentUser.displayName) {
-                        console.log('Using displayName for current user:', auth.currentUser.displayName);
-                        return auth.currentUser.displayName;
-                    }
-                }
-                
-                // PRIORITY 2: Search usernames database for this userId
+                // PRIORITY 1: Check database for custom username FIRST
                 const snapshot = await database.ref('usernames').once('value');
                 let foundUsername = null;
                 snapshot.forEach((child) => {
                     if (child.val() === userId) {
                         foundUsername = child.key;
-                        console.log('Found username in database:', foundUsername, 'for userId:', userId);
+                        console.log('Found custom username in database:', foundUsername, 'for userId:', userId);
                     }
                 });
                 
                 if (foundUsername) {
                     return foundUsername;
+                }
+                
+                // PRIORITY 2: If no custom username, use Google displayName as fallback
+                if (auth.currentUser && auth.currentUser.uid === userId) {
+                    if (auth.currentUser.displayName) {
+                        console.log('No custom username, using displayName for current user:', auth.currentUser.displayName);
+                        return auth.currentUser.displayName;
+                    }
                 }
                 
                 // PRIORITY 3: Last resort

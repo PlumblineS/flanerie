@@ -130,6 +130,80 @@
             box-shadow: 0 4px 15px rgba(107, 155, 158, 0.4);
         }
         
+        /* Mobile Navigation */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--accent-light);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: absolute;
+            left: 1rem;
+            z-index: 1001;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                gap: 2rem;
+                margin: 0;
+                transition: left 0.3s ease;
+                border-right: 1px solid rgba(107, 155, 158, 0.3);
+                z-index: 1000;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(107, 155, 158, 0.2);
+            }
+            
+            .nav-auth {
+                position: static;
+                flex-direction: column;
+                gap: 0.8rem;
+                width: 100%;
+                align-items: stretch;
+            }
+            
+            .nav-auth button {
+                width: 100%;
+            }
+            
+            #user-name {
+                text-align: center;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -1065,12 +1139,17 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="javascript:void(0)" onclick="scrollToContent()">How It Works</a></li>
-                <li><a href="javascript:void(0)" onclick="scrollToExplore()">Explore</a></li>
-                <li><a href="for-businesses.html">For Businesses</a></li>
-                <li><a href="about.html">About</a></li>
+            <!-- Mobile hamburger menu -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                ☰
+            </button>
+            
+            <ul class="nav-links" id="mobile-nav">
+                <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">How It Works</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
+                <li><a href="for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
+                <li><a href="about.html" onclick="closeMobileMenu()">About</a></li>
             </ul>
             
             <!-- Auth UI -->
@@ -1384,6 +1463,32 @@
         }
         
         setInterval(rotateHeroText, 3000);
+        
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('mobile-nav');
+            navLinks.classList.toggle('active');
+        }
+        
+        function closeMobileMenu() {
+            const navLinks = document.getElementById('mobile-nav');
+            navLinks.classList.remove('active');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('mobile-nav');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navLinks && menuToggle) {
+                const isClickInsideNav = navLinks.contains(event.target);
+                const isClickOnToggle = menuToggle.contains(event.target);
+                
+                if (!isClickInsideNav && !isClickOnToggle && navLinks.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            }
+        });
         
         // Scroll to content
         function scrollToContent() {

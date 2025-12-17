@@ -102,7 +102,10 @@
             gap: 0.5rem;
             position: absolute;
             right: 2rem;
-
+        }
+        
+        .mobile-auth-section {
+            display: none; /* Hidden on desktop, auth is positioned absolutely */
         }
         
         #user-name {
@@ -185,22 +188,27 @@
                 border-bottom: 1px solid rgba(107, 155, 158, 0.2);
             }
             
-            .nav-auth {
+            .mobile-auth-section {
+                display: block; /* Show on mobile */
+                list-style: none;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 2px solid rgba(107, 155, 158, 0.3);
+            }
+            
+            .mobile-auth-section .nav-auth {
                 position: static;
                 flex-direction: column;
                 gap: 0.8rem;
                 width: 100%;
-                align-items: stretch;
             }
             
-            .nav-auth button {
+            .mobile-auth-section .nav-auth button {
                 width: 100%;
             }
             
             #user-name {
-                text-align: center;
-                margin-right: 0;
-                margin-bottom: 0.5rem;
+                display: none; /* Hide username on mobile */
             }
         }
         
@@ -1150,17 +1158,19 @@
                 <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
                 <li><a href="for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
                 <li><a href="about.html" onclick="closeMobileMenu()">About</a></li>
+                
+                <!-- Auth UI inside mobile menu -->
+                <li class="mobile-auth-section">
+                    <div class="nav-auth">
+                        <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                        <div id="user-info" style="display: none;">
+                            <span id="user-name" style="color: var(--accent-light);">Hi, User!</span>
+                            <button class="auth-btn" onclick="openDashboard(); closeMobileMenu()">Dashboard</button>
+                            <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                        </div>
+                    </div>
+                </li>
             </ul>
-            
-            <!-- Auth UI -->
-            <div class="nav-auth">
-                <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
-                <div id="user-info" style="display: none;">
-                    <span id="user-name" style="color: var(--accent-light);">Hi, User!</span>
-                    <button class="auth-btn" onclick="openDashboard()">Dashboard</button>
-                    <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
-                </div>
-            </div>
         </div>
     </nav>
     

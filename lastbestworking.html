@@ -116,6 +116,22 @@
             line-height: 1;
         }
         
+        /* Desktop username styling - better spacing and alignment */
+        #desktop-user-name {
+            font-size: 0.9rem;
+            margin-right: 1.2rem;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+        
+        /* Ensure desktop user info container is properly aligned */
+        #desktop-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
         .auth-btn {
             background: linear-gradient(135deg, var(--accent-color), #8dbcc0);
             color: white;
@@ -209,6 +225,25 @@
             
             #user-name {
                 display: none; /* Hide username on mobile */
+            }
+            
+            #mobile-user-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.8rem;
+                width: 100%;
+            }
+            
+            #mobile-user-name {
+                display: block !important;
+                text-align: center;
+                padding: 0.5rem 0;
+                font-size: 0.95rem;
+                word-break: break-word;
+            }
+            
+            .desktop-auth {
+                display: none !important; /* Hide desktop auth on mobile */
             }
         }
         
@@ -1162,15 +1197,25 @@
                 <!-- Auth UI inside mobile menu -->
                 <li class="mobile-auth-section">
                     <div class="nav-auth">
-                        <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
-                        <div id="user-info" style="display: none;">
-                            <span id="user-name" style="color: var(--accent-light);">Hi, User!</span>
+                        <button id="mobile-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                        <div id="mobile-user-info" style="display: none;">
+                            <span id="mobile-user-name" style="color: var(--accent-light);">Hi, User!</span>
                             <button class="auth-btn" onclick="openDashboard(); closeMobileMenu()">Dashboard</button>
-                            <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                            <button id="mobile-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
                         </div>
                     </div>
                 </li>
             </ul>
+            
+            <!-- Desktop Auth UI - positioned absolutely on the right -->
+            <div class="nav-auth desktop-auth">
+                <button id="desktop-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                <div id="desktop-user-info" style="display: none;">
+                    <span id="desktop-user-name" style="color: var(--accent-light);">Hi, User!</span>
+                    <button class="auth-btn" onclick="openDashboard()">Dashboard</button>
+                    <button id="desktop-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                </div>
+            </div>
         </div>
     </nav>
     
@@ -1309,7 +1354,6 @@
                 <h4>Legal & Info</h4>
                 <ul>
                     <li><a href="/about.html">About Us</a></li>
-                    <li><a href="/for-businesses.html">For Businesses</a></li>
                     <li><a href="/privacy.html">Privacy Policy</a></li>
                     <li><a href="/terms.html">Terms of Use</a></li>
                 </ul>
@@ -1318,8 +1362,7 @@
                 <h4>Community</h4>
                 <ul>
                     <li><a href="javascript:void(0)" onclick="scrollToExplore()">Explore Routes</a></li>
-                    <li><a href="javascript:void(0)" onclick="scrollToSection('events')">Browse Events</a></li>
-                    <li><a href="javascript:void(0)" onclick="scrollToSection('swarms')">Discover Swarms</a></li>
+                    <li><a href="/for-businesses.html">For Businesses</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1808,11 +1851,14 @@
                 console.log('Final username to display:', username);
                 
                 // Update UI
-                document.getElementById('sign-in-btn').style.display = 'none';
-                document.getElementById('user-info').style.display = 'flex';
+                document.getElementById('mobile-sign-in-btn').style.display = 'none';
+                document.getElementById('mobile-user-info').style.display = 'flex';
+                document.getElementById('desktop-sign-in-btn').style.display = 'none';
+                document.getElementById('desktop-user-info').style.display = 'flex';
                 
                 // Show username instead of email
-                document.getElementById('user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${username}!`;
                 
                 // Force layout recalculation on mobile (fixes alignment after login)
                 const navContainer = document.querySelector('.nav-container');
@@ -1855,8 +1901,10 @@
                 console.log('User signed out');
                 
                 // Update UI
-                document.getElementById('sign-in-btn').style.display = 'block';
-                document.getElementById('user-info').style.display = 'none';
+                document.getElementById('mobile-sign-in-btn').style.display = 'block';
+                document.getElementById('mobile-user-info').style.display = 'none';
+                document.getElementById('desktop-sign-in-btn').style.display = 'block';
+                document.getElementById('desktop-user-info').style.display = 'none';
                 
                 // Force layout recalculation on mobile
                 const navContainer = document.querySelector('.nav-container');
@@ -2058,7 +2106,8 @@
                     console.log('Sign-up complete, verification email sent');
                     showToast('Account created! Please verify your email to unlock all features.');
                     // Update greeting with username immediately
-                    document.getElementById('user-name').textContent = `Hi, ${displayName}!`;
+                    document.getElementById('mobile-user-name').textContent = `Hi, ${displayName}!`;
+                    document.getElementById('desktop-user-name').textContent = `Hi, ${displayName}!`;
                 })
                 .catch((error) => {
                     console.error('Sign-up error:', error);
@@ -2250,7 +2299,8 @@
                 document.getElementById('usernameSetupModal').style.display = 'none';
                 
                 // Update displayed username immediately
-                document.getElementById('user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${username}!`;
                 
                 // Resolve the promise to continue auth flow
                 if (window.usernameSetupResolve) {
@@ -2995,7 +3045,8 @@
                 console.log('Verification - usernames for this user:', foundEntries);
                 
                 // Update UI immediately
-                document.getElementById('user-name').textContent = `Hi, ${newUsername}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${newUsername}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${newUsername}!`;
                 
                 showToast('✅ Username updated successfully!');
                 
@@ -6185,7 +6236,7 @@
         // Toast Notification
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.style.cssText = 'position: fixed; bottom: 2rem; right: 2rem; background: rgba(107, 155, 158, 0.95); color: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); z-index: 3000;';
+            toast.style.cssText = 'position: fixed; bottom: 2rem; right: 2rem; background: rgba(107, 155, 158, 0.95); color: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); z-index: 15000;';
             toast.textContent = message;
             document.body.appendChild(toast);
             

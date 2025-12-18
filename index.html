@@ -210,6 +210,10 @@
             #user-name {
                 display: none; /* Hide username on mobile */
             }
+            
+            .desktop-auth {
+                display: none !important; /* Hide desktop auth on mobile */
+            }
         }
         
         /* Hero Section */
@@ -1162,15 +1166,25 @@
                 <!-- Auth UI inside mobile menu -->
                 <li class="mobile-auth-section">
                     <div class="nav-auth">
-                        <button id="sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
-                        <div id="user-info" style="display: none;">
-                            <span id="user-name" style="color: var(--accent-light);">Hi, User!</span>
+                        <button id="mobile-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                        <div id="mobile-user-info" style="display: none;">
+                            <span id="mobile-user-name" style="color: var(--accent-light);">Hi, User!</span>
                             <button class="auth-btn" onclick="openDashboard(); closeMobileMenu()">Dashboard</button>
-                            <button id="sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                            <button id="mobile-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
                         </div>
                     </div>
                 </li>
             </ul>
+            
+            <!-- Desktop Auth UI - positioned absolutely on the right -->
+            <div class="nav-auth desktop-auth">
+                <button id="desktop-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                <div id="desktop-user-info" style="display: none;">
+                    <span id="desktop-user-name" style="color: var(--accent-light);">Hi, User!</span>
+                    <button class="auth-btn" onclick="openDashboard()">Dashboard</button>
+                    <button id="desktop-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                </div>
+            </div>
         </div>
     </nav>
     
@@ -1808,11 +1822,14 @@
                 console.log('Final username to display:', username);
                 
                 // Update UI
-                document.getElementById('sign-in-btn').style.display = 'none';
-                document.getElementById('user-info').style.display = 'flex';
+                document.getElementById('mobile-sign-in-btn').style.display = 'none';
+                document.getElementById('mobile-user-info').style.display = 'flex';
+                document.getElementById('desktop-sign-in-btn').style.display = 'none';
+                document.getElementById('desktop-user-info').style.display = 'flex';
                 
                 // Show username instead of email
-                document.getElementById('user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${username}!`;
                 
                 // Force layout recalculation on mobile (fixes alignment after login)
                 const navContainer = document.querySelector('.nav-container');
@@ -1855,8 +1872,10 @@
                 console.log('User signed out');
                 
                 // Update UI
-                document.getElementById('sign-in-btn').style.display = 'block';
-                document.getElementById('user-info').style.display = 'none';
+                document.getElementById('mobile-sign-in-btn').style.display = 'block';
+                document.getElementById('mobile-user-info').style.display = 'none';
+                document.getElementById('desktop-sign-in-btn').style.display = 'block';
+                document.getElementById('desktop-user-info').style.display = 'none';
                 
                 // Force layout recalculation on mobile
                 const navContainer = document.querySelector('.nav-container');
@@ -2058,7 +2077,8 @@
                     console.log('Sign-up complete, verification email sent');
                     showToast('Account created! Please verify your email to unlock all features.');
                     // Update greeting with username immediately
-                    document.getElementById('user-name').textContent = `Hi, ${displayName}!`;
+                    document.getElementById('mobile-user-name').textContent = `Hi, ${displayName}!`;
+                    document.getElementById('desktop-user-name').textContent = `Hi, ${displayName}!`;
                 })
                 .catch((error) => {
                     console.error('Sign-up error:', error);
@@ -2250,7 +2270,8 @@
                 document.getElementById('usernameSetupModal').style.display = 'none';
                 
                 // Update displayed username immediately
-                document.getElementById('user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${username}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${username}!`;
                 
                 // Resolve the promise to continue auth flow
                 if (window.usernameSetupResolve) {
@@ -2995,7 +3016,8 @@
                 console.log('Verification - usernames for this user:', foundEntries);
                 
                 // Update UI immediately
-                document.getElementById('user-name').textContent = `Hi, ${newUsername}!`;
+                document.getElementById('mobile-user-name').textContent = `Hi, ${newUsername}!`;
+                document.getElementById('desktop-user-name').textContent = `Hi, ${newUsername}!`;
                 
                 showToast('✅ Username updated successfully!');
                 

@@ -3802,17 +3802,8 @@
         }
         
         // Get all events from Firebase
-        async function getAllEvents(forceRefresh = false) {
+        async function getAllEvents() {
             try {
-                // Check cache first (unless forcing refresh)
-                if (!forceRefresh) {
-                    const cached = getCachedData('flanerie_events_cache');
-                    if (cached) {
-                        return cached;
-                    }
-                }
-                
-                // Fetch from Firebase
                 const snapshot = await database.ref('events').once('value');
                 const events = [];
                 snapshot.forEach((childSnapshot) => {
@@ -3825,10 +3816,6 @@
                         });
                     }
                 });
-                
-                // Cache the results
-                setCachedData('flanerie_events_cache', events);
-                
                 return events;
             } catch (error) {
                 console.error('Error loading events:', error);
@@ -3837,17 +3824,8 @@
         }
         
         // Get all swarms from Firebase
-        async function getAllSwarms(forceRefresh = false) {
+        async function getAllSwarms() {
             try {
-                // Check cache first (unless forcing refresh)
-                if (!forceRefresh) {
-                    const cached = getCachedData('flanerie_swarms_cache');
-                    if (cached) {
-                        return cached;
-                    }
-                }
-                
-                // Fetch from Firebase
                 const snapshot = await database.ref('swarms').once('value');
                 const swarms = [];
                 snapshot.forEach((childSnapshot) => {
@@ -3860,10 +3838,6 @@
                         });
                     }
                 });
-                
-                // Cache the results
-                setCachedData('flanerie_swarms_cache', swarms);
-                
                 return swarms;
             } catch (error) {
                 console.error('Error loading swarms:', error);
@@ -3910,94 +3884,9 @@
             });
         }
         
-        // ==================== FIREBASE CACHING ====================
-        // Cache data to reduce Firebase reads and stay within free tier
-        
-        const CACHE_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-        
-        function getCachedData(key) {
-            try {
-                const cached = localStorage.getItem(key);
-                if (!cached) return null;
-                
-                const { data, timestamp } = JSON.parse(cached);
-                const now = Date.now();
-                
-                // Check if cache is still valid (within 2 hours)
-                if (now - timestamp < CACHE_DURATION) {
-                    console.log(`✅ Using cached ${key} (${Math.round((now - timestamp) / 60000)} min old)`);
-                    return data;
-                }
-                
-                // Cache expired
-                console.log(`⏰ Cache expired for ${key}`);
-                localStorage.removeItem(key);
-                return null;
-            } catch (error) {
-                console.error('Error reading cache:', error);
-                return null;
-            }
-        }
-        
-        function setCachedData(key, data) {
-            try {
-                const cacheObject = {
-                    data: data,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem(key, JSON.stringify(cacheObject));
-                console.log(`💾 Cached ${key} (${data.length} items)`);
-            } catch (error) {
-                console.error('Error setting cache:', error);
-                // If localStorage is full, clear old caches
-                if (error.name === 'QuotaExceededError') {
-                    console.warn('localStorage full, clearing caches');
-                    clearAllCaches();
-                }
-            }
-        }
-        
-        function clearCache(key) {
-            localStorage.removeItem(key);
-            console.log(`🗑️ Cleared cache: ${key}`);
-        }
-        
-        function clearAllCaches() {
-            localStorage.removeItem('flanerie_routes_cache');
-            localStorage.removeItem('flanerie_swarms_cache');
-            localStorage.removeItem('flanerie_events_cache');
-            console.log('🗑️ Cleared all Flânerie caches');
-        }
-        
-        // Refresh browse map - clear cache and reload
-        function refreshBrowseMap() {
-            clearAllCaches();
-            showToast('🔄 Refreshing map data...');
-            
-            // Reload the current section
-            const currentSection = document.querySelector('.content-section:not([style*="display: none"])');
-            if (currentSection) {
-                const sectionId = currentSection.id || 'search';
-                toggleSection(sectionId);
-                showToast('✅ Map refreshed with latest data!');
-            }
-        }
-        
-        // ==================== END CACHING ====================
-        
-        // Get all routes from Firebase (with caching)
-        function getAllRoutes(forceRefresh = false) {
+        // Get all routes from Firebase
+        function getAllRoutes() {
             return new Promise((resolve) => {
-                // Check cache first (unless forcing refresh)
-                if (!forceRefresh) {
-                    const cached = getCachedData('flanerie_routes_cache');
-                    if (cached) {
-                        resolve(cached);
-                        return;
-                    }
-                }
-                
-                // Fetch from Firebase
                 database.ref('routes').once('value', (snapshot) => {
                     const routes = [];
                     snapshot.forEach((childSnapshot) => {
@@ -4010,10 +3899,6 @@
                             });
                         }
                     });
-                    
-                    // Cache the results
-                    setCachedData('flanerie_routes_cache', routes);
-                    
                     resolve(routes);
                 });
             });
@@ -4168,10 +4053,6 @@
                     <h2 style="color: var(--accent-color); margin-bottom: 0.5rem;">Search Routes</h2>
                     <p style="color: #d4d4d4; margin-bottom: 1rem;">Discover community-shared walking routes and find your next adventure</p>
                     
-                    <button onclick="refreshBrowseMap()" style="padding: 0.5rem 1rem; background: rgba(107, 155, 158, 0.2); border: 1px solid var(--accent-color); border-radius: 10px; color: var(--accent-color); font-weight: 600; cursor: pointer; margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(107, 155, 158, 0.2)'">
-                        🔄 Refresh Map
-                    </button>
-                    
                     <div style="margin-bottom: 1rem;">
                         <label for="categoryFilter" style="color: var(--accent-color); font-weight: 600; display: block; margin-bottom: 0.5rem;">Filter by Category:</label>
                         <select id="categoryFilter" style="width: 100%; padding: 0.75rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; cursor: pointer; max-height: 150px; overflow-y: auto;">
@@ -4254,13 +4135,9 @@
             } else if (sectionId === 'swarms') {
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Shopping Swarms</h2>
-                    <p style="color: #d4d4d4; margin-bottom: 1rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
                     
-                    <button onclick="refreshBrowseMap()" style="padding: 0.5rem 1rem; background: rgba(107, 155, 158, 0.2); border: 1px solid var(--accent-color); border-radius: 10px; color: var(--accent-color); font-weight: 600; cursor: pointer; margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(107, 155, 158, 0.2)'">
-                        🔄 Refresh Map
-                    </button>
-                    
-                    <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Search Near Me</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="swarmLocationSearch" placeholder="👉 Enter your zip code to find swarms near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
@@ -4281,13 +4158,9 @@
             } else if (sectionId === 'events') {
                 content.innerHTML = `
                     <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Local Events</h2>
-                    <p style="color: #d4d4d4; margin-bottom: 1rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
+                    <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
                     
-                    <button onclick="refreshBrowseMap()" style="padding: 0.5rem 1rem; background: rgba(107, 155, 158, 0.2); border: 1px solid var(--accent-color); border-radius: 10px; color: var(--accent-color); font-weight: 600; cursor: pointer; margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(107, 155, 158, 0.3)'" onmouseout="this.style.background='rgba(107, 155, 158, 0.2)'">
-                        🔄 Refresh Map
-                    </button>
-                    
-                    <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
                         <h3 style="color: var(--accent-light); margin-bottom: 1rem;">🔍 Find Events Near You</h3>
                         <div style="margin-bottom: 1rem; position: relative;">
                             <input type="text" id="eventLocationSearch" placeholder="👉 Enter your zip code to find events near you..." style="width: 100%; padding: 1rem; border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 15px; background: rgba(40, 40, 40, 0.9); color: #e0e0e0; font-family: 'Poppins', sans-serif; font-size: 1rem; animation: searchPulse 2s ease-in-out 3;">
@@ -5687,8 +5560,30 @@
             const user = auth.currentUser;
             const displayName = user.displayName || user.email.split('@')[0];
             
-            // Street geometry not used (straight-line routes only)
+            // Get street-following route geometry from Mapbox Directions API
+            showToast('Calculating route along streets...');
             let streetGeometry = null;
+            
+            try {
+                // Format coordinates for Mapbox API (lng,lat format)
+                const coords = routeCoordinates.map(c => `${c[1]},${c[0]}`).join(';');
+                const mapboxToken = 'pk.eyJ1IjoiaGlnaGRlZnBhbnRzIiwiYSI6ImNtaHpiNGt0NzBsNTIyam9saW45YmQ0Z3gifQ.EPETOMFI41QInYccb4Cehg';
+                const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxToken}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.routes && data.routes.length > 0) {
+                    // Store the street-following geometry
+                    streetGeometry = data.routes[0].geometry.coordinates;
+                    console.log('✅ Street route calculated:', streetGeometry.length, 'points');
+                } else {
+                    console.warn('⚠️ No route returned from Mapbox, using straight lines');
+                }
+            } catch (error) {
+                console.error('❌ Error getting street route:', error);
+                showToast('Note: Route will use straight lines (street routing unavailable)');
+            }
             
             const routeData = {
                 name: name,
@@ -5719,9 +5614,6 @@
                     
                     document.getElementById('saveRouteModal').remove();
                     showToast(`Route "${name}" updated successfully!`);
-                    
-                    // Clear routes cache so update appears immediately
-                    clearCache('flanerie_routes_cache');
                     
                     // Clear editing flags
                     window.editingRouteId = null;
@@ -5756,9 +5648,6 @@
                     
                     document.getElementById('saveRouteModal').remove();
                     showToast(`Route "${name}" saved successfully!`);
-                    
-                    // Clear routes cache so new route appears immediately
-                    clearCache('flanerie_routes_cache');
                     
                     // Close the creation map and open browse routes with the new route highlighted
                     if (newRouteId) {
@@ -6739,10 +6628,6 @@
                 localStorage.setItem('swarms', JSON.stringify(swarms));
                 
                 showToast('Shopping Swarm created successfully!');
-                
-                // Clear swarms cache so new swarm appears immediately
-                clearCache('flanerie_swarms_cache');
-                
                 closeCreateSwarmModal();
                 
                 // Close the creation map and open browse swarms with the new swarm highlighted
@@ -6830,10 +6715,6 @@
                 localStorage.setItem('events', JSON.stringify(events));
                 
                 showToast('Event created successfully!');
-                
-                // Clear events cache so new event appears immediately
-                clearCache('flanerie_events_cache');
-                
                 closeCreateEventModal();
                 console.log('EVENT DEBUG: Modal closed, about to check for fullscreen modal');
                 

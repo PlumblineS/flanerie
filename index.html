@@ -3490,7 +3490,7 @@
                     
                     // Draw route if multiple waypoints
                     if (routeCoordinates.length > 1) {
-                        await drawRoutedPath();
+                        routePath = L.polyline(routeCoordinates, { color: 'var(--accent-color)', weight: 4 }).addTo(journeyMap);
                     }
                     
                     // Center map on route
@@ -3621,7 +3621,7 @@
                     
                     // Draw route if multiple waypoints
                     if (routeCoordinates.length > 1) {
-                        await drawRoutedPath();
+                        routePath = L.polyline(routeCoordinates, { color: 'var(--accent-color)', weight: 4 }).addTo(journeyMap);
                     }
                     
                     // Center map on route
@@ -5315,55 +5315,10 @@
             }
             
             if (routeCoordinates.length > 1) {
-                // Use road routing instead of straight lines
-                await drawRoutedPath();
+                routePath = L.polyline(routeCoordinates, { color: 'var(--accent-color)', weight: 4 }).addTo(journeyMap);
             }
             
             showToast(`Waypoint ${waypointNumber} added!`);
-        }
-        
-        // Helper function to get routed path along roads
-        async function drawRoutedPath() {
-            if (routeCoordinates.length < 2) return;
-            
-            try {
-                // Build OSRM API URL with all waypoints
-                const coordinates = routeCoordinates.map(coord => `${coord[1]},${coord[0]}`).join(';');
-                const url = `https://router.project-osrm.org/route/v1/foot/${coordinates}?overview=full&geometries=geojson`;
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.code === 'Ok' && data.routes && data.routes[0]) {
-                    // Get the routed coordinates
-                    const routedCoords = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
-                    
-                    // Draw the routed path
-                    routePath = L.polyline(routedCoords, { 
-                        color: 'var(--accent-color)', 
-                        weight: 4,
-                        opacity: 0.8
-                    }).addTo(journeyMap);
-                    
-                    // Store routed coordinates for saving
-                    window.routedCoordinates = routedCoords;
-                } else {
-                    // Fallback to straight lines if routing fails
-                    routePath = L.polyline(routeCoordinates, { 
-                        color: 'var(--accent-color)', 
-                        weight: 4 
-                    }).addTo(journeyMap);
-                    window.routedCoordinates = routeCoordinates;
-                }
-            } catch (error) {
-                console.error('Routing error:', error);
-                // Fallback to straight lines
-                routePath = L.polyline(routeCoordinates, { 
-                    color: 'var(--accent-color)', 
-                    weight: 4 
-                }).addTo(journeyMap);
-                window.routedCoordinates = routeCoordinates;
-            }
         }
         
         function clearRoute() {
@@ -5373,7 +5328,6 @@
             routeCoordinates = [];
             waypointLabels = [];
             routePath = null;
-            window.routedCoordinates = null; // Clear routed path
             
             // Clear and hide waypoint labels container
             const labelsContainer = document.getElementById('waypointLabelsContainer');
@@ -5733,15 +5687,8 @@
             const user = auth.currentUser;
             const displayName = user.displayName || user.email.split('@')[0];
             
-            // Use the routed coordinates we already calculated during drawing
+            // Street geometry not used (straight-line routes only)
             let streetGeometry = null;
-            if (window.routedCoordinates && window.routedCoordinates.length > 0) {
-                // Convert to lng,lat format for storage (Mapbox format)
-                streetGeometry = window.routedCoordinates.map(coord => [coord[1], coord[0]]);
-                console.log('✅ Using pre-calculated street route:', streetGeometry.length, 'points');
-            } else {
-                console.warn('⚠️ No routed path available, using waypoints');
-            }
             
             const routeData = {
                 name: name,

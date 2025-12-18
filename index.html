@@ -1549,7 +1549,15 @@
         }
         
         function scrollToExplore() {
-            document.getElementById('tagline-reveal').scrollIntoView({ behavior: 'smooth' });
+            const element = document.getElementById('tagline-reveal');
+            const navHeight = document.querySelector('nav').offsetHeight;
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - navHeight - 40; // Account for nav + some padding
+            
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
         }
         
         // Scroll to any section by ID

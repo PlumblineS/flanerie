@@ -260,6 +260,17 @@
             background: url('/character-bg.png') center/cover fixed;
         }
         
+        /* Fix mobile background rendering - just use black on mobile */
+        @media (max-width: 768px) {
+            .hero {
+                background: #0a0a0a;
+            }
+            
+            .hero::before {
+                display: none;
+            }
+        }
+        
         .hero::before {
             content: '';
             position: absolute;
@@ -1189,7 +1200,7 @@
             
             <ul class="nav-links" id="mobile-nav">
                 <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
-                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">How It Works</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">What is Flanerie?</a></li>
                 <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
                 <li><a href="/for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
                 <li><a href="/about.html" onclick="closeMobileMenu()">About</a></li>
@@ -4070,6 +4081,25 @@
                 searchMap = null;
                 swarmMap = null;
                 eventMap = null;
+                
+                // Clear route editing data to prevent it from appearing in new journey creation
+                if (routeMarkers && routeMarkers.length > 0) {
+                    routeMarkers.forEach(marker => {
+                        if (journeyMap) journeyMap.removeLayer(marker);
+                    });
+                }
+                routeMarkers = [];
+                routeCoordinates = [];
+                waypointLabels = [];
+                if (routePath && journeyMap) {
+                    journeyMap.removeLayer(routePath);
+                }
+                routePath = null;
+                
+                // Clear editing state
+                window.editingRouteId = null;
+                window.editingRouteData = null;
+                
                 // Scroll back to Explore section
                 setTimeout(() => {
                     const exploreSection = document.querySelector('.features-section');

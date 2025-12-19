@@ -3864,7 +3864,15 @@
         }
         
         // Get all events from Firebase
-        async function getAllEvents() {
+        async function getAllEvents(forceRefresh = false) {
+            // Check cache first
+            if (!forceRefresh && isCacheValid('events')) {
+                console.log('Using cached events data');
+                return dataCache.events.data;
+            }
+            
+            // Fetch fresh data from Firebase
+            console.log('Fetching fresh events data from Firebase');
             try {
                 const snapshot = await database.ref('events').once('value');
                 const events = [];
@@ -3878,12 +3886,18 @@
                         });
                     }
                 });
+                
+                // Update cache
+                dataCache.events.data = events;
+                dataCache.events.timestamp = Date.now();
+                
                 return events;
             } catch (error) {
                 console.error('Error loading events:', error);
                 return [];
             }
         }
+
         
         // Get all swarms from Firebase
         async function getAllSwarms() {
@@ -3919,25 +3933,40 @@
             }
         }
         
-        // Listen for real-time updates (optional - shows changes instantly)
-        function listenForEventUpdates(callback) {
-            database.ref('events').on('value', (snapshot) => {
-                const events = [];
-                snapshot.forEach((childSnapshot) => {
-                    events.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
-                    });
-                });
-                callback(events);
-            });
-        }
-        
-        function listenForSwarmUpdates(callback) {
-            database.ref('swarms').on('value', (snapshot) => {
+        async function getAllSwarms(forceRefresh = false) {
+            // Check cache first
+            if (!forceRefresh && isCacheValid('swarms')) {
+                console.log('Using cached swarms data');
+                return dataCache.swarms.data;
+            }
+            
+            // Fetch fresh data from Firebase
+            console.log('Fetching fresh swarms data from Firebase');
+            try {
+                const snapshot = await database.ref('swarms').once('value');
                 const swarms = [];
                 snapshot.forEach((childSnapshot) => {
-                    swarms.push({
+                    const swarm = childSnapshot.val();
+                    // Exclude soft-deleted swarms from public view
+                    if (!swarm.deleted) {
+                        swarms.push({
+                            id: childSnapshot.key,
+                            ...swarm
+                        });
+                    }
+                });
+                
+                // Update cache
+                dataCache.swarms.data = swarms;
+                dataCache.swarms.timestamp = Date.now();
+                
+                return swarms;
+            } catch (error) {
+                console.error('Error loading swarms:', error);
+                return [];
+            }
+        }
+
                         id: childSnapshot.key,
                         ...childSnapshot.val()
                     });
@@ -3985,25 +4014,66 @@
     </script>
     
     <script>
+        // Cache system for reducing Firebase reads
+        const dataCache = {
+            routes: { data: null, timestamp: null, ttl: 300000 }, // 5 min cache
+            swarms: { data: null, timestamp: null, ttl: 300000 },
+            events: { data: null, timestamp: null, ttl: 300000 }
+        };
+        
+        function isCacheValid(cacheKey) {
+            const cache = dataCache[cacheKey];
+            if (!cache.data || !cache.timestamp) return false;
+            return (Date.now() - cache.timestamp) < cache.ttl;
+        }
+        
+        function clearCache(cacheKey) {
+            if (cacheKey) {
+                dataCache[cacheKey] = { data: null, timestamp: null, ttl: dataCache[cacheKey].ttl };
+            } else {
+                // Clear all caches
+                Object.keys(dataCache).forEach(key => {
+                    dataCache[key].data = null;
+                    dataCache[key].timestamp = null;
+                });
+            }
+        }
+        
         // Map variables
         let journeyMap = null;
-        let searchMap = null;
-        let swarmMap = null;
-        let eventMap = null;
-        let routeMarkers = [];
-        let routePath = null;
-        let routeCoordinates = [];
-        let waypointLabels = []; // Store custom labels for each waypoint
-        let allRoutesData = []; // Store all routes for search map
-        let selectedRoute = null; // Currently selected route
-        
-        // Toggle Sections - Opens fullscreen modal with maps
-        function toggleSection(sectionId, highlightId = null) {
-            // Check auth for creation sections (not browsing)
-            const creationSections = ['journey-map', 'swarm-map', 'event-map', 'swarm-map-v2', 'event-map-v2'];
-            if (creationSections.includes(sectionId)) {
-                if (!checkAuthAndVerification()) {
-                    return; // Stop if not authorized
+        function getAllRoutes(forceRefresh = false) {
+            return new Promise((resolve) => {
+                // Check cache first
+                if (!forceRefresh && isCacheValid('routes')) {
+                    console.log('Using cached routes data');
+                    resolve(dataCache.routes.data);
+                    return;
+                }
+                
+                // Fetch fresh data from Firebase
+                console.log('Fetching fresh routes data from Firebase');
+                database.ref('routes').once('value', (snapshot) => {
+                    const routes = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const route = childSnapshot.val();
+                        // Exclude soft-deleted routes from public view
+                        if (!route.deleted) {
+                            routes.push({
+                                id: childSnapshot.key,
+                                ...route
+                            });
+                        }
+                    });
+                    
+                    // Update cache
+                    dataCache.routes.data = routes;
+                    dataCache.routes.timestamp = Date.now();
+                    
+                    resolve(routes);
+                });
+            });
+        }
+
                 }
             }
             
@@ -4112,7 +4182,12 @@
                 `;
              } else if (sectionId === 'search') {
                 content.innerHTML = `
-                    <h2 style="color: var(--accent-color); margin-bottom: 0.5rem;">Search Routes</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <h2 style="color: var(--accent-color); margin: 0;">Search Routes</h2>
+                        <button onclick="refreshRoutes()" style="background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">
+                            🔄 Refresh
+                        </button>
+                    </div>
                     <p style="color: #d4d4d4; margin-bottom: 1rem;">Discover community-shared walking routes and find your next adventure</p>
                     
                     <div style="margin-bottom: 1rem;">
@@ -4196,7 +4271,12 @@
                 `;
             } else if (sectionId === 'swarms') {
                 content.innerHTML = `
-                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Shopping Swarms</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="color: var(--accent-color); margin: 0;">Shopping Swarms</h2>
+                        <button onclick="refreshSwarms()" style="background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">
+                            🔄 Refresh
+                        </button>
+                    </div>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Organize or join community walks where locals explore, shop, and support businesses together — a spontaneous celebration of local culture!</p>
                     
                     <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
@@ -4219,7 +4299,12 @@
                 `;
             } else if (sectionId === 'events') {
                 content.innerHTML = `
-                    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Local Events</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="color: var(--accent-color); margin: 0;">Local Events</h2>
+                        <button onclick="refreshEvents()" style="background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">
+                            🔄 Refresh
+                        </button>
+                    </div>
                     <p style="color: #d4d4d4; margin-bottom: 1.5rem;">Discover and promote neighborhood celebrations, block parties, sidewalk sales, and community festivals.</p>
                     
                     <div style="margin-top: 2rem; margin-bottom: 1.5rem;">
@@ -5180,6 +5265,63 @@
         
         // Make toggleSection globally accessible immediately
         window.toggleSection = toggleSection;
+        
+        // Refresh functions to clear cache and reload data
+        async function refreshRoutes() {
+            showToast('Refreshing routes...');
+            clearCache('routes');
+            
+            // Close and reopen the search modal to trigger reload
+            const modal = document.getElementById('fullscreen-search');
+            if (modal) {
+                modal.remove();
+                document.body.classList.remove('choreography-active');
+            }
+            
+            // Reopen after a brief delay
+            setTimeout(() => {
+                toggleSection('search');
+            }, 100);
+        }
+        
+        async function refreshSwarms() {
+            showToast('Refreshing swarms...');
+            clearCache('swarms');
+            
+            // Close and reopen the swarms modal to trigger reload
+            const modal = document.getElementById('fullscreen-swarms');
+            if (modal) {
+                modal.remove();
+                document.body.classList.remove('choreography-active');
+            }
+            
+            // Reopen after a brief delay
+            setTimeout(() => {
+                toggleSection('swarms');
+            }, 100);
+        }
+        
+        async function refreshEvents() {
+            showToast('Refreshing events...');
+            clearCache('events');
+            
+            // Close and reopen the events modal to trigger reload
+            const modal = document.getElementById('fullscreen-events');
+            if (modal) {
+                modal.remove();
+                document.body.classList.remove('choreography-active');
+            }
+            
+            // Reopen after a brief delay
+            setTimeout(() => {
+                toggleSection('events');
+            }, 100);
+        }
+        
+        // Make refresh functions global
+        window.refreshRoutes = refreshRoutes;
+        window.refreshSwarms = refreshSwarms;
+        window.refreshEvents = refreshEvents;
         
         async function addWaypoint(latlng) {
             const waypointNumber = routeCoordinates.length + 1;

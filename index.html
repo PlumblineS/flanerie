@@ -260,6 +260,13 @@
             background: url('/character-bg.png') center/cover fixed;
         }
         
+        /* Fix mobile background rendering - remove fixed on mobile */
+        @media (max-width: 768px) {
+            .hero {
+                background-attachment: scroll;
+            }
+        }
+        
         .hero::before {
             content: '';
             position: absolute;

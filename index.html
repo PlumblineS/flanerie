@@ -260,17 +260,6 @@
             background: url('/character-bg.png') center/cover fixed;
         }
         
-        /* Fix mobile background rendering - just use black on mobile */
-        @media (max-width: 768px) {
-            .hero {
-                background: #0a0a0a;
-            }
-            
-            .hero::before {
-                display: none;
-            }
-        }
-        
         .hero::before {
             content: '';
             position: absolute;
@@ -1200,7 +1189,7 @@
             
             <ul class="nav-links" id="mobile-nav">
                 <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
-                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">What is Flanerie?</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">How It Works</a></li>
                 <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
                 <li><a href="/for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
                 <li><a href="/about.html" onclick="closeMobileMenu()">About</a></li>
@@ -3865,6 +3854,14 @@
         
         // Get all events from Firebase
         async function getAllEvents() {
+            // Check cache first
+            if (isCacheValid('events')) {
+                console.log('Using cached events data');
+                return dataCache.events.data;
+            }
+            
+            // Fetch fresh data from Firebase
+            console.log('Fetching fresh events data from Firebase');
             try {
                 const snapshot = await database.ref('events').once('value');
                 const events = [];
@@ -3878,6 +3875,11 @@
                         });
                     }
                 });
+                
+                // Update cache
+                dataCache.events.data = events;
+                dataCache.events.timestamp = Date.now();
+                
                 return events;
             } catch (error) {
                 console.error('Error loading events:', error);
@@ -3887,6 +3889,14 @@
         
         // Get all swarms from Firebase
         async function getAllSwarms() {
+            // Check cache first
+            if (isCacheValid('swarms')) {
+                console.log('Using cached swarms data');
+                return dataCache.swarms.data;
+            }
+            
+            // Fetch fresh data from Firebase
+            console.log('Fetching fresh swarms data from Firebase');
             try {
                 const snapshot = await database.ref('swarms').once('value');
                 const swarms = [];
@@ -3900,6 +3910,11 @@
                         });
                     }
                 });
+                
+                // Update cache
+                dataCache.swarms.data = swarms;
+                dataCache.swarms.timestamp = Date.now();
+                
                 return swarms;
             } catch (error) {
                 console.error('Error loading swarms:', error);
@@ -3949,6 +3964,15 @@
         // Get all routes from Firebase
         function getAllRoutes() {
             return new Promise((resolve) => {
+                // Check cache first
+                if (isCacheValid('routes')) {
+                    console.log('Using cached routes data');
+                    resolve(dataCache.routes.data);
+                    return;
+                }
+                
+                // Fetch fresh data from Firebase
+                console.log('Fetching fresh routes data from Firebase');
                 database.ref('routes').once('value', (snapshot) => {
                     const routes = [];
                     snapshot.forEach((childSnapshot) => {
@@ -3961,6 +3985,11 @@
                             });
                         }
                     });
+                    
+                    // Update cache
+                    dataCache.routes.data = routes;
+                    dataCache.routes.timestamp = Date.now();
+                    
                     resolve(routes);
                 });
             });
@@ -3985,6 +4014,19 @@
     </script>
     
     <script>
+        // Cache system for reducing Firebase reads (5-minute TTL)
+        const dataCache = {
+            routes: { data: null, timestamp: null, ttl: 300000 },
+            swarms: { data: null, timestamp: null, ttl: 300000 },
+            events: { data: null, timestamp: null, ttl: 300000 }
+        };
+        
+        function isCacheValid(cacheKey) {
+            const cache = dataCache[cacheKey];
+            if (!cache.data || !cache.timestamp) return false;
+            return (Date.now() - cache.timestamp) < cache.ttl;
+        }
+        
         // Map variables
         let journeyMap = null;
         let searchMap = null;

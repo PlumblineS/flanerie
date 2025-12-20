@@ -2076,6 +2076,13 @@
                 return;
             }
             
+            // INVITE CODE CHECK: Verify invite code
+            const inviteCode = document.getElementById('inviteCode').value.trim();
+            if (inviteCode !== 'Flanerie-80884bob') {
+                showToast('Invalid invite code. Please check and try again.');
+                return;
+            }
+            
             // ANTI-BOT CHECK 1: Honeypot field
             const honeypot = document.getElementById('website').value;
             if (honeypot) {
@@ -7888,6 +7895,10 @@
                     <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Username</label>
                     <input type="text" id="signUpDisplayName" required oninput="checkUsernameAvailability()" pattern="[a-zA-Z0-9_]+" minlength="3" maxlength="20" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Letters, numbers, underscore only">
                     <p id="usernameStatus" style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;"></p>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Invite Code</label>
+                    <input type="text" id="inviteCode" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Enter your invite code">
                 </div>
                 <!-- Honeypot field (hidden from humans, bots will fill it) -->
                 <input type="text" id="website" name="website" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" autocomplete="off">

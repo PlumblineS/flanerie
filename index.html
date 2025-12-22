@@ -26,9 +26,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Cloudflare Turnstile -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    
     <style>
         * {
             margin: 0;
@@ -263,17 +260,6 @@
             background: url('/character-bg.png') center/cover fixed;
         }
         
-        /* Fix mobile background rendering - just use black on mobile */
-        @media (max-width: 768px) {
-            .hero {
-                background: #0a0a0a;
-            }
-            
-            .hero::before {
-                display: none;
-            }
-        }
-        
         .hero::before {
             content: '';
             position: absolute;
@@ -486,7 +472,7 @@
         .main-content {
             position: relative;
             background: #0a0a0a;
-            padding: 4rem 0 2rem;
+            padding: 6.5rem 0 2rem;
         }
         
         .container {
@@ -498,13 +484,13 @@
         /* Info Section - Definition */
         .info-section {
             text-align: center;
-            padding: 0.5rem 0 0.5rem;
+            padding: 1.5rem 0 0.5rem;
             max-width: 900px;
             margin: 0 auto 1.5rem;
         }
         
         .definition-box-animated {
-            margin-bottom: 3rem;
+            margin-bottom: 1.2rem;
             text-align: left;
             max-width: 700px;
             margin-left: auto;
@@ -601,7 +587,7 @@
         .feature-card-large {
             background: rgba(30, 30, 30, 0.9);
             border-radius: 20px;
-            padding: 2rem 1.5rem 2rem;
+            padding: 1.5rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             cursor: pointer;
@@ -609,8 +595,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 320px;
-            max-height: 400px;
+            min-height: 280px;
+            max-height: 360px;
         }
         
         .feature-card-large:hover {
@@ -627,25 +613,15 @@
         }
         
         .feature-icon {
-            width: 173px;
-            height: 173px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-            border-radius: 50%;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4.3rem;
+            font-size: 1.5rem;
             margin: 0 auto 1rem;
-        }
-        
-        /* Scale down icons on mobile */
-        @media (max-width: 768px) {
-            .feature-icon {
-                width: 90px;
-                height: 90px;
-                font-size: 2.2rem;
-                margin: 0 auto 0.75rem;
-            }
         }
         
         .feature-card-large h3 {
@@ -1213,7 +1189,7 @@
             
             <ul class="nav-links" id="mobile-nav">
                 <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
-                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">What is Flanerie?</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">How It Works</a></li>
                 <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
                 <li><a href="/for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
                 <li><a href="/about.html" onclick="closeMobileMenu()">About</a></li>
@@ -1333,9 +1309,7 @@
                     <!-- Card 1: Journeys & Routes -->
                     <div class="feature-card-large">
                         <div class="feature-content">
-                            <div class="feature-icon" style="background: none; padding: 0; overflow: hidden; border-radius: 50%;">
-                                <img src="/journey-icon.png" alt="Journeys" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                            </div>
+                            <div class="feature-icon">📍</div>
                             <h3>Journeys & Routes</h3>
                             <p>Share your path or discover new ones</p>
                             <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.75rem;">Share Your Journey</button>
@@ -1346,9 +1320,7 @@
                     <!-- Card 2: Shopping Swarms -->
                     <div class="feature-card-large">
                         <div class="feature-content">
-                            <div class="feature-icon" style="background: none; padding: 0; overflow: hidden; border-radius: 50%;">
-                                <img src="/swarm-icon.png" alt="Shopping Swarm" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                            </div>
+                            <div class="feature-icon">🛍️</div>
                             <h3>Shopping Swarms</h3>
                             <p>Create or join community walks</p>
                             <button class="feature-btn" onclick="toggleSection('swarm-map-v2')" style="margin-bottom: 0.75rem;">Create Shopping Swarm</button>
@@ -1359,9 +1331,7 @@
                     <!-- Card 3: Local Events -->
                     <div class="feature-card-large">
                         <div class="feature-content">
-                            <div class="feature-icon" style="background: none; padding: 0; overflow: hidden; border-radius: 50%;">
-                                <img src="/event-icon.png" alt="Events" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                            </div>
+                            <div class="feature-icon">🎉</div>
                             <h3>Local Events</h3>
                             <p>Promote events or discover celebrations</p>
                             <button class="feature-btn" onclick="toggleSection('event-map-v2')" style="margin-bottom: 0.75rem;">Promote Your Event</button>
@@ -1767,86 +1737,81 @@
         
         // ===== FIREBASE AUTHENTICATION =====
         
-        // ===== SITE LOCKDOWN - INVITE CODE CHECK =====
-        // This blocks the entire site until correct invite code is entered
-        // ONLY ACTIVATES ON PRODUCTION SITES
+        // ===== SITE LOCKDOWN (Remove this section when ready to launch) =====
+        // This blocks the entire site until an authorized user logs in
+        // ONLY ACTIVATES ON PRODUCTION SITES - GitHub Pages remains open for testing
         if (window.location.hostname.includes('firebaseapp.com') || 
             window.location.hostname.includes('web.app') || 
             window.location.hostname.includes('pages.dev')) {
+            const lockdownOverlay = document.createElement('div');
+            lockdownOverlay.id = 'lockdown-overlay';
+            lockdownOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                z-index: 999999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Poppins', sans-serif;
+            `;
+            lockdownOverlay.innerHTML = `
+                <div style="text-align: center; padding: 3rem; background: rgba(25, 25, 25, 0.95); border-radius: 20px; border: 2px solid rgba(107, 155, 158, 0.3); max-width: 500px;">
+                    <h1 style="color: #8DBCC0; font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">Flânerie</h1>
+                    <p style="color: #8DBCC0; margin-bottom: 2rem; font-size: 1.1rem;">Admin Access Only</p>
+                    <p style="color: #999; margin-bottom: 2rem;">This site is currently in private testing.</p>
+                    <button id="admin-login-btn" style="background: linear-gradient(135deg, #6B9B9E, #8dbcc0); color: white; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.3rem;">G</span> Sign in with Google
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(lockdownOverlay);
             
-            // Check if user has already entered correct code (stored in sessionStorage)
-            const hasAccess = sessionStorage.getItem('flanerie_access') === 'granted';
-            
-            if (!hasAccess) {
-                const lockdownOverlay = document.createElement('div');
-                lockdownOverlay.id = 'lockdown-overlay';
-                lockdownOverlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                    z-index: 999999;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-family: 'Poppins', sans-serif;
-                `;
-                lockdownOverlay.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; background: rgba(25, 25, 25, 0.95); border-radius: 20px; border: 2px solid rgba(107, 155, 158, 0.3); max-width: 500px;">
-                        <h1 style="color: #8DBCC0; font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">Flânerie</h1>
-                        <p style="color: #8DBCC0; margin-bottom: 1rem; font-size: 1.1rem;">Private Testing</p>
-                        <p style="color: #999; margin-bottom: 2rem;">Enter your invite code to access the site</p>
-                        <input type="text" id="gate-invite-code" placeholder="Enter invite code" style="width: 100%; padding: 1rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; margin-bottom: 1rem;">
-                        <p id="gate-error" style="color: #ff4444; margin-bottom: 1rem; display: none; font-size: 0.9rem;">Incorrect invite code</p>
-                        <button id="gate-submit-btn" style="background: linear-gradient(135deg, #6B9B9E, #8dbcc0); color: white; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; width: 100%;">
-                            Enter Site
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(lockdownOverlay);
-                
-                // Handle invite code submission
-                const submitBtn = document.getElementById('gate-submit-btn');
-                const codeInput = document.getElementById('gate-invite-code');
-                const errorMsg = document.getElementById('gate-error');
-                
-                function checkInviteCode() {
-                    const enteredCode = codeInput.value.trim();
-                    if (enteredCode === 'Flanerie-80884bob') {
-                        // Correct code!
-                        sessionStorage.setItem('flanerie_access', 'granted');
-                        lockdownOverlay.remove();
-                    } else {
-                        // Wrong code
-                        errorMsg.style.display = 'block';
-                        codeInput.value = '';
-                        codeInput.focus();
-                    }
-                }
-                
-                submitBtn.addEventListener('click', checkInviteCode);
-                codeInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        checkInviteCode();
-                    }
+            // Handle admin login button
+            document.getElementById('admin-login-btn').addEventListener('click', function() {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).catch(function(error) {
+                    console.error('Login error:', error);
+                    alert('Login failed: ' + error.message);
                 });
-                
-                // Focus input on load
-                setTimeout(() => codeInput.focus(), 100);
-            }
+            });
         }
         // ===== END SITE LOCKDOWN =====
         
         // Auth state listener - runs when user signs in/out
         auth.onAuthStateChanged(async function(user) {
             if (user) {
-                // User is signed in
+                // AUTHORIZED USERS ONLY - Check email on all production sites
+                if (window.location.hostname.includes('firebaseapp.com') || 
+                    window.location.hostname.includes('web.app') || 
+                    window.location.hostname.includes('pages.dev')) {
+                    const authorizedEmails = [
+                        'highdefpants@gmail.com',  // Replace with your actual email
+                        // 'friend@gmail.com',    // Uncomment and add more emails as needed
+                    ];
+                    
+                    // Check if user is authorized
+                    if (!authorizedEmails.includes(user.email)) {
+                        // NOT AUTHORIZED - Sign them out and show error
+                        await auth.signOut();
+                        alert('Access denied. This site is currently in private testing. Your email (' + user.email + ') is not authorized.');
+                        return;
+                    }
+                }
+                
+                // User is signed in AND authorized (or on GitHub Pages)
                 console.log('User signed in:', user.email);
                 console.log('User displayName:', user.displayName);
                 console.log('User UID:', user.uid);
-
+                
+                // Remove lockdown overlay - site is now accessible
+                const overlay = document.getElementById('lockdown-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
                 
                 // Check if this is a Google user's first time (no username in database)
                 const isGoogleUser = user.providerData[0]?.providerId === 'google.com';
@@ -2073,13 +2038,6 @@
         // Sign up with Email/Password
         async function signUpWithEmail(event) {
             event.preventDefault();
-            
-            // TURNSTILE CHECK: Verify bot protection token
-            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]');
-            if (!turnstileResponse || !turnstileResponse.value) {
-                showToast('Please complete the security check');
-                return;
-            }
             
             // ANTI-BOT CHECK 1: Honeypot field
             const honeypot = document.getElementById('website').value;
@@ -3896,14 +3854,6 @@
         
         // Get all events from Firebase
         async function getAllEvents() {
-            // Check cache first
-            if (isCacheValid('events')) {
-                console.log('Using cached events data');
-                return dataCache.events.data;
-            }
-            
-            // Fetch fresh data from Firebase
-            console.log('Fetching fresh events data from Firebase');
             try {
                 const snapshot = await database.ref('events').once('value');
                 const events = [];
@@ -3917,11 +3867,6 @@
                         });
                     }
                 });
-                
-                // Update cache
-                dataCache.events.data = events;
-                dataCache.events.timestamp = Date.now();
-                
                 return events;
             } catch (error) {
                 console.error('Error loading events:', error);
@@ -3931,14 +3876,6 @@
         
         // Get all swarms from Firebase
         async function getAllSwarms() {
-            // Check cache first
-            if (isCacheValid('swarms')) {
-                console.log('Using cached swarms data');
-                return dataCache.swarms.data;
-            }
-            
-            // Fetch fresh data from Firebase
-            console.log('Fetching fresh swarms data from Firebase');
             try {
                 const snapshot = await database.ref('swarms').once('value');
                 const swarms = [];
@@ -3952,11 +3889,6 @@
                         });
                     }
                 });
-                
-                // Update cache
-                dataCache.swarms.data = swarms;
-                dataCache.swarms.timestamp = Date.now();
-                
                 return swarms;
             } catch (error) {
                 console.error('Error loading swarms:', error);
@@ -4006,15 +3938,6 @@
         // Get all routes from Firebase
         function getAllRoutes() {
             return new Promise((resolve) => {
-                // Check cache first
-                if (isCacheValid('routes')) {
-                    console.log('Using cached routes data');
-                    resolve(dataCache.routes.data);
-                    return;
-                }
-                
-                // Fetch fresh data from Firebase
-                console.log('Fetching fresh routes data from Firebase');
                 database.ref('routes').once('value', (snapshot) => {
                     const routes = [];
                     snapshot.forEach((childSnapshot) => {
@@ -4027,11 +3950,6 @@
                             });
                         }
                     });
-                    
-                    // Update cache
-                    dataCache.routes.data = routes;
-                    dataCache.routes.timestamp = Date.now();
-                    
                     resolve(routes);
                 });
             });
@@ -4056,19 +3974,6 @@
     </script>
     
     <script>
-        // Cache system for reducing Firebase reads (5-minute TTL)
-        const dataCache = {
-            routes: { data: null, timestamp: null, ttl: 300000 },
-            swarms: { data: null, timestamp: null, ttl: 300000 },
-            events: { data: null, timestamp: null, ttl: 300000 }
-        };
-        
-        function isCacheValid(cacheKey) {
-            const cache = dataCache[cacheKey];
-            if (!cache.data || !cache.timestamp) return false;
-            return (Date.now() - cache.timestamp) < cache.ttl;
-        }
-        
         // Map variables
         let journeyMap = null;
         let searchMap = null;
@@ -4112,25 +4017,6 @@
                 searchMap = null;
                 swarmMap = null;
                 eventMap = null;
-                
-                // Clear route editing data to prevent it from appearing in new journey creation
-                if (routeMarkers && routeMarkers.length > 0) {
-                    routeMarkers.forEach(marker => {
-                        if (journeyMap) journeyMap.removeLayer(marker);
-                    });
-                }
-                routeMarkers = [];
-                routeCoordinates = [];
-                waypointLabels = [];
-                if (routePath && journeyMap) {
-                    journeyMap.removeLayer(routePath);
-                }
-                routePath = null;
-                
-                // Clear editing state
-                window.editingRouteId = null;
-                window.editingRouteData = null;
-                
                 // Scroll back to Explore section
                 setTimeout(() => {
                     const exploreSection = document.querySelector('.features-section');
@@ -7896,10 +7782,6 @@
                 </div>
                 <!-- Honeypot field (hidden from humans, bots will fill it) -->
                 <input type="text" id="website" name="website" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" autocomplete="off">
-                
-                <!-- Cloudflare Turnstile Widget -->
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAAAcmTByseXXZDX4c3yc" data-theme="dark" style="margin-bottom: 1rem;"></div>
-                
                 <button type="submit" class="feature-btn" style="width: 100%;">Sign Up</button>
                 <p style="color: #999; font-size: 0.85rem; margin-top: 1rem; text-align: center;">
                     You'll receive a verification email after signing up
@@ -7984,6 +7866,220 @@
             </div>
         </div>
     </div>
+    
+    <!-- Bobby AI Assistant -->
+    <button id="bobbyButton" style="position: fixed; bottom: 20px; right: 20px; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #6B9B9E, #8dbcc0); border: 3px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 9999; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; font-size: 2rem;" onclick="toggleBobby()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        💬
+    </button>
+    
+    <div id="bobbyModal" style="display: none; position: fixed; bottom: 100px; right: 20px; width: 380px; max-width: calc(100vw - 40px); height: 500px; max-height: calc(100vh - 140px); background: rgba(20, 20, 20, 0.98); border: 2px solid var(--accent-color); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9998; display: flex; flex-direction: column; font-family: 'Poppins', sans-serif;">
+        <!-- Bobby Header -->
+        <div style="background: linear-gradient(135deg, #6B9B9E, #8dbcc0); padding: 1.5rem; border-radius: 18px 18px 0 0; text-align: center; position: relative;">
+            <img src="/bobby-avatar.png" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; margin-bottom: 0.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" alt="Bobby">
+            <h3 style="color: white; margin: 0; font-size: 1.3rem; font-weight: 700;">Bobby</h3>
+            <p style="color: rgba(255,255,255,0.9); margin: 0.3rem 0 0; font-size: 0.85rem;">Your Flânerie Guide</p>
+            <button onclick="toggleBobby()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">✕</button>
+        </div>
+        
+        <!-- Chat Area -->
+        <div id="bobbyChat" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="bobby-message">
+                <p style="background: rgba(107, 155, 158, 0.2); padding: 1rem; border-radius: 15px; margin: 0; color: var(--accent-light); line-height: 1.6;">
+                    Hey there, flâneur! 👋 I'm Bobby, your guide to Flânerie. What can I help you with today?
+                </p>
+            </div>
+            
+            <!-- Quick Questions -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <button onclick="askBobby('How do I create a route?')" class="bobby-quick-btn">🗺️ How do I create a route?</button>
+                <button onclick="askBobby('What is a swarm?')" class="bobby-quick-btn">👥 What's a swarm?</button>
+                <button onclick="askBobby('How do I delete my account?')" class="bobby-quick-btn">⚙️ Account settings</button>
+                <button onclick="askBobby('What is flanerie?')" class="bobby-quick-btn">🚶 What is flânerie?</button>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div style="padding: 1rem; border-top: 1px solid rgba(107, 155, 158, 0.3);">
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="bobbyInput" placeholder="Ask Bobby anything..." style="flex: 1; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 25px; color: white; font-size: 0.9rem;" onkeypress="if(event.key==='Enter') sendBobbyMessage()">
+                <button onclick="sendBobbyMessage()" style="padding: 0.8rem 1.2rem; background: var(--accent-color); border: none; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='var(--accent-color)'">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .bobby-quick-btn {
+            padding: 0.8rem;
+            background: rgba(107, 155, 158, 0.15);
+            border: 1px solid rgba(107, 155, 158, 0.3);
+            border-radius: 10px;
+            color: var(--accent-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .bobby-quick-btn:hover {
+            background: rgba(107, 155, 158, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .bobby-message {
+            animation: bobbyFadeIn 0.3s ease-in;
+        }
+        
+        @keyframes bobbyFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #bobbyChat::-webkit-scrollbar {
+            width: 6px;
+        }
+        #bobbyChat::-webkit-scrollbar-track {
+            background: rgba(107, 155, 158, 0.1);
+            border-radius: 3px;
+        }
+        #bobbyChat::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            #bobbyModal {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 140px);
+            }
+        }
+    </style>
+    
+    <script>
+        // Bobby chatbot functionality
+        function toggleBobby() {
+            const modal = document.getElementById('bobbyModal');
+            const button = document.getElementById('bobbyButton');
+            
+            if (modal.style.display === 'none' || modal.style.display === '') {
+                modal.style.display = 'flex';
+                button.textContent = '✕';
+            } else {
+                modal.style.display = 'none';
+                button.textContent = '💬';
+            }
+        }
+        
+        function askBobby(question) {
+            // Add user message
+            const chat = document.getElementById('bobbyChat');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'bobby-message';
+            userMsg.innerHTML = `
+                <p style="background: rgba(107, 155, 158, 0.4); padding: 1rem; border-radius: 15px; margin: 0; color: white; line-height: 1.6; text-align: right;">
+                    ${question}
+                </p>
+            `;
+            chat.appendChild(userMsg);
+            
+            // Scroll to bottom
+            chat.scrollTop = chat.scrollHeight;
+            
+            // Get Bobby's response
+            setTimeout(() => {
+                const response = getBobbyResponse(question);
+                const bobbyMsg = document.createElement('div');
+                bobbyMsg.className = 'bobby-message';
+                bobbyMsg.innerHTML = `
+                    <p style="background: rgba(107, 155, 158, 0.2); padding: 1rem; border-radius: 15px; margin: 0; color: var(--accent-light); line-height: 1.6;">
+                        ${response}
+                    </p>
+                `;
+                chat.appendChild(bobbyMsg);
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+        }
+        
+        function sendBobbyMessage() {
+            const input = document.getElementById('bobbyInput');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            askBobby(question);
+            input.value = '';
+        }
+        
+        function getBobbyResponse(question) {
+            const q = question.toLowerCase();
+            
+            // Route creation
+            if (q.includes('create') && (q.includes('route') || q.includes('journey'))) {
+                return "Great question! 🗺️ Click '<strong>Share Your Journey</strong>' on the main page, then click on the map to add waypoints (at least 2 required). The route will automatically follow streets! Give each waypoint a label, then click '<strong>Save Route</strong>' to share it with fellow flâneurs.";
+            }
+            
+            // Swarms
+            if (q.includes('swarm')) {
+                return "A Shopping Swarm is like a flash mob for supporting local businesses! 👥🛍️ Create one by clicking '<strong>Create Shopping Swarm</strong>', pick a meeting spot, set a date/time, and invite the community. It's a fun way to explore shops together and support local merchants.";
+            }
+            
+            // Events
+            if (q.includes('event')) {
+                return "Local Events are community gatherings, celebrations, or happenings! 🎉 Create one by clicking '<strong>Promote Your Event</strong>', pin the location, add details and date/time. Perfect for farmer's markets, street festivals, or pop-up events.";
+            }
+            
+            // Account deletion
+            if (q.includes('delete') && q.includes('account')) {
+                return "To delete your account, go to <strong>Dashboard → Account</strong> tab, scroll down to the Danger Zone, and click '<strong>Delete My Account</strong>'. ⚠️ This permanently removes all your data and can't be undone!";
+            }
+            
+            // Email verification
+            if (q.includes('verify') || q.includes('verification') || q.includes('email')) {
+                return "Check your email inbox for the verification link! 📧 Click it to verify your account. Can't find it? Check spam/junk folders. Still stuck? Try the '<strong>Resend Verification</strong>' option or contact support.";
+            }
+            
+            // What is flanerie
+            if (q.includes('flanerie') || q.includes('flâneur')) {
+                return "Flânerie is the art of leisurely urban exploration - mindful wandering through city streets with intention and curiosity! 🚶✨ A <em>flâneur</em> is someone who strolls slowly, observing city life instead of rushing through it. Think: exploring neighborhoods, discovering hidden gems, and appreciating everyday character.";
+            }
+            
+            // Likes
+            if (q.includes('like') || q.includes('heart')) {
+                return "Love a route? Hit the ❤️ button on any route's info panel! Your likes help other flâneurs discover great walks. You can see all your liked routes in <strong>Dashboard → My Likes & Interests</strong>.";
+            }
+            
+            // Categories
+            if (q.includes('category') || q.includes('categories')) {
+                return "Routes can be organized by category: 🌳 Parks & Nature, 🎨 Art & Culture, 🍽️ Food & Cafes, 🏛️ History, 🏙️ Architecture, 🌃 Nightlife, 🛍️ Shopping Districts, and more! Use the filter to find routes that match your vibe.";
+            }
+            
+            // Waypoints/labels
+            if (q.includes('waypoint') || q.includes('label') || q.includes('stop')) {
+                return "Waypoints are the stops along your route! 📍 After placing them on the map, you can add labels like 'Best coffee spot' or 'Hidden mural'. Labels help others know what makes each stop special. You need at least 2 waypoints to save a route.";
+            }
+            
+            // Edit routes
+            if (q.includes('edit')) {
+                return "To edit your content, go to <strong>Dashboard</strong>, find the item under 'My Routes', 'My Swarms', or 'My Events', and click the <strong>Edit</strong> button. ✏️ Make your changes and save!";
+            }
+            
+            // Can't post
+            if (q.includes('can't post') || q.includes('cannot post') || q.includes('not verified')) {
+                return "You need to verify your email before posting! 📧 Check your inbox for the verification link. Once verified, you'll have full access to create routes, swarms, and events. Email missing? Check spam or try resending it.";
+            }
+            
+            // Mobile/app
+            if (q.includes('app') || q.includes('download') || q.includes('mobile')) {
+                return "Flânerie works great on mobile! 📱 On iPhone: tap the Share button in Safari and select '<strong>Add to Home Screen</strong>'. On Android: tap the menu (3 dots) and select '<strong>Add to Home Screen</strong>'. It'll work just like an app!";
+            }
+            
+            // Privacy/data
+            if (q.includes('privacy') || q.includes('data') || q.includes('information')) {
+                return "We respect your privacy! 🔒 We never sell your personal information. Your data is secure with Firebase encryption. Read our full <a href='privacy.html' style='color: var(--accent-color); text-decoration: underline;'>Privacy Policy</a> for details.";
+            }
+            
+            // Default response
+            return "Hmm, I'm not sure about that one! 🤔 Try asking about creating routes, swarms, events, or account settings. Still stuck? You can always reach out to our team at <strong>support@flanerie.com</strong> (replace with your real email when ready!).";
+        }
+    </script>
     
     <!-- PWA Service Worker Registration -->
     <script>

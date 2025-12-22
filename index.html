@@ -54,7 +54,7 @@
             width: 100%;
         }
         
-        /* Navigation - Centered, No Logo*/
+        /* Navigation - Centered, No Logo */
         nav {
             position: fixed;
             top: 0;
@@ -1765,77 +1765,6 @@
         
         // ===== FIREBASE AUTHENTICATION =====
         
-        // ===== SITE LOCKDOWN - INVITE CODE CHECK =====
-        // This blocks the entire site until correct invite code is entered
-        // ONLY ACTIVATES ON PRODUCTION SITES
-        if (window.location.hostname.includes('firebaseapp.com') || 
-            window.location.hostname.includes('web.app') || 
-            window.location.hostname.includes('pages.dev')) {
-            
-            // Check if user has already entered correct code (stored in sessionStorage)
-            const hasAccess = sessionStorage.getItem('flanerie_access') === 'granted';
-            
-            if (!hasAccess) {
-                const lockdownOverlay = document.createElement('div');
-                lockdownOverlay.id = 'lockdown-overlay';
-                lockdownOverlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                    z-index: 999999;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-family: 'Poppins', sans-serif;
-                `;
-                lockdownOverlay.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; background: rgba(25, 25, 25, 0.95); border-radius: 20px; border: 2px solid rgba(107, 155, 158, 0.3); max-width: 500px;">
-                        <h1 style="color: #8DBCC0; font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">Flânerie</h1>
-                        <p style="color: #8DBCC0; margin-bottom: 1rem; font-size: 1.1rem;">Private Testing</p>
-                        <p style="color: #999; margin-bottom: 2rem;">Enter your invite code to access the site</p>
-                        <input type="text" id="gate-invite-code" placeholder="Enter invite code" style="width: 100%; padding: 1rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; margin-bottom: 1rem;">
-                        <p id="gate-error" style="color: #ff4444; margin-bottom: 1rem; display: none; font-size: 0.9rem;">Incorrect invite code</p>
-                        <button id="gate-submit-btn" style="background: linear-gradient(135deg, #6B9B9E, #8dbcc0); color: white; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; width: 100%;">
-                            Enter Site
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(lockdownOverlay);
-                
-                // Handle invite code submission
-                const submitBtn = document.getElementById('gate-submit-btn');
-                const codeInput = document.getElementById('gate-invite-code');
-                const errorMsg = document.getElementById('gate-error');
-                
-                function checkInviteCode() {
-                    const enteredCode = codeInput.value.trim();
-                    if (enteredCode === 'Flanerie-80884bob') {
-                        // Correct code!
-                        sessionStorage.setItem('flanerie_access', 'granted');
-                        lockdownOverlay.remove();
-                    } else {
-                        // Wrong code
-                        errorMsg.style.display = 'block';
-                        codeInput.value = '';
-                        codeInput.focus();
-                    }
-                }
-                
-                submitBtn.addEventListener('click', checkInviteCode);
-                codeInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        checkInviteCode();
-                    }
-                });
-                
-                // Focus input on load
-                setTimeout(() => codeInput.focus(), 100);
-            }
-        }
-        // ===== END SITE LOCKDOWN =====
         
         // Auth state listener - runs when user signs in/out
         auth.onAuthStateChanged(async function(user) {

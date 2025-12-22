@@ -112,6 +112,27 @@
             margin-bottom: 2rem;
         }
         
+        .commitment-card {
+            background: linear-gradient(135deg, rgba(107, 155, 158, 0.15), rgba(141, 188, 192, 0.15));
+            border: 2px solid #6B9B9E;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0 3rem;
+            text-align: center;
+        }
+        
+        .commitment-card h3 {
+            color: #6B9B9E;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+        
+        .commitment-card p {
+            font-size: 1.1rem;
+            color: #8DBCC0;
+            line-height: 1.6;
+        }
+        
         strong {
             color: #6B9B9E;
         }
@@ -152,10 +173,16 @@
     
     <div class="content">
         <h1>Privacy Policy</h1>
-        <p class="last-updated">Last Updated: December 10, 2025</p>
+        <p class="last-updated">Last Updated: December 19, 2024</p>
         
         <div class="section">
             <p>At Flânerie, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.</p>
+        </div>
+        
+        <div class="commitment-card">
+            <h3>🔒 Our Privacy Commitment</h3>
+            <p><strong>We never sell your personal information. Period.</strong></p>
+            <p>This is a core principle of Flânerie and will never change. Your data is yours, not a product to be sold.</p>
         </div>
         
         <div class="section">
@@ -220,12 +247,22 @@
             <p>We use the following third-party services:</p>
             <ul>
                 <li><strong>Firebase (Google):</strong> Authentication, database, and hosting</li>
+                <li><strong>Cloudflare Pages:</strong> Website hosting and content delivery network (CDN)</li>
+                <li><strong>Cloudflare Turnstile:</strong> Bot protection and security verification</li>
                 <li><strong>Mapbox:</strong> Map display and location services</li>
                 <li><strong>Google AdSense (Optional):</strong> Advertisements may be displayed (you can opt out via browser settings)</li>
             </ul>
+            
+            <p><strong>Cloudflare Services:</strong></p>
+            <ul>
+                <li><strong>Cloudflare Pages:</strong> Hosts our website and may collect visitor analytics including IP addresses, page views, and browser information for performance and security purposes</li>
+                <li><strong>Cloudflare Turnstile:</strong> Protects against automated abuse by analyzing browser behavior, device information, and IP addresses to verify you're human. This process is usually invisible and happens automatically when you sign up</li>
+            </ul>
+            
             <p>These services have their own privacy policies. We recommend reviewing them:</p>
             <ul>
                 <li><a href="https://firebase.google.com/support/privacy" target="_blank">Firebase Privacy Policy</a></li>
+                <li><a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare Privacy Policy</a></li>
                 <li><a href="https://www.mapbox.com/legal/privacy" target="_blank">Mapbox Privacy Policy</a></li>
                 <li><a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a></li>
             </ul>

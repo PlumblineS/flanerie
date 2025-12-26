@@ -1,21 +1,1419 @@
-<!DOCTYPE html><html lang="en"><meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1"><title>Flânerie - The Art of Urban Wandering</title><meta name="description"content="Discover and share urban walking routes, swarms, and events in your city with Flânerie"><meta name="theme-color"content="#6b9b9e">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-S0NQ9Z93FK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-S0NQ9Z93FK');
-</script>
-<!-- Microsoft Clarity -->
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "uqo5lh5723");
-</script>
-<meta name="apple-mobile-web-app-capable"content="yes"><meta name="apple-mobile-web-app-status-bar-style"content="black-translucent"><meta name="apple-mobile-web-app-title"content="Flânerie"><link rel="manifest"href="/manifest.json"><link rel="apple-touch-icon"sizes="152x152"href="/icons/icon-152x152.png"><link rel="apple-touch-icon"sizes="180x180"href="/icons/icon-192x192.png"><link rel="icon"type="image/png"sizes="32x32"href="/icons/icon-72x72.png"><link rel="icon"type="image/png"sizes="16x16"href="/icons/icon-72x72.png"><link rel="stylesheet"href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap"rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:Poppins,sans-serif;overflow-x:hidden;background:#0a0a0a;color:#8dbcc0;--accent-color:#6B9B9E;--accent-light:#8DBCC0}body.choreography-active{overflow:hidden;height:100vh;position:fixed;width:100%}nav{position:fixed;top:0;width:100%;background:rgba(10,10,10,.95);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:1.5rem 2rem;z-index:1000;border-bottom:1px solid rgba(107,155,158,.2)}.nav-container{max-width:1400px;margin:0 auto;display:flex;justify-content:center;align-items:center;position:relative;padding:0 2rem}.nav-links{display:flex;gap:3rem;list-style:none;margin-right:300px}.nav-links a{text-decoration:none;color:var(--accent-light);font-weight:500;font-size:1.1rem;transition:color .3s ease}.nav-links a:hover{color:#fff}.nav-auth{display:flex;align-items:center;gap:.5rem;position:absolute;right:2rem}.mobile-auth-section{display:none}#user-name{font-size:.85rem;margin-right:.5rem;display:flex;align-items:center;line-height:1}#desktop-user-name{font-size:.9rem;margin-right:1.2rem;display:flex;align-items:center;line-height:1}#desktop-user-info{display:flex;align-items:center;gap:.5rem}.auth-btn{background:linear-gradient(135deg,var(--accent-color),#8dbcc0);color:#fff;border:none;padding:.6rem 1.2rem;border-radius:25px;font-weight:600;cursor:pointer;transition:all .3s ease;font-size:.9rem}.auth-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(107,155,158,.4)}.mobile-menu-toggle{display:none;background:0 0;border:none;color:var(--accent-light);font-size:1.8rem;cursor:pointer;padding:.5rem;position:absolute;left:1rem;z-index:1001}@media (max-width:768px){nav{padding:1rem}.nav-container{padding:0 1rem}.mobile-menu-toggle{display:block}.nav-links{position:fixed;top:0;left:-100%;width:80%;max-width:300px;height:100vh;background:rgba(10,10,10,.98);backdrop-filter:blur(10px);flex-direction:column;padding:5rem 2rem 2rem;gap:2rem;margin:0;transition:left .3s ease;border-right:1px solid rgba(107,155,158,.3);z-index:1000}.nav-links.active{left:0}.nav-links a{font-size:1.2rem;padding:.5rem 0;border-bottom:1px solid rgba(107,155,158,.2)}.mobile-auth-section{display:block;list-style:none;margin-top:1rem;padding-top:1rem;border-top:2px solid rgba(107,155,158,.3)}.mobile-auth-section .nav-auth{position:static;flex-direction:column;gap:.8rem;width:100%}.mobile-auth-section .nav-auth button{width:100%}#user-name{display:none}#mobile-user-info{display:flex;flex-direction:column;gap:.8rem;width:100%}#mobile-user-name{display:block!important;text-align:center;padding:.5rem 0;font-size:.95rem;word-break:break-word}.desktop-auth{display:none!important}}.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;padding:6rem 2rem 4rem;background:url(/character-bg.png) center/cover fixed}.hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:1}.hero-content{position:relative;z-index:2;max-width:900px}.hero h1{font-family:'Playfair Display',serif;font-size:7rem;font-weight:400;color:var(--accent-light);margin-bottom:1rem;letter-spacing:3px;text-shadow:0 5px 30px rgba(0,0,0,.8)}.hero-subtitle{font-size:1.8rem;color:var(--accent-light);font-weight:300;margin-bottom:2rem;text-shadow:0 2px 10px rgba(0,0,0,.8)}.hero-logo-btn{width:200px;height:200px;margin:0 auto 2rem;border-radius:50%;background:url(/character-logo.png) center/cover;border:5px solid var(--accent-color);cursor:pointer;transition:all .3s ease;box-shadow:0 10px 40px rgba(107,155,158,.4);animation:float 3s ease-in-out infinite}.hero-logo-btn:hover{transform:scale(1.05);box-shadow:0 15px 60px rgba(107,155,158,.6)}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.rotating-text-container{min-height:50px;position:relative;margin-bottom:1rem}.rotating-text{position:relative;width:100%;text-align:center}.rotating-text span{position:absolute;width:100%;left:0;opacity:0;color:var(--accent-light);font-size:1.2rem;font-weight:300;font-style:italic;transition:opacity 1s ease-in-out;text-shadow:0 2px 10px rgba(0,0,0,.8)}.rotating-text span.active{opacity:1}.scroll-hint{position:absolute;bottom:3rem;left:50%;transform:translateX(-50%);color:var(--accent-light);font-size:.9rem;opacity:.7;animation:bounce 2s ease-in-out infinite;z-index:2}@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}.pwa-install-banner{display:none;position:fixed;top:140px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent-color),#5a8a8d);color:#fff;padding:.75rem 1.5rem;border-radius:50px;box-shadow:0 4px 20px rgba(107,155,158,.4);z-index:999;animation:slideDown .5s ease-out;max-width:90%;text-align:center;animation:slideDown .5s ease-out,fadeOut 1s ease 10s forwards}.pwa-install-banner.show{display:flex;align-items:center;gap:1rem}.pwa-install-banner button{background:#fff;color:var(--accent-color);border:none;padding:.5rem 1.5rem;border-radius:25px;font-weight:600;cursor:pointer;font-size:.9rem;white-space:nowrap}.pwa-install-banner .close-banner{background:0 0;color:#fff;padding:.25rem .5rem;font-size:1.2rem}@keyframes slideDown{from{top:-100px;opacity:0}to{top:140px;opacity:1}}@keyframes fadeOut{from{opacity:1}to{opacity:0;display:none}}@media (max-width:768px){.pwa-install-banner{font-size:.85rem;padding:.6rem 1rem;top:auto;bottom:80px;animation:slideUp .5s ease-out,fadeOut 1s ease 10s forwards}.pwa-install-banner button{padding:.4rem 1rem;font-size:.8rem}}@keyframes slideUp{from{bottom:-100px;opacity:0}to{bottom:80px;opacity:1}}@keyframes fadeOutMobile{from{opacity:1}to{opacity:0;pointer-events:none}}.main-content{position:relative;background:#0a0a0a;padding:4rem 0 2rem}.container{max-width:1400px;margin:0 auto;padding:0 2rem}.info-section{text-align:center;padding:.5rem 0 .5rem;max-width:900px;margin:0 auto 1.5rem}.definition-box-animated{margin-bottom:3rem;text-align:left;max-width:700px;margin-left:auto;margin-right:auto;background:rgba(30,30,30,.8);padding:1.3rem;border-radius:15px;border-left:4px solid var(--accent-color)}.definition-box-animated h2{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:400;color:var(--accent-light);margin-bottom:.4rem}.definition-box-animated p{color:var(--accent-light);line-height:1.7}#welcome-section{text-align:left;max-width:1200px;margin:0 auto 2rem;background:rgba(30,30,30,.5);padding:2rem 3rem;border-radius:20px}#welcome-section h3{font-family:'Playfair Display',serif;color:var(--accent-color);font-size:2.5rem;margin-bottom:1.2rem}#welcome-section p{font-size:.95rem;color:var(--accent-light);line-height:1.65;margin-bottom:.9rem}#welcome-section p:last-of-type{margin-bottom:0}#tagline-reveal{margin-top:1rem;font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--accent-color);font-style:italic;font-weight:700;text-align:center}.features-section{min-height:auto;padding:2.5rem 2rem 2rem;scroll-margin-top:80px;display:flex;align-items:flex-start;justify-content:center}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1400px;width:100%;margin:0 auto}@media (max-width:1024px){.feature-grid{grid-template-columns:repeat(2,1fr)}}@media (max-width:968px){.feature-grid{grid-template-columns:1fr;gap:2rem}}.feature-card-large{background:rgba(30,30,30,.9);border-radius:20px;padding:2rem 1.5rem 2rem;box-shadow:0 10px 40px rgba(0,0,0,.3);transition:all .3s ease;cursor:pointer;border:2px solid rgba(107,155,158,.2);display:flex;align-items:center;justify-content:center;min-height:320px;max-height:400px}.feature-card-large:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(107,155,158,.3);border-color:var(--accent-color)}.feature-content{position:relative;z-index:3;text-align:center;width:100%}.feature-icon{width:173px;height:173px;background:linear-gradient(135deg,var(--accent-color),var(--accent-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:4.3rem;margin:0 auto 1rem}@media (max-width:768px){.feature-icon{width:90px;height:90px;font-size:2.2rem;margin:0 auto .75rem}}.feature-card-large h3{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--accent-light);margin-bottom:.75rem}.feature-card-large p{font-size:1rem;color:#d4d4d4;line-height:1.5;margin-bottom:1rem}.feature-btn{background:linear-gradient(135deg,var(--accent-color),var(--accent-light));color:#fff;padding:.75rem 1.85rem;border:none;border-radius:50px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .3s ease;text-transform:uppercase;letter-spacing:1px}.feature-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(107,155,158,.5)}.feature-btn:disabled{background:rgba(80,80,80,.5);color:rgba(255,255,255,.4);cursor:not-allowed;transform:none;box-shadow:none}.feature-btn:disabled:hover{transform:none;box-shadow:none}footer{background:rgba(10,10,10,.98);color:var(--accent-light);padding:2rem 2rem 1rem;border-top:2px solid rgba(107,155,158,.3)}.footer-content{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-bottom:1rem}@media (max-width:768px){.footer-content{grid-template-columns:1fr 1fr}}.footer-section h4{color:var(--accent-color);margin-bottom:1rem}.footer-section a{color:var(--accent-light);text-decoration:none;line-height:2;transition:color .3s}.footer-section a:hover{color:#fff}.footer-section ul{list-style:none}.footer-bottom{text-align:center;padding-top:2rem;border-top:1px solid rgba(107,155,158,.2);color:#999}.slideshow-overlay{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;background:#0a0a0a;z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;overflow:hidden}.slideshow-overlay.active{opacity:1;pointer-events:all}.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1s ease-in-out;padding:4rem 2rem}.slide.active{opacity:1}.slide-content{text-align:center;max-width:800px;width:100%}#slide-typewriter-with-image{justify-content:flex-start;padding-top:10%}#slide-typewriter-with-image .typewriter-section{margin-bottom:2.5rem;min-height:120px;display:flex;flex-direction:column;align-items:center}#slide-typewriter-with-image .image-section{opacity:0;transition:opacity 4s ease-in;display:flex;justify-content:center;width:100%}#slide-typewriter-with-image .image-section.fading{opacity:1}#slide-paragraph-with-image{justify-content:flex-start;padding-top:8%}#slide-paragraph-with-image .paragraph-section{margin-bottom:3rem;display:flex;justify-content:center;width:100%}#slide-paragraph-with-image .image-section{opacity:0;transition:opacity 3s ease-in;margin-top:2rem;display:flex;justify-content:center;width:100%}#slide-paragraph-with-image .image-section.fading{opacity:1}#slide-paragraph-with-image .you-text{opacity:0;transition:opacity 1.5s ease-in;font-family:'Playfair Display',serif;color:var(--accent-color);font-size:4rem;font-weight:700;margin-bottom:1rem}#slide-paragraph-with-image .you-text.showing{opacity:1}#slide-welcome #welcome-text{font-family:'Playfair Display',serif;color:var(--accent-color);font-size:3rem;font-weight:600;transition:transform 2s ease-out}#slide-welcome #welcome-text.move-up{transform:translateY(-40px)}#slide-welcome #tagline-text{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--accent-color);font-style:italic;font-weight:700;opacity:0;margin-top:2rem;transition:opacity 1s ease-in}#slide-welcome #tagline-text.fade-in{opacity:1}#slideshow-typewriter-sentence{font-family:'Crimson Text',serif;font-size:1.6rem;color:var(--accent-light);font-weight:600;text-align:center;min-height:50px}.slideshow-controls{position:fixed;bottom:2rem;right:2rem;z-index:10001;display:flex;gap:1rem}.slideshow-controls button{background:rgba(107,155,158,.3);border:2px solid var(--accent-color);color:var(--accent-color);width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:1.2rem;transition:all .3s ease}.slideshow-controls button:hover{background:var(--accent-color);color:#0a0a0a}@media (max-width:768px){nav{padding:1rem}.nav-container{flex-direction:column;gap:1rem;padding:0}.nav-links{gap:1rem;font-size:.85rem;flex-wrap:wrap;justify-content:center}.nav-auth{position:relative;right:auto;margin-top:.5rem}.auth-btn{padding:.5rem 1rem;font-size:.85rem}#user-name{font-size:.8rem}.hero{background:none!important}.hero::before{background:#0a0a0a!important}.hero h1{font-size:3.5rem}.hero-subtitle{font-size:1.2rem}.hero-logo-btn{width:150px;height:150px}.container{padding:0 1rem}#welcome-section{padding:2rem}.definition-box-animated h2{font-size:2.5rem}#eventMap,#searchMap,#swarmMap{height:300px!important;min-height:300px!important}.slideshow-slide img{max-width:100%;max-height:60vh;width:auto!important;height:auto!important;object-fit:contain}#empty-street-section img,#shopping-street-section img{max-width:100%;max-height:50vh;width:auto!important;height:auto!important;object-fit:contain}.modal-content{width:95%;max-height:85vh;padding:1rem}#dashboardContent{max-height:50vh!important}.dashboard-tab{padding:.75rem 1rem!important;font-size:.85rem!important}.slideshow-controls{bottom:1rem;right:1rem;gap:.5rem}.slideshow-controls button{width:40px;height:40px;font-size:1rem}#slide-paragraph-with-image{padding-top:5%}#slide-paragraph-with-image .paragraph-section p{font-size:1rem!important;line-height:1.6!important;padding:0 1rem}#slide-paragraph-with-image .paragraph-section{margin-bottom:1.5rem!important}#slide-paragraph-with-image .you-text{font-size:2.5rem!important;margin-bottom:.5rem!important}#slide-paragraph-with-image .image-section{margin-top:1rem!important}#slide-paragraph-with-image .image-section img{max-height:30vh!important}.modal-content{overflow-y:auto!important;-webkit-overflow-scrolling:touch}.leaflet-container{min-height:250px!important;height:250px!important}div[style*="cursor: pointer"][style*=margin-bottom]{max-height:none!important;overflow:visible!important}.close{position:absolute!important;top:10px!important;right:10px!important;z-index:10001!important;background:rgba(0,0,0,.5)!important;border-radius:50%!important;width:35px!important;height:35px!important;display:flex!important;align-items:center!important;justify-content:center!important}}.modal{position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center}.modal-content{background:linear-gradient(135deg,rgba(20,20,20,.98),rgba(30,30,30,.98));padding:2rem;border-radius:20px;border:2px solid rgba(107,155,158,.3);box-shadow:0 10px 50px rgba(0,0,0,.5);max-width:500px;width:90%;max-height:90vh;overflow-y:auto;position:relative}.close{color:#aaa;float:right;font-size:28px;font-weight:700;cursor:pointer;transition:color .3s ease}.close:hover{color:var(--accent-light)}@keyframes searchPulse{0%,100%{border-color:rgba(107,155,158,.3);box-shadow:0 0 0 0 rgba(107,155,158,0)}50%{border-color:rgba(107,155,158,.8);box-shadow:0 0 20px 5px rgba(107,155,158,.4)}}</style><div id="slideshow-overlay"class="slideshow-overlay"><div class="slideshow-controls"><button id="rewind-btn"title="Restart">↺</button> <button id="pause-btn"title="Pause/Play">⏸</button> <button id="skip-btn"title="Skip">⏭</button></div><div class="slide active"id="slide-definition"><div class="slide-content"><h2 style="font-family:'Playfair Display',serif;font-size:4rem;color:var(--accent-light);margin-bottom:1rem">flânerie</h2><p style="font-size:1.2rem;color:var(--accent-light);margin-bottom:2rem;font-style:italic">| ˈflɑːnəri |<p style="font-size:1.6rem;color:var(--accent-light);line-height:1.8">The art of leisurely urban exploration;<br>mindful wandering through city streets<br>with intention and curiosity.</div></div><div class="slide"id="slide-typewriter-with-image"><div class="typewriter-section"><h3 style="font-family:'Playfair Display',serif;color:var(--accent-color);font-size:2.8rem;margin-bottom:2.5rem;text-align:center">Take Back Your Main Street</h3><p id="slideshow-typewriter-sentence"></div><div class="image-section"id="empty-street-section"><img src="/empty-street.png"alt="Empty street"style="max-width:500px;width:80%;height:auto;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.5)"></div></div><div class="slide"id="slide-paragraph-with-image"><div class="paragraph-section"><p style="font-size:1.3rem;color:var(--accent-light);line-height:1.9;text-align:center;max-width:800px">Search engines direct you to chains. Online shopping replaces neighborhood stores. Meanwhile, the café owner who remembers your name can't make rent. Small businesses don't have marketing budgets or algorithms working for them — they have...</div><div class="you-text"id="you-text">YOU</div><div class="image-section"id="shopping-street-section"><img src="/shopping-street.png"alt="Shopping street"style="max-width:500px;width:80%;height:auto;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.5)"></div></div><div class="slide"id="slide-welcome"><div class="slide-content"><h3 id="welcome-text">Welcome to Flânerie</h3><p id="tagline-text">Share your journey.<br>Retrace theirs.</div></div></div><nav><div class="nav-container"><button class="mobile-menu-toggle"onclick="toggleMobileMenu()"aria-label="Toggle menu">☰</button><ul class="nav-links"id="mobile-nav"><li><a href="#home"onclick="closeMobileMenu()">Home</a><li><a href="javascript:void(0)"onclick="scrollToContent(),closeMobileMenu()">What is Flanerie?</a><li><a href="javascript:void(0)"onclick="scrollToExplore(),closeMobileMenu()">Explore</a><li><a href="/for-businesses.html"onclick="closeMobileMenu()">For Businesses</a><li><a href="/about.html"onclick="closeMobileMenu()">About</a><li class="mobile-auth-section"><div class="nav-auth"><button id="mobile-sign-in-btn"class="auth-btn"onclick="showSignInModal()">Sign In</button><div id="mobile-user-info"style="display:none"><span id="mobile-user-name"style="color:var(--accent-light)">Hi, User!</span> <button class="auth-btn"onclick="openDashboard(),closeMobileMenu()">Dashboard</button> <button id="mobile-sign-out-btn"class="auth-btn"onclick="signOut()">Sign Out</button></div></div></ul><div class="nav-auth desktop-auth"><button id="desktop-sign-in-btn"class="auth-btn"onclick="showSignInModal()">Sign In</button><div id="desktop-user-info"style="display:none"><span id="desktop-user-name"style="color:var(--accent-light)">Hi, User!</span> <button class="auth-btn"onclick="openDashboard()">Dashboard</button> <button id="desktop-sign-out-btn"class="auth-btn"onclick="signOut()">Sign Out</button></div></div></div></nav><div id="verification-banner"style="display:none;position:fixed;top:80px;left:0;right:0;background:linear-gradient(135deg,rgba(255,152,0,.95),rgba(255,193,7,.95));padding:1rem 2rem;text-align:center;z-index:999;border-bottom:2px solid rgba(255,152,0,.5)"><p style="margin:0;color:#000;font-weight:600;font-size:1rem">✅ You're signed in! 📧 Check your email and click the verification link to start posting. <span style="color:#000;font-size:.85rem;opacity:.8">(Auto-checking...)</span> <a href="javascript:void(0)"onclick="resendVerificationEmail()"style="color:#000;text-decoration:underline;font-weight:700;cursor:pointer;margin-left:1rem">Resend email</a></div><div id="pwa-install-banner"class="pwa-install-banner"><span id="pwa-android-text"style="display:none">📱 Install Flânerie app! Tap the <strong>Install</strong> button below or use <strong>Menu → Install app</strong> </span><span id="pwa-ios-text"style="display:none">📱 Install Flânerie app! Tap <strong>Share ⬆️</strong> then <strong>Add to Home Screen</strong> </span><button id="pwa-install-btn"style="display:none">Install</button> <button class="close-banner"onclick='document.getElementById("pwa-install-banner").classList.remove("show")'>✕</button></div><section class="hero"id="home"><div class="hero-content"><h1>Flânerie</h1><p class="hero-subtitle">The art of urban wandering.<div class="hero-logo-btn"onclick="scrollToContent()"></div><div class="rotating-text-container"><div class="rotating-text"><span class="active">Wander well.</span> <span>Walk kindly.</span> <span>Support local business.</span> <span>Discover hidden gems in your neighborhood.</span> <span>Turn ordinary walks into extraordinary adventures.</span> <span>Connect with your community, one step at a time.</span> <span>Every block has a story to tell.</span> <span>Shop small, feel big.</span> <span>Find your city's secrets.</span> <span>Life moves fast - walk slower.</span></div></div></div></section><main class="main-content"><div class="container"><section class="info-section"><div class="definition-box-animated"><h2>flânerie</h2><p style="font-size:1rem;color:var(--accent-light);margin-bottom:.3rem">| ˈflɑːnəri | <span style="font-style:italic">noun</span><div style="width:60px;height:1px;background:#555;margin:1rem 0"></div><p style="font-size:1.3rem;color:var(--accent-light);line-height:1.7">The art of leisurely urban exploration; mindful wandering through city streets with intention and curiosity.</div><div id="welcome-section"><h3>Welcome to Flânerie</h3><p>We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color:var(--accent-color)">the art of strolling</strong> — observing city life with intention instead of rushing through it. It's <strong style="color:var(--accent-color)">cultural appreciation</strong> in motion: slowing down enough to notice the character and charm built into the everyday.<p>With Flânerie, you can explore neighborhoods at your own pace or chart your own path. Our routes guide you from cozy cafés and local markets to boutique shops, art galleries, bookstores, parks, and hidden corners — each designed for <strong style="color:var(--accent-color)">mindful wandering</strong> and curiosity-led discovery. Search routes shared by others, map your upcoming outings, browse local events, or gather friends for a <strong style="color:var(--accent-color)">Shopping Swarm</strong> — a collective walk that turns routine errands into moments of connection and community support.<p><strong style="color:var(--accent-color)">Your route to that tiny coffee roaster? Someone else's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities strengthen themselves — one walk, one recommendation, one conscious choice at a time.</div><p id="tagline-reveal">Share your journey. Retrace theirs.</section><div id="features-content"class="features-section"><div class="feature-grid"><div class="feature-card-large"><div class="feature-content"><div class="feature-icon"style="background:0 0;padding:0;overflow:hidden;border-radius:50%"><img src="/journey-icon.png"alt="Journeys"style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div><h3>Journeys & Routes</h3><p>Share your path or discover new ones</p><button class="feature-btn"onclick='toggleSection("journey-map")'style="margin-bottom:.75rem">Share Your Journey</button> <button class="feature-btn"onclick='toggleSection("search")'>Search Routes</button></div></div><div class="feature-card-large"><div class="feature-content"><div class="feature-icon"style="background:0 0;padding:0;overflow:hidden;border-radius:50%"><img src="/swarm-icon.png"alt="Shopping Swarm"style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div><h3>Shopping Swarms</h3><p>Create or join community walks</p><button class="feature-btn"onclick='toggleSection("swarm-map-v2")'style="margin-bottom:.75rem">Create Shopping Swarm</button> <button class="feature-btn"onclick='toggleSection("swarms")'>View Swarms</button></div></div><div class="feature-card-large"><div class="feature-content"><div class="feature-icon"style="background:0 0;padding:0;overflow:hidden;border-radius:50%"><img src="/event-icon.png"alt="Events"style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div><h3>Local Events</h3><p>Promote events or discover celebrations</p><button class="feature-btn"onclick='toggleSection("event-map-v2")'style="margin-bottom:.75rem">Promote Your Event</button> <button class="feature-btn"onclick='toggleSection("events")'>Browse Events</button></div></div></div></div></div></main><footer><div class="footer-content"><div class="footer-section"><h4>Flânerie</h4><p>The art of urban wandering.</div><div class="footer-section"><h4>Legal & Info</h4><ul><li><a href="/about.html">About Us</a><li><a href="/privacy.html">Privacy Policy</a><li><a href="/terms.html">Terms of Use</a></ul></div><div class="footer-section"><h4>Community</h4><ul><li><a href="javascript:void(0)"onclick="scrollToExplore()">Explore Routes</a><li><a href="/for-businesses.html">For Businesses</a></ul></div><div class="footer-section"><h4>Connect</h4><div style="display:flex;gap:1.5rem;font-size:1.8rem;margin-top:1rem"><a href="https://instagram.com"target="_blank"title="Instagram"style="color:var(--accent-light);transition:color .3s">📷</a> <a href="https://facebook.com"target="_blank"title="Facebook"style="color:var(--accent-light);transition:color .3s">👥</a> <a href="https://x.com"target="_blank"title="X (Twitter)"style="color:var(--accent-light);transition:color .3s">🐦</a></div></div></div><div class="footer-bottom"><p>&copy; 2025 Flânerie. All rights reserved. Made with ❤️ for urban explorers.</div></footer><script>// SLIDESHOW - APPROVED TIMING
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flânerie - The Art of Urban Wandering</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Discover and share urban walking routes, swarms, and events in your city with Flânerie">
+    <meta name="theme-color" content="#6b9b9e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Flânerie">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S0NQ9Z93FK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "G-S0NQ9Z93FK");
+    </script>
+    
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "uqo5lh5723");
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #8DBCC0;
+            --accent-color: #6B9B9E;
+            --accent-light: #8DBCC0;
+        }
+        
+        body.choreography-active {
+            overflow: hidden;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+        }
+        
+        /* Navigation - Centered, No Logo */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(107, 155, 158, 0.2);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 0 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+            margin-right: 300px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--accent-light);
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+        
+        /* Auth UI - Way over on the right */
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: absolute;
+            right: 2rem;
+        }
+        
+        .mobile-auth-section {
+            display: none; /* Hidden on desktop, auth is positioned absolutely */
+        }
+        
+        #user-name {
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+        
+        /* Desktop username styling - better spacing and alignment */
+        #desktop-user-name {
+            font-size: 0.9rem;
+            margin-right: 1.2rem;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+        
+        /* Ensure desktop user info container is properly aligned */
+        #desktop-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .auth-btn {
+            background: linear-gradient(135deg, var(--accent-color), #8dbcc0);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 155, 158, 0.4);
+        }
+        
+        /* Mobile Navigation */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--accent-light);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: absolute;
+            left: 1rem;
+            z-index: 1001;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                gap: 2rem;
+                margin: 0;
+                transition: left 0.3s ease;
+                border-right: 1px solid rgba(107, 155, 158, 0.3);
+                z-index: 1000;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(107, 155, 158, 0.2);
+            }
+            
+            .mobile-auth-section {
+                display: block; /* Show on mobile */
+                list-style: none;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 2px solid rgba(107, 155, 158, 0.3);
+            }
+            
+            .mobile-auth-section .nav-auth {
+                position: static;
+                flex-direction: column;
+                gap: 0.8rem;
+                width: 100%;
+            }
+            
+            .mobile-auth-section .nav-auth button {
+                width: 100%;
+            }
+            
+            #user-name {
+                display: none; /* Hide username on mobile */
+            }
+            
+            #mobile-user-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.8rem;
+                width: 100%;
+            }
+            
+            #mobile-user-name {
+                display: block !important;
+                text-align: center;
+                padding: 0.5rem 0;
+                font-size: 0.95rem;
+                word-break: break-word;
+            }
+            
+            .desktop-auth {
+                display: none !important; /* Hide desktop auth on mobile */
+            }
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            background: url('/character-bg.png') center/cover fixed;
+        }
+        
+        /* Fix mobile background rendering - just use black on mobile */
+        @media (max-width: 768px) {
+            .hero {
+                background: #0a0a0a;
+            }
+            
+            .hero::before {
+                display: none;
+            }
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.6);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 7rem;
+            font-weight: 400;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+            text-shadow: 0 5px 30px rgba(0, 0, 0, 0.8);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .hero-logo-btn {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: url('/character-logo.png') center/cover;
+            border: 5px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(107, 155, 158, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-logo-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 60px rgba(107, 155, 158, 0.6);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Rotating phrases below logo */
+        .rotating-text-container {
+            min-height: 50px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .rotating-text {
+            position: relative;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .rotating-text span {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            opacity: 0;
+            color: var(--accent-light);
+            font-size: 1.2rem;
+            font-weight: 300;
+            font-style: italic;
+            transition: opacity 1s ease-in-out;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .rotating-text span.active {
+            opacity: 1;
+        }
+        
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-light);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: bounce 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        /* PWA Install Banner */
+        .pwa-install-banner {
+            display: none;
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-color), #5a8a8d);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(107, 155, 158, 0.4);
+            z-index: 999;
+            animation: slideDown 0.5s ease-out;
+            max-width: 90%;
+            text-align: center;
+            /* Auto-hide after 10 seconds */
+            animation: slideDown 0.5s ease-out, fadeOut 1s ease 10s forwards;
+        }
+        
+        .pwa-install-banner.show {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pwa-install-banner button {
+            background: white;
+            color: var(--accent-color);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .pwa-install-banner .close-banner {
+            background: transparent;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        @keyframes slideDown {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 140px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .pwa-install-banner {
+                font-size: 0.85rem;
+                padding: 0.6rem 1rem;
+                top: auto;
+                bottom: 80px;
+                animation: slideUp 0.5s ease-out, fadeOut 1s ease 10s forwards;
+            }
+            .pwa-install-banner button {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                bottom: -100px;
+                opacity: 0;
+            }
+            to {
+                bottom: 80px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOutMobile {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: 100vh;
+            position: relative;
+            background: #0a0a0a;
+            padding: 6.5rem 0 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Info Section - Definition */
+        .info-section {
+            text-align: center;
+            padding: 1.5rem 0 0.5rem;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .definition-box-animated {
+            margin-bottom: 1.2rem;
+            text-align: left;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1.3rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .definition-box-animated h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 400;
+            color: var(--accent-light);
+            margin-bottom: 0.4rem;
+        }
+        
+        .definition-box-animated p {
+            color: var(--accent-light);
+            line-height: 1.7;
+        }
+        
+        /* Welcome Section - Wider */
+        #welcome-section {
+            text-align: left;
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            background: rgba(30, 30, 30, 0.5);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+        }
+        
+        #welcome-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        #welcome-section p {
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            line-height: 1.65;
+            margin-bottom: 0.9rem;
+        }
+        
+        #welcome-section p:last-of-type {
+            margin-bottom: 0;
+        }
+        
+        #tagline-reveal {
+            margin-top: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-style: italic;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        /* Feature Cards - 3 Cards */
+        .features-section {
+            min-height: 100vh;
+            padding: 10rem 2rem 2rem;
+            scroll-margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+            background: #0a0a0a;
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        .feature-card-large {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid rgba(107, 155, 158, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            max-height: 360px;
+        }
+        
+        .feature-card-large:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(107, 155, 158, 0.3);
+            border-color: var(--accent-color);
+        }
+        
+        .feature-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+        
+        .feature-card-large h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent-light);
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-card-large p {
+            font-size: 1rem;
+            color: #d4d4d4;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-btn {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            color: white;
+            padding: 0.75rem 1.85rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(107, 155, 158, 0.5);
+        }
+        
+        .feature-btn:disabled {
+            background: rgba(80, 80, 80, 0.5);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .feature-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.98);
+            color: var(--accent-light);
+            padding: 2rem 2rem 1rem;
+            border-top: 2px solid rgba(107, 155, 158, 0.3);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .footer-section h4 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            color: var(--accent-light);
+            text-decoration: none;
+            line-height: 2;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #ffffff;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(107, 155, 158, 0.2);
+            color: #999;
+        }
+        
+        /* SLIDESHOW - CORRECTED */
+        .slideshow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: #0a0a0a;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .slideshow-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            padding: 4rem 2rem;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        .slide-content {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        #slide-typewriter-with-image {
+            justify-content: flex-start;
+            padding-top: 10%;
+        }
+        
+        #slide-typewriter-with-image .typewriter-section {
+            margin-bottom: 2.5rem;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #slide-typewriter-with-image .image-section {
+            opacity: 0;
+            transition: opacity 4s ease-in;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-typewriter-with-image .image-section.fading {
+            opacity: 1;
+        }
+        
+        #slide-paragraph-with-image {
+            justify-content: flex-start;
+            padding-top: 8%;
+        }
+        
+        #slide-paragraph-with-image .paragraph-section {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-paragraph-with-image .image-section {
+            opacity: 0;
+            transition: opacity 3s ease-in;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #slide-paragraph-with-image .image-section.fading {
+            opacity: 1;
+        }
+        
+        #slide-paragraph-with-image .you-text {
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        #slide-paragraph-with-image .you-text.showing {
+            opacity: 1;
+        }
+        
+        #slide-welcome #welcome-text {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 3rem;
+            font-weight: 600;
+            transition: transform 2s ease-out;
+        }
+        
+        #slide-welcome #welcome-text.move-up {
+            transform: translateY(-40px);
+        }
+        
+        #slide-welcome #tagline-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            font-style: italic;
+            font-weight: 700;
+            opacity: 0;
+            margin-top: 2rem;
+            transition: opacity 1s ease-in;
+        }
+        
+        #slide-welcome #tagline-text.fade-in {
+            opacity: 1;
+        }
+        
+        #slideshow-typewriter-sentence {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.6rem;
+            color: var(--accent-light);
+            font-weight: 600;
+            text-align: center;
+            min-height: 50px;
+        }
+        
+        .slideshow-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10001;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .slideshow-controls button {
+            background: rgba(107, 155, 158, 0.3);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .slideshow-controls button:hover {
+            background: var(--accent-color);
+            color: #0a0a0a;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            /* Fix Navigation Overlap - Issue 4 */
+            nav {
+                padding: 1rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.85rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-auth {
+                position: relative;
+                right: auto;
+                margin-top: 0.5rem;
+            }
+            
+            .auth-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            #user-name {
+                font-size: 0.8rem;
+            }
+            
+            /* Hero Section */
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-logo-btn {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            #welcome-section {
+                padding: 2rem;
+            }
+            
+            .definition-box-animated h2 {
+                font-size: 2.5rem;
+            }
+            
+            /* Fix Maps - Issue 1 */
+            #searchMap, #swarmMap, #eventMap {
+                height: 300px !important;
+                min-height: 300px !important;
+            }
+            
+            /* Fix Slideshow Images - Issue 2 */
+            .slideshow-slide img {
+                max-width: 100%;
+                max-height: 60vh;
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain;
+            }
+            
+            #empty-street-section img,
+            #shopping-street-section img {
+                max-width: 100%;
+                max-height: 50vh;
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain;
+            }
+            
+            /* Fix Dashboard - Issue 3 */
+            .modal-content {
+                width: 95%;
+                max-height: 85vh;
+                padding: 1rem;
+            }
+            
+            #dashboardContent {
+                max-height: 50vh !important;
+            }
+            
+            .dashboard-tab {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.85rem !important;
+            }
+            
+            /* Fix Slideshow Controls - buttons overlapping */
+            .slideshow-controls {
+                bottom: 1rem;
+                right: 1rem;
+                gap: 0.5rem;
+            }
+            
+            .slideshow-controls button {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            /* Fix YOU Slide - text taking too much space */
+            #slide-paragraph-with-image {
+                padding-top: 5%;
+            }
+            
+            #slide-paragraph-with-image .paragraph-section p {
+                font-size: 1rem !important;
+                line-height: 1.6 !important;
+                padding: 0 1rem;
+            }
+            
+            #slide-paragraph-with-image .paragraph-section {
+                margin-bottom: 1.5rem !important;
+            }
+            
+            #slide-paragraph-with-image .you-text {
+                font-size: 2.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            #slide-paragraph-with-image .image-section {
+                margin-top: 1rem !important;
+            }
+            
+            #slide-paragraph-with-image .image-section img {
+                max-height: 30vh !important;
+            }
+            
+            /* FIX: Profile modal content cutoff */
+            .modal-content {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* FIX: Leaflet map preview sizing in cards */
+            .leaflet-container {
+                min-height: 250px !important;
+                height: 250px !important;
+            }
+            
+            /* FIX: Ensure card content isn't cut off */
+            div[style*="cursor: pointer"][style*="margin-bottom"] {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            
+            /* FIX: Modal close button overlapping content */
+            .close {
+                position: absolute !important;
+                top: 10px !important;
+                right: 10px !important;
+                z-index: 10001 !important;
+                background: rgba(0,0,0,0.5) !important;
+                border-radius: 50% !important;
+                width: 35px !important;
+                height: 35px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(30, 30, 30, 0.98));
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid rgba(107, 155, 158, 0.3);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: var(--accent-light);
+        }
+        
+        /* Search Field Pulse Animation */
+        @keyframes searchPulse {
+            0%, 100% {
+                border-color: rgba(107, 155, 158, 0.3);
+                box-shadow: 0 0 0 0 rgba(107, 155, 158, 0);
+            }
+            50% {
+                border-color: rgba(107, 155, 158, 0.8);
+                box-shadow: 0 0 20px 5px rgba(107, 155, 158, 0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SLIDESHOW -->
+    <div id="slideshow-overlay" class="slideshow-overlay">
+        <div class="slideshow-controls">
+            <button id="rewind-btn" title="Restart">↺</button>
+            <button id="pause-btn" title="Pause/Play">⏸</button>
+            <button id="skip-btn" title="Skip">⏭</button>
+        </div>
+        
+        <!-- Slide 1: Definition -->
+        <div class="slide active" id="slide-definition">
+            <div class="slide-content">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 4rem; color: var(--accent-light); margin-bottom: 1rem;">flânerie</h2>
+                <p style="font-size: 1.2rem; color: var(--accent-light); margin-bottom: 2rem; font-style: italic;">| ˈflɑːnəri |</p>
+                <p style="font-size: 1.6rem; color: var(--accent-light); line-height: 1.8;">The art of leisurely urban exploration;<br>mindful wandering through city streets<br>with intention and curiosity.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Typewriter + Image -->
+        <div class="slide" id="slide-typewriter-with-image">
+            <div class="typewriter-section">
+                <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 2.8rem; margin-bottom: 2.5rem; text-align: center;">Take Back Your Main Street</h3>
+                <p id="slideshow-typewriter-sentence"></p>
+            </div>
+            
+            <div class="image-section" id="empty-street-section">
+                <img src="/empty-street.png" alt="Empty street" style="max-width: 500px; width: 80%; height: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            </div>
+        </div>
+        
+        <!-- Slide 3: Paragraph + YOU + Image -->
+        <div class="slide" id="slide-paragraph-with-image">
+            <div class="paragraph-section">
+                <p style="font-size: 1.3rem; color: var(--accent-light); line-height: 1.9; text-align: center; max-width: 800px;">
+                    Search engines direct you to chains. Online shopping replaces neighborhood stores. Meanwhile, the café owner who remembers your name can't make rent. Small businesses don't have marketing budgets or algorithms working for them — they have...
+                </p>
+            </div>
+            
+            <div class="you-text" id="you-text">YOU</div>
+            
+            <div class="image-section" id="shopping-street-section">
+                <img src="/shopping-street.png" alt="Shopping street" style="max-width: 500px; width: 80%; height: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            </div>
+        </div>
+        
+        <!-- Slide 4: Welcome -->
+        <div class="slide" id="slide-welcome">
+            <div class="slide-content">
+                <h3 id="welcome-text">Welcome to Flânerie</h3>
+                <p id="tagline-text">
+                    Share your journey.<br>Retrace theirs.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <!-- Mobile hamburger menu -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                ☰
+            </button>
+            
+            <ul class="nav-links" id="mobile-nav">
+                <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToContent(); closeMobileMenu()">What is Flanerie?</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToExplore(); closeMobileMenu()">Explore</a></li>
+                <li><a href="/for-businesses.html" onclick="closeMobileMenu()">For Businesses</a></li>
+                <li><a href="/about.html" onclick="closeMobileMenu()">About</a></li>
+                
+                <!-- Auth UI inside mobile menu -->
+                <li class="mobile-auth-section">
+                    <div class="nav-auth">
+                        <button id="mobile-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                        <div id="mobile-user-info" style="display: none;">
+                            <span id="mobile-user-name" style="color: var(--accent-light);">Hi, User!</span>
+                            <button class="auth-btn" onclick="openDashboard(); closeMobileMenu()">Dashboard</button>
+                            <button id="mobile-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            
+            <!-- Desktop Auth UI - positioned absolutely on the right -->
+            <div class="nav-auth desktop-auth">
+                <button id="desktop-sign-in-btn" class="auth-btn" onclick="showSignInModal()">Sign In</button>
+                <div id="desktop-user-info" style="display: none;">
+                    <span id="desktop-user-name" style="color: var(--accent-light);">Hi, User!</span>
+                    <button class="auth-btn" onclick="openDashboard()">Dashboard</button>
+                    <button id="desktop-sign-out-btn" class="auth-btn" onclick="signOut()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Email Verification Banner -->
+    <div id="verification-banner" style="display: none; position: fixed; top: 80px; left: 0; right: 0; background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 193, 7, 0.95)); padding: 1rem 2rem; text-align: center; z-index: 999; border-bottom: 2px solid rgba(255, 152, 0, 0.5);">
+        <p style="margin: 0; color: #000; font-weight: 600; font-size: 1rem;">
+            ✅ You're signed in! 📧 Check your email and click the verification link to start posting. 
+            <span style="color: #000; font-size: 0.85rem; opacity: 0.8;">(Auto-checking...)</span>
+            <a href="javascript:void(0)" onclick="resendVerificationEmail()" style="color: #000; text-decoration: underline; font-weight: 700; cursor: pointer; margin-left: 1rem;">Resend email</a>
+        </p>
+    </div>
+    
+    <!-- PWA Install Banner (Shows device-specific instructions) -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <!-- Android instructions -->
+        <span id="pwa-android-text" style="display: none;">
+            📱 Install Flânerie app! Tap the <strong>Install</strong> button below or use <strong>Menu → Install app</strong>
+        </span>
+        <!-- iPhone instructions -->
+        <span id="pwa-ios-text" style="display: none;">
+            📱 Install Flânerie app! Tap <strong>Share ⬆️</strong> then <strong>Add to Home Screen</strong>
+        </span>
+        <button id="pwa-install-btn" style="display: none;">Install</button>
+        <button class="close-banner" onclick="document.getElementById('pwa-install-banner').classList.remove('show')">✕</button>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Flânerie</h1>
+            <p class="hero-subtitle">The art of urban wandering.</p>
+            <div class="hero-logo-btn" onclick="scrollToContent()"></div>
+            
+            <!-- Rotating phrases below logo -->
+            <div class="rotating-text-container">
+                <div class="rotating-text">
+                    <span class="active">Wander well.</span>
+                    <span>Walk kindly.</span>
+                    <span>Support local business.</span>
+                    <span>Discover hidden gems in your neighborhood.</span>
+                    <span>Turn ordinary walks into extraordinary adventures.</span>
+                    <span>Connect with your community, one step at a time.</span>
+                    <span>Every block has a story to tell.</span>
+                    <span>Shop small, feel big.</span>
+                    <span>Find your city's secrets.</span>
+                    <span>Life moves fast - walk slower.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Definition Section -->
+            <section class="info-section">
+                <div class="definition-box-animated">
+                    <h2>flânerie</h2>
+                    <p style="font-size: 1rem; color: var(--accent-light); margin-bottom: 0.3rem;">
+                        | ˈflɑːnəri | <span style="font-style: italic;">noun</span>
+                    </p>
+                    <div style="width: 60px; height: 1px; background: #555; margin: 1rem 0;"></div>
+                    <p style="font-size: 1.3rem; color: var(--accent-light); line-height: 1.7;">
+                        The art of leisurely urban exploration; mindful wandering through city streets with intention and curiosity.
+                    </p>
+                </div>
+                
+                <!-- Welcome Section -->
+                <div id="welcome-section">
+                    <h3>Welcome to Flânerie</h3>
+                    
+                    <p>
+                        We turn ordinary walks into extraordinary mini-adventures. Rooted in French culture, flânerie celebrates <strong style="color: var(--accent-color);">the art of strolling</strong> — observing city life with intention instead of rushing through it. It's <strong style="color: var(--accent-color);">cultural appreciation</strong> in motion: slowing down enough to notice the character and charm built into the everyday.
+                    </p>
+                    
+                    <p>
+                        With Flânerie, you can explore neighborhoods at your own pace or chart your own path. Our routes guide you from cozy cafés and local markets to boutique shops, art galleries, bookstores, parks, and hidden corners — each designed for <strong style="color: var(--accent-color);">mindful wandering</strong> and curiosity-led discovery. Search routes shared by others, map your upcoming outings, browse local events, or gather friends for a <strong style="color: var(--accent-color);">Shopping Swarm</strong> — a collective walk that turns routine errands into moments of connection and community support.
+                    </p>
+                    
+                    <p>
+                        <strong style="color: var(--accent-color);">Your route to that tiny coffee roaster? Someone else's new favorite spot. Your Shopping Swarm? A local merchant's best weekend in months.</strong> This is how communities strengthen themselves — one walk, one recommendation, one conscious choice at a time.
+                    </p>
+                </div>
+                
+                <p id="tagline-reveal">Share your journey. Retrace theirs.</p>
+    </main>
+    
+    <!-- Explore Section (Features) -->
+            </section>
+            
+            <!-- Feature Cards - 3 cards with 2 buttons each -->
+            <div id="features-content" class="features-section">
+                <div class="feature-grid">
+                    <!-- Card 1: Journeys & Routes -->
+                    <div class="feature-card-large">
+                        <div class="feature-content">
+                            <div class="feature-icon">📍</div>
+                            <h3>Journeys & Routes</h3>
+                            <p>Share your path or discover new ones</p>
+                            <button class="feature-btn" onclick="toggleSection('journey-map')" style="margin-bottom: 0.75rem;">Share Your Journey</button>
+                            <button class="feature-btn" onclick="toggleSection('search')">Search Routes</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Shopping Swarms -->
+                    <div class="feature-card-large">
+                        <div class="feature-content">
+                            <div class="feature-icon">🛍️</div>
+                            <h3>Shopping Swarms</h3>
+                            <p>Create or join community walks</p>
+                            <button class="feature-btn" onclick="toggleSection('swarm-map-v2')" style="margin-bottom: 0.75rem;">Create Shopping Swarm</button>
+                            <button class="feature-btn" onclick="toggleSection('swarms')">View Swarms</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Local Events -->
+                    <div class="feature-card-large">
+                        <div class="feature-content">
+                            <div class="feature-icon">🎉</div>
+                            <h3>Local Events</h3>
+                            <p>Promote events or discover celebrations</p>
+                            <button class="feature-btn" onclick="toggleSection('event-map-v2')" style="margin-bottom: 0.75rem;">Promote Your Event</button>
+                            <button class="feature-btn" onclick="toggleSection('events')">Browse Events</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Flânerie</h4>
+                <p>The art of urban wandering.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Legal & Info</h4>
+                <ul>
+                    <li><a href="/privacy.html">Privacy Policy</a></li>
+                    <li><a href="/safety.html">Safety Tips</a></li>
+                    <li><a href="/terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="scrollToExplore()">Explore Routes</a></li>
+                    <li><a href="/for-businesses.html">For Businesses</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div style="display: flex; gap: 1.5rem; font-size: 1.8rem; margin-top: 1rem;">
+                    <a href="https://instagram.com" target="_blank" title="Instagram" style="color: var(--accent-light); transition: color 0.3s;">📷</a>
+                    <a href="https://facebook.com" target="_blank" title="Facebook" style="color: var(--accent-light); transition: color 0.3s;">👥</a>
+                    <a href="https://x.com" target="_blank" title="X (Twitter)" style="color: var(--accent-light); transition: color 0.3s;">🐦</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flânerie. All rights reserved. Made with ❤️ for urban explorers.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // SLIDESHOW - APPROVED TIMING
         const typewriterText = "Every year, 200,000 small businesses close in the U.S. alone.";
         let charIndex = 0;
         
@@ -338,7 +1736,19 @@
         window.useMyLocationForJourney = useMyLocationForJourney;
         window.useMyLocationForSwarm = useMyLocationForSwarm;
         window.useMyLocationForEvent = useMyLocationForEvent;
-        window.handleGPSClick = handleGPSClick;</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script><script>// ===== FIREBASE CONFIGURATION =====
+        window.handleGPSClick = handleGPSClick;
+    </script>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
+    <script>
+        // ===== FIREBASE CONFIGURATION =====
         const firebaseConfig = {
             apiKey: "AIzaSyB4nznaJQ1VGNDylnfN5J9MW74Thm8XoS8",
             authDomain: "flanerie-70dfd.firebaseapp.com",
@@ -364,11 +1774,12 @@
         // Auth state listener - runs when user signs in/out
         auth.onAuthStateChanged(async function(user) {
             if (user) {
-                // User is signed in
+                
+                // User is signed in AND authorized (or on GitHub Pages)
                 console.log('User signed in:', user.email);
                 console.log('User displayName:', user.displayName);
                 console.log('User UID:', user.uid);
-
+                
                 
                 // Check if this is a Google user's first time (no username in database)
                 const isGoogleUser = user.providerData[0]?.providerId === 'google.com';
@@ -2567,7 +3978,11 @@
                 });
                 callback(routes);
             });
-        }</script><script>// Cache system for reducing Firebase reads (5-minute TTL)
+        }
+    </script>
+    
+    <script>
+        // Cache system for reducing Firebase reads (5-minute TTL)
         const dataCache = {
             routes: { data: null, timestamp: null, ttl: 300000 },
             swarms: { data: null, timestamp: null, ttl: 300000 },
@@ -6195,642 +7610,315 @@
                 showToast('Error submitting report');
             }
         }
-        window.reportMessage = reportMessage;</script><div id="createSwarmModal"style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:2rem"><div style="background:rgba(25,25,25,.98);border-radius:20px;padding:2.5rem;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;border:2px solid rgba(107,155,158,.3);position:relative"><button onclick="closeCreateSwarmModal()"style="position:absolute;top:1rem;right:1rem;background:0 0;border:none;color:var(--accent-color);font-size:2rem;cursor:pointer;line-height:1">&times;</button><h2 style="color:var(--accent-color);margin-bottom:1.5rem;font-family:'Playfair Display',serif">Create Shopping Swarm</h2><form id="createSwarmForm"onsubmit="submitSwarm(event)"><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Title *</label> <input name="swarmTitle"required maxlength="60"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Saturday Market Crawl"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem"><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Date *</label> <input type="date"name="swarmDate"id="swarmDateInput"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Time *</label> <input type="time"name="swarmTime"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Expected Duration</label> <select name="swarmDuration"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"><option value="">Select duration...<option value="1 hour">1 hour<option value="2 hours">2 hours<option value="3+ hours">3+ hours</div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Description (200 characters max)</label><p style="color:#999;font-size:.85rem;margin-bottom:.5rem">This will be visible to others when viewing swarms</p><textarea name="swarmDescription"maxlength="200"rows="3"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem;resize:vertical"placeholder="Hitting 3 coffee shops in the Arts District"></textarea></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Meeting Location *</label> <input name="swarmMeetingLocation"required maxlength="100"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="e.g., 'Starbucks on 16th Street' or 'Union Station entrance'"><p style="color:#999;font-size:.85rem;margin-top:.4rem">Where should the group meet to start?</div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">How to Identify Group (Optional)</label> <input name="swarmIdentifier"maxlength="100"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="e.g., 'Blue umbrella' or 'Wearing yellow shirts'"><p style="color:#999;font-size:.85rem;margin-top:.5rem">Help others recognize your group at the meeting location</div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Organizer Name (Optional)</label> <input name="swarmPostedBy"maxlength="60"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Your name or organization"></div><button type="submit"id="createSwarmBtn"class="feature-btn"style="width:100%;margin-top:1rem"disabled>Create Swarm</button></form></div></div><div id="createEventModal"style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:2rem"><div style="background:rgba(25,25,25,.98);border-radius:20px;padding:2.5rem;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;border:2px solid rgba(107,155,158,.3);position:relative"><button onclick="closeCreateEventModal()"style="position:absolute;top:1rem;right:1rem;background:0 0;border:none;color:var(--accent-color);font-size:2rem;cursor:pointer;line-height:1">&times;</button><h2 style="color:var(--accent-color);margin-bottom:1.5rem;font-family:'Playfair Display',serif">Promote Your Event</h2><form id="createEventForm"onsubmit="submitEvent(event)"><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Event Name *</label> <input name="eventName"required maxlength="80"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Highland Street Festival"></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Location *</label> <input name="eventLocation"required maxlength="150"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="e.g., 'Red Rocks Amphitheatre' or '1234 Main St, Denver'"><p style="color:#999;font-size:.85rem;margin-top:.4rem">Where will this event take place?</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem"><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Start Date *</label> <input type="date"name="eventStartDate"id="eventStartDateInput"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Start Time *</label> <input type="time"name="eventStartTime"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem"><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">End Date</label> <input type="date"name="eventEndDate"id="eventEndDateInput"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">End Time</label> <input type="time"name="eventEndTime"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Description * (500 characters max)</label> <textarea name="eventDescription"required maxlength="500"rows="4"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem;resize:vertical"placeholder="Describe your event..."></textarea></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Posted By *</label> <input name="eventPostedBy"required maxlength="60"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Organization or your name"></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Website/Link (Optional)</label> <input name="eventWebsite"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="www.example.com or https://example.com"></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Max Participants (Optional)</label> <input type="number"name="eventMaxParticipants"min="1"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Leave blank for unlimited"></div><button type="submit"id="createEventBtn"class="feature-btn"style="width:100%;margin-top:1rem"disabled>Create Event</button></form></div></div><div id="signInModal"class="modal"style="display:none"><div class="modal-content"style="max-width:450px"><span class="close"onclick="closeSignInModal()">&times;</span><h2 style="text-align:center;color:var(--accent-color);margin-bottom:1.5rem">Welcome to Flânerie</h2><button onclick="signInWithGoogle()"style="width:100%;padding:1rem;background:#fff;color:#333;border:2px solid #ddd;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .3s ease"><span style="font-size:1.2rem">G</span> Sign in with Google</button><div style="text-align:center;margin:1.5rem 0;color:#999">───── OR ─────</div><div id="usernameSetupModal"class="modal"style="display:none;z-index:10001"><div class="modal-content"style="max-width:500px"><h2 style="text-align:center;color:var(--accent-color);margin-bottom:1rem">Choose Your Username</h2><p style="text-align:center;color:#999;margin-bottom:2rem">Pick a unique username that others will see when you share routes, swarms, and events.<form id="usernameSetupForm"onsubmit="return saveUsername(event),!1"><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Username</label> <input id="newUsername"required minlength="3"maxlength="20"pattern="[a-zA-Z0-9_]+"placeholder="e.g., urban_explorer"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"><p style="color:#999;font-size:.85rem;margin-top:.5rem">3-20 characters, letters, numbers, and underscores only<p id="usernameError"style="color:#d9534f;font-size:.9rem;margin-top:.5rem;display:none"></div><button type="submit"id="saveUsernameBtn"style="width:100%;padding:1rem;background:var(--accent-color);color:#fff;border:none;border-radius:10px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s ease">Continue</button></form></div></div><div style="display:flex;gap:1rem;margin-bottom:1.5rem;border-bottom:2px solid rgba(107,155,158,.2)"><button id="signInTab"class="auth-tab active"onclick='switchAuthTab("signin")'style="flex:1;padding:1rem;background:0 0;border:none;color:var(--accent-light);font-weight:600;cursor:pointer;border-bottom:3px solid var(--accent-color);transition:all .3s ease">Sign In</button> <button id="signUpTab"class="auth-tab"onclick='switchAuthTab("signup")'style="flex:1;padding:1rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">Sign Up</button></div><form id="signInForm"onsubmit="return signInWithEmail(event),!1"><div style="margin-bottom:1rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Email</label> <input type="email"id="signInEmail"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Password</label> <input type="password"id="signInPassword"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"> <a href="javascript:void(0)"onclick="showForgotPasswordModal()"style="display:block;margin-top:.5rem;color:var(--accent-light);font-size:.9rem;text-decoration:none">Forgot Password?</a></div><button type="submit"class="feature-btn"style="width:100%">Sign In</button></form><form id="signUpForm"style="display:none"onsubmit="return signUpWithEmail(event),!1"><div style="margin-bottom:1rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Email</label> <input type="email"id="signUpEmail"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div style="margin-bottom:1rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Password (min 6 characters)</label> <input type="password"id="signUpPassword"required minlength="6"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Username</label> <input id="signUpDisplayName"required oninput="checkUsernameAvailability()"pattern="[a-zA-Z0-9_]+"minlength="3"maxlength="20"style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"placeholder="Letters, numbers, underscore only"><p id="usernameStatus"style="margin-top:.5rem;font-size:.85rem;color:#999"></div><input id="website"name="website"style="position:absolute;left:-9999px;width:1px;height:1px"tabindex="-1"autocomplete="off"> <button type="submit"class="feature-btn"style="width:100%">Sign Up</button><p style="color:#999;font-size:.85rem;margin-top:1rem;text-align:center">You'll receive a verification email after signing up</form></div></div><div id="forgotPasswordModal"class="modal"style="display:none"><div class="modal-content"style="max-width:450px"><span class="close"onclick="closeForgotPasswordModal()">&times;</span><h2 style="text-align:center;color:var(--accent-color);margin-bottom:1.5rem">Reset Password</h2><p style="color:#d4d4d4;margin-bottom:1.5rem;text-align:center">Enter your email address and we'll send you a link to reset your password.<form id="forgotPasswordForm"onsubmit="return sendPasswordResetEmail(event),!1"><div style="margin-bottom:1.5rem"><label style="display:block;color:#d4d4d4;margin-bottom:.5rem;font-weight:600">Email</label> <input type="email"id="resetEmail"required style="width:100%;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:10px;color:#fff;font-size:1rem"></div><button type="submit"class="feature-btn"style="width:100%">Send Reset Link</button></form></div></div><div id="dashboardModal"class="modal"style="display:none"><div class="modal-content"style="max-width:1200px;width:95%;max-height:90vh"><span class="close"onclick="closeDashboard()">&times;</span><h2 style="text-align:center;color:var(--accent-color);margin-bottom:2rem">My Dashboard</h2><div style="display:flex;gap:1rem;margin-bottom:2rem;border-bottom:2px solid rgba(107,155,158,.3);flex-wrap:wrap"><button id="routesTab"class="dashboard-tab active"onclick='switchDashboardTab("routes")'style="padding:1rem 1.5rem;background:0 0;border:none;color:var(--accent-light);font-weight:600;cursor:pointer;border-bottom:3px solid var(--accent-color);transition:all .3s ease">My Routes</button> <button id="swarmsTab"class="dashboard-tab"onclick='switchDashboardTab("swarms")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">My Swarms</button> <button id="eventsTab"class="dashboard-tab"onclick='switchDashboardTab("events")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">My Events</button> <button id="likesTab"class="dashboard-tab"onclick='switchDashboardTab("likes")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">My Likes & Interests</button> <button id="draftsTab"class="dashboard-tab"onclick='switchDashboardTab("drafts")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">My Drafts</button> <button id="messagesTab"class="dashboard-tab"onclick='switchDashboardTab("messages")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease"><span id="messagesTabLabel">Messages</span> <span id="unreadBadge"style="display:none;background:#f44;color:#fff;padding:.2rem .5rem;border-radius:10px;font-size:.75rem;margin-left:.3rem"></span></button> <button id="accountTab"class="dashboard-tab"onclick='switchDashboardTab("account")'style="padding:1rem 1.5rem;background:0 0;border:none;color:#999;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s ease">Account</button></div><div id="dashboardContent"style="overflow-y:auto;max-height:60vh"><div id="routesContent"class="dashboard-section"><p style="text-align:center;color:#999">Loading your routes...</div><div id="swarmsContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading your swarms...</div><div id="eventsContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading your events...</div><div id="likesContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading your likes...</div><div id="draftsContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading your drafts...</div><div id="messagesContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading your messages...</div><div id="accountContent"class="dashboard-section"style="display:none"><p style="text-align:center;color:#999">Loading account settings...</div></div></div></div><button id="bobbyButton"style="position:fixed;bottom:20px;right:20px;width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#6b9b9e,#8dbcc0);border:3px solid #fff;box-shadow:0 4px 15px rgba(0,0,0,.3);cursor:pointer;z-index:9999;transition:all .3s ease;display:flex;align-items:center;justify-content:center;font-size:2rem"onclick="toggleBobby()"onmouseover='this.style.transform="scale(1.1)"'onmouseout='this.style.transform="scale(1)"'>💬</button><div id="bobbyModal"style="display:none;position:fixed;bottom:100px;right:20px;width:380px;max-width:calc(100vw - 40px);height:550px;max-height:calc(100vh - 140px);background:rgba(20,20,20,.98);border:2px solid var(--accent-color);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:9998;display:flex;flex-direction:column;font-family:Poppins,sans-serif"><div style="background:linear-gradient(135deg,#6b9b9e,#8dbcc0);padding:.3rem;border-radius:18px 18px 0 0;text-align:center;position:relative"><img src="bobby-avatar.png"style="width:100px;height:100px;border-radius:50%;border:2px solid #fff;margin-bottom:.3rem;box-shadow:0 4px 10px rgba(0,0,0,.3)"alt="Bobby"><h3 style="color:#fff;margin:0;font-size:1.1rem;font-weight:700">Bobby</h3><p style="color:rgba(255,255,255,.9);margin:.2rem 0 0;font-size:.75rem">Your Flânerie Guide</p><button onclick="toggleBobby()"style="position:absolute;top:15px;right:15px;background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all .2s"onmouseover='this.style.background="rgba(255,255,255,0.3)"'onmouseout='this.style.background="rgba(255,255,255,0.2)"'>✕</button></div><div id="bobbyChat"style="flex:1;overflow-y:auto;overflow-anchor:none;padding:1.5rem;display:flex;flex-direction:column;gap:1rem"><div class="bobby-message"><p style="background:rgba(107,155,158,.2);padding:1rem;border-radius:15px;margin:0;color:var(--accent-light);line-height:1.6">Hey there, flâneur! 👋 I'm Bobby, your guide to Flânerie. What can I help you with today?</div><div style="display:flex;flex-direction:column;gap:.5rem"><button onclick='askBobby("How do I create a route?")'class="bobby-quick-btn">🗺️ How do I create a route?</button> <button onclick='askBobby("What is a swarm?")'class="bobby-quick-btn">👥 What's a swarm?</button> <button onclick='askBobby("How do I delete my account?")'class="bobby-quick-btn">⚙️ Account settings</button> <button onclick='askBobby("What is flanerie?")'class="bobby-quick-btn">🚶 What is flânerie?</button></div></div><div style="padding:1rem;border-top:1px solid rgba(107,155,158,.3)"><div style="display:flex;gap:.5rem"><input id="bobbyInput"placeholder="Ask Bobby anything..."style="flex:1;padding:.8rem;background:rgba(40,40,40,.8);border:2px solid rgba(107,155,158,.3);border-radius:25px;color:#fff;font-size:.9rem"onkeypress='"Enter"===event.key&&sendBobbyMessage()'> <button onclick="sendBobbyMessage()"style="padding:.8rem 1.2rem;background:var(--accent-color);border:none;border-radius:25px;color:#fff;font-weight:600;cursor:pointer;transition:all .3s"onmouseover='this.style.background="var(--accent-light)"'onmouseout='this.style.background="var(--accent-color)"'>Send</button></div></div></div><style>.bobby-quick-btn{padding:.8rem;background:rgba(107,155,158,.15);border:1px solid rgba(107,155,158,.3);border-radius:10px;color:var(--accent-light);font-size:.9rem;cursor:pointer;transition:all .3s;text-align:left}.bobby-quick-btn:hover{background:rgba(107,155,158,.3);transform:translateX(5px)}.bobby-message{animation:bobbyFadeIn .3s ease-in}@keyframes bobbyFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}#bobbyChat::-webkit-scrollbar{width:6px}#bobbyChat::-webkit-scrollbar-track{background:rgba(107,155,158,.1);border-radius:3px}#bobbyChat::-webkit-scrollbar-thumb{background:var(--accent-color);border-radius:3px}@media (max-width:768px){#bobbyButton{display:none!important}#bobbyModal{display:none!important}}</style><script>// Bobby AI Assistant - Comprehensive FAQ Chatbot
-// Flânerie Guide
-
-// Toggle Bobby modal
-function toggleBobby() {
-    const modal = document.getElementById('bobbyModal');
-    const button = document.getElementById('bobbyButton');
-    
-    if (modal.style.display === 'none' || modal.style.display === '') {
-        modal.style.display = 'flex';
-        button.textContent = '✕';
-    } else {
-        modal.style.display = 'none';
-        button.textContent = '💬';
-    }
-}
-
-// Ask Bobby a question
-function askBobby(question) {
-    const chat = document.getElementById('bobbyChat');
-    
-    // Add user message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'bobby-message';
-    userMsg.innerHTML = `
-        <p style="background: rgba(107, 155, 158, 0.4); padding: 1rem; border-radius: 15px; margin: 0; color: white; line-height: 1.6; text-align: right;">
-            ${question}
-        </p>
-    `;
-    chat.appendChild(userMsg);
-    
-    // Scroll to show user's question
-    chat.scrollTop = chat.scrollHeight;
-    
-    // Get Bobby's response with slight delay
-    setTimeout(() => {
-        const response = getBobbyResponse(question);
-        const bobbyMsg = document.createElement('div');
-        bobbyMsg.className = 'bobby-message';
-        bobbyMsg.innerHTML = `
-            <p style="background: rgba(107, 155, 158, 0.2); padding: 1rem; border-radius: 15px; margin: 0; color: var(--accent-light); line-height: 1.6;">
-                ${response}
-            </p>
-        `;
-        chat.appendChild(bobbyMsg);
+        window.reportMessage = reportMessage;
         
-        // Wait for animation to finish, then scroll to START of Bobby's message
-        setTimeout(() => {
-            bobbyMsg.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 350);
-    }, 500);
-}
+    </script>
 
-// Send message from input
-function sendBobbyMessage() {
-    const input = document.getElementById('bobbyInput');
-    const question = input.value.trim();
-    
-    if (!question) return;
-    
-    askBobby(question);
-    input.value = '';
-}
+    <!-- Create Swarm Modal -->
+    <div id="createSwarmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
+            <button onclick="closeCreateSwarmModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <h2 style="color: var(--accent-color); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Create Shopping Swarm</h2>
+            
+            <form id="createSwarmForm" onsubmit="submitSwarm(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Title *</label>
+                    <input type="text" name="swarmTitle" required maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Saturday Market Crawl">
+                </div>
 
-// Comprehensive Q&A Response System
-function getBobbyResponse(question) {
-    const q = question.toLowerCase();
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Date *</label>
+                        <input type="date" name="swarmDate" id="swarmDateInput" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Time *</label>
+                        <input type="time" name="swarmTime" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Expected Duration</label>
+                    <select name="swarmDuration" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                        <option value="">Select duration...</option>
+                        <option value="1 hour">1 hour</option>
+                        <option value="2 hours">2 hours</option>
+                        <option value="3+ hours">3+ hours</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Description (200 characters max)</label>
+                    <p style="color: #999; font-size: 0.85rem; margin-bottom: 0.5rem;">This will be visible to others when viewing swarms</p>
+                    <textarea name="swarmDescription" maxlength="200" rows="3" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Hitting 3 coffee shops in the Arts District"></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Meeting Location *</label>
+                    <input type="text" name="swarmMeetingLocation" required maxlength="100" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="e.g., 'Starbucks on 16th Street' or 'Union Station entrance'">
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">Where should the group meet to start?</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">How to Identify Group (Optional)</label>
+                    <input type="text" name="swarmIdentifier" maxlength="100" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="e.g., 'Blue umbrella' or 'Wearing yellow shirts'">
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">Help others recognize your group at the meeting location</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Organizer Name (Optional)</label>
+                    <input type="text" name="swarmPostedBy" maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Your name or organization">
+                </div>
+
+                <p style="color: #8DBCC0; font-size: 0.9rem; text-align: center; margin: 1.5rem 0 0.5rem; padding: 0.8rem; background: rgba(107, 155, 158, 0.1); border-radius: 8px;">
+                    ⚠️ Reminder: Swarms must meet at <strong>public locations only</strong>. Read <a href="/safety.html" target="_blank" style="color: var(--accent-color); text-decoration: underline;">Safety Guidelines</a>
+                </p>
+                <button type="submit" id="createSwarmBtn" class="feature-btn" style="width: 100%; margin-top: 0.5rem;" disabled>Create Swarm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: rgba(25, 25, 25, 0.98); border-radius: 20px; padding: 2.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(107, 155, 158, 0.3); position: relative;">
+            <button onclick="closeCreateEventModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--accent-color); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <h2 style="color: var(--accent-color); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Promote Your Event</h2>
+            
+            <form id="createEventForm" onsubmit="submitEvent(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Event Name *</label>
+                    <input type="text" name="eventName" required maxlength="80" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Highland Street Festival">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Location *</label>
+                    <input type="text" name="eventLocation" required maxlength="150" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="e.g., 'Red Rocks Amphitheatre' or '1234 Main St, Denver'">
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.4rem;">Where will this event take place?</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Start Date *</label>
+                        <input type="date" name="eventStartDate" id="eventStartDateInput" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Start Time *</label>
+                        <input type="time" name="eventStartTime" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Date</label>
+                        <input type="date" name="eventEndDate" id="eventEndDateInput" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">End Time</label>
+                        <input type="time" name="eventEndTime" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Description * (500 characters max)</label>
+                    <textarea name="eventDescription" required maxlength="500" rows="4" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;" placeholder="Describe your event..."></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Posted By *</label>
+                    <input type="text" name="eventPostedBy" required maxlength="60" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Organization or your name">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Website/Link (Optional)</label>
+                    <input type="text" name="eventWebsite" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="www.example.com or https://example.com">
+                </div>
+
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Max Participants (Optional)</label>
+                    <input type="number" name="eventMaxParticipants" min="1" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Leave blank for unlimited">
+                </div>
+
+                <p style="color: #8DBCC0; font-size: 0.9rem; text-align: center; margin: 1.5rem 0 0.5rem; padding: 0.8rem; background: rgba(107, 155, 158, 0.1); border-radius: 8px;">
+                    ⚠️ Reminder: Events must be at <strong>public locations only</strong>. Read <a href="/safety.html" target="_blank" style="color: var(--accent-color); text-decoration: underline;">Safety Guidelines</a>
+                </p>
+                <button type="submit" id="createEventBtn" class="feature-btn" style="width: 100%; margin-top: 0.5rem;" disabled>Create Event</button>
+            </form>
+        </div>
+    </div>
     
-    // ==================== ROUTES ====================
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close" onclick="closeSignInModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 1.5rem;">Welcome to Flânerie</h2>
+            
+            <!-- Google Sign In -->
+            <button onclick="signInWithGoogle()" style="width: 100%; padding: 1rem; background: white; color: #333; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <span style="font-size: 1.2rem;">G</span> Sign in with Google
+            </button>
+            
+            <div style="text-align: center; margin: 1.5rem 0; color: #999;">
+                ───── OR ─────
+            </div>
     
-    // Creating routes
-    if ((q.includes('create') || q.includes('make') || q.includes('add') || q.includes('post')) && 
-        (q.includes('route') || q.includes('journey') || q.includes('walk'))) {
-        return `<strong>Creating a Route - Step by Step:</strong><br><br>
-        1️⃣ Click <strong>"Share Your Journey"</strong> on the main page<br>
-        2️⃣ You'll see a fullscreen map - click anywhere to place your first waypoint<br>
-        3️⃣ Click again to add more waypoints (minimum 2 required)<br>
-        4️⃣ The route automatically follows streets between points! 🗺️<br>
-        5️⃣ Add labels for each waypoint (like "Best coffee spot" or "Hidden park")<br>
-        6️⃣ Click <strong>"Save Route"</strong> and fill in:<br>
-        &nbsp;&nbsp;&nbsp;• Route name<br>
-        &nbsp;&nbsp;&nbsp;• Description<br>
-        &nbsp;&nbsp;&nbsp;• Category (Parks, Food, Art, etc.)<br>
-        7️⃣ Hit Save and your route goes live! 🎉<br><br>
-        <em>Pro tip: The route will automatically snap to streets and sidewalks, so you don't have to be precise!</em>`;
-    }
+    <!-- Username Setup Modal (for first-time Google sign-ins) -->
+    <div id="usernameSetupModal" class="modal" style="display: none; z-index: 10001;">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 1rem;">Choose Your Username</h2>
+            <p style="text-align: center; color: #999; margin-bottom: 2rem;">Pick a unique username that others will see when you share routes, swarms, and events.</p>
+            
+            <form id="usernameSetupForm" onsubmit="saveUsername(event); return false;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Username</label>
+                    <input type="text" id="newUsername" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" 
+                           placeholder="e.g., urban_explorer"
+                           style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">3-20 characters, letters, numbers, and underscores only</p>
+                    <p id="usernameError" style="color: #d9534f; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></p>
+                </div>
+                
+                <button type="submit" id="saveUsernameBtn" style="width: 100%; padding: 1rem; background: var(--accent-color); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+            
+            <!-- Email/Password Tabs -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid rgba(107, 155, 158, 0.2);">
+                <button id="signInTab" class="auth-tab active" onclick="switchAuthTab('signin')" style="flex: 1; padding: 1rem; background: none; border: none; color: var(--accent-light); font-weight: 600; cursor: pointer; border-bottom: 3px solid var(--accent-color); transition: all 0.3s ease;">
+                    Sign In
+                </button>
+                <button id="signUpTab" class="auth-tab" onclick="switchAuthTab('signup')" style="flex: 1; padding: 1rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    Sign Up
+                </button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <form id="signInForm" onsubmit="signInWithEmail(event); return false;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" id="signInEmail" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
+                    <input type="password" id="signInPassword" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                    <a href="javascript:void(0)" onclick="showForgotPasswordModal()" style="display: block; margin-top: 0.5rem; color: var(--accent-light); font-size: 0.9rem; text-decoration: none;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="feature-btn" style="width: 100%;">Sign In</button>
+            </form>
+            
+            <!-- Sign Up Form -->
+            <form id="signUpForm" style="display: none;" onsubmit="signUpWithEmail(event); return false;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" id="signUpEmail" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Password (min 6 characters)</label>
+                    <input type="password" id="signUpPassword" required minlength="6" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Username</label>
+                    <input type="text" id="signUpDisplayName" required oninput="checkUsernameAvailability()" pattern="[a-zA-Z0-9_]+" minlength="3" maxlength="20" style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;" placeholder="Letters, numbers, underscore only">
+                    <p id="usernameStatus" style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;"></p>
+                </div>
+                <!-- Honeypot field (hidden from humans, bots will fill it) -->
+                <input type="text" id="website" name="website" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" autocomplete="off">
+                <button type="submit" class="feature-btn" style="width: 100%;">Sign Up</button>
+                <p style="color: #8DBCC0; font-size: 0.88rem; margin-top: 1rem; text-align: center; padding: 0.8rem; background: rgba(107, 155, 158, 0.08); border-radius: 8px;">
+                    By signing up, you agree to our <a href="/safety.html" target="_blank" style="color: var(--accent-color); text-decoration: underline;">Safety Guidelines</a> and <a href="/terms.html" target="_blank" style="color: var(--accent-color); text-decoration: underline;">Terms of Use</a>
+                </p>
+                <p style="color: #999; font-size: 0.85rem; margin-top: 1rem; text-align: center;">
+                    You'll receive a verification email after signing up
+                </p>
+            </form>
+        </div>
+    </div>
     
-    // Viewing/searching routes
-    if ((q.includes('view') || q.includes('find') || q.includes('search') || q.includes('see') || q.includes('browse')) && 
-        q.includes('route')) {
-        return `<strong>Finding Routes:</strong><br><br>
-        Click <strong>"Search Routes"</strong> on the main page to see all routes on a map! 🗺️<br><br>
-        <strong>Filter options:</strong><br>
-        • Use the category dropdown (Parks, Food, Art, etc.)<br>
-        • Enter your zip code to find nearby routes<br>
-        • Click any blue line on the map to see details<br><br>
-        <strong>Route details show:</strong><br>
-        • Name, description, and category<br>
-        • Who created it<br>
-        • Number of waypoints<br>
-        • Full list of stops when you click "View Full Details"<br>
-        • Like button ❤️<br><br>
-        <em>Routes are color-coded on the map - click any polyline to highlight it!</em>`;
-    }
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 1.5rem;">Reset Password</h2>
+            <p style="color: #d4d4d4; margin-bottom: 1.5rem; text-align: center;">
+                Enter your email address and we'll send you a link to reset your password.
+            </p>
+            
+            <form id="forgotPasswordForm" onsubmit="sendPasswordResetEmail(event); return false;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #d4d4d4; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                    <input type="email" id="resetEmail" required style="width: 100%; padding: 0.8rem; background: rgba(40, 40, 40, 0.8); border: 2px solid rgba(107, 155, 158, 0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                </div>
+                <button type="submit" class="feature-btn" style="width: 100%;">Send Reset Link</button>
+            </form>
+        </div>
+    </div>
     
-    // Editing routes
-    if (q.includes('edit') && q.includes('route')) {
-        return `<strong>Editing Your Routes:</strong><br><br>
-        1️⃣ Go to <strong>Dashboard → My Routes</strong><br>
-        2️⃣ Find the route you want to change<br>
-        3️⃣ Click the <strong>"Edit"</strong> button<br>
-        4️⃣ The journey map opens with all your waypoints loaded<br>
-        5️⃣ You can:<br>
-        &nbsp;&nbsp;&nbsp;• Add new waypoints by clicking the map<br>
-        &nbsp;&nbsp;&nbsp;• Change waypoint labels<br>
-        &nbsp;&nbsp;&nbsp;• Remove waypoints<br>
-        &nbsp;&nbsp;&nbsp;• Update the route path<br>
-        6️⃣ Click <strong>"Save Route"</strong> to update (doesn't create a new route!)<br><br>
-        <em>If you close without saving (X button), your changes are discarded and the original route stays intact.</em>`;
-    }
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 1200px; width: 95%; max-height: 90vh;">
+            <span class="close" onclick="closeDashboard()">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 2rem;">My Dashboard</h2>
+            
+            <!-- Dashboard Tabs -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid rgba(107, 155, 158, 0.3); flex-wrap: wrap;">
+                <button id="routesTab" class="dashboard-tab active" onclick="switchDashboardTab('routes')" style="padding: 1rem 1.5rem; background: none; border: none; color: var(--accent-light); font-weight: 600; cursor: pointer; border-bottom: 3px solid var(--accent-color); transition: all 0.3s ease;">
+                    My Routes
+                </button>
+                <button id="swarmsTab" class="dashboard-tab" onclick="switchDashboardTab('swarms')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Swarms
+                </button>
+                <button id="eventsTab" class="dashboard-tab" onclick="switchDashboardTab('events')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Events
+                </button>
+                <button id="likesTab" class="dashboard-tab" onclick="switchDashboardTab('likes')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Likes & Interests
+                </button>
+                <button id="draftsTab" class="dashboard-tab" onclick="switchDashboardTab('drafts')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    My Drafts
+                </button>
+                <button id="messagesTab" class="dashboard-tab" onclick="switchDashboardTab('messages')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    <span id="messagesTabLabel">Messages</span> <span id="unreadBadge" style="display: none; background: #ff4444; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.75rem; margin-left: 0.3rem;"></span>
+                </button>
+                <button id="accountTab" class="dashboard-tab" onclick="switchDashboardTab('account')" style="padding: 1rem 1.5rem; background: none; border: none; color: #999; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease;">
+                    Account
+                </button>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" style="overflow-y: auto; max-height: 60vh;">
+                <div id="routesContent" class="dashboard-section">
+                    <p style="text-align: center; color: #999;">Loading your routes...</p>
+                </div>
+                <div id="swarmsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your swarms...</p>
+                </div>
+                <div id="eventsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your events...</p>
+                </div>
+                <div id="likesContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your likes...</p>
+                </div>
+                <div id="draftsContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your drafts...</p>
+                </div>
+                <div id="messagesContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading your messages...</p>
+                </div>
+                <div id="accountContent" class="dashboard-section" style="display: none;">
+                    <p style="text-align: center; color: #999;">Loading account settings...</p>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    // Deleting routes
-    if (q.includes('delete') && q.includes('route')) {
-        return `<strong>Deleting Routes:</strong><br><br>
-        1️⃣ Go to <strong>Dashboard → My Routes</strong><br>
-        2️⃣ Find the route you want to remove<br>
-        3️⃣ Click the red <strong>"Delete"</strong> button<br>
-        4️⃣ Confirm deletion<br><br>
-        <strong>⚠️ What happens:</strong><br>
-        • Route is immediately hidden from public view<br>
-        • It's stored in our database for 6 months (in case you change your mind or for spam investigation)<br>
-        • After 6 months, it's permanently deleted<br>
-        • Other users can no longer see or access it<br><br>
-        <em>Need it removed immediately? Contact support with the route details.</em>`;
-    }
-    
-    // Route categories
-    if (q.includes('category') || q.includes('categories')) {
-        return `<strong>Route Categories:</strong><br><br>
-        Choose a category when creating routes to help others find them! Options include:<br><br>
-        🌳 <strong>Parks & Nature</strong> - Green spaces, trails, scenic walks<br>
-        🎨 <strong>Art & Culture</strong> - Murals, galleries, cultural sites<br>
-        🍽️ <strong>Food & Cafes</strong> - Restaurant tours, food districts<br>
-        🏛️ <strong>History</strong> - Historical landmarks, heritage sites<br>
-        🏙️ <strong>Architecture</strong> - Notable buildings, design walks<br>
-        🌃 <strong>Nightlife</strong> - Evening strolls, entertainment districts<br>
-        🛍️ <strong>Shopping</strong> - Retail districts, boutique tours<br>
-        📸 <strong>Photo Spots</strong> - Instagram-worthy locations<br>
-        🏃 <strong>Exercise</strong> - Running/walking routes for fitness<br><br>
-        <em>Filter routes by category in the Search Routes view!</em>`;
-    }
-    
-    // Waypoints/labels
-    if (q.includes('waypoint') || q.includes('label') || q.includes('stop')) {
-        return `<strong>Waypoints & Labels:</strong><br><br>
-        Waypoints are the numbered stops along your route! 📍<br><br>
-        <strong>How they work:</strong><br>
-        • Click the map to place waypoints (minimum 2 required)<br>
-        • They appear as numbered pins (1, 2, 3...)<br>
-        • The route automatically connects them following streets<br><br>
-        <strong>Labels:</strong><br>
-        • After placing waypoints, you'll see input fields below the map<br>
-        • Add labels like "Best tacos in town" or "Hidden courtyard"<br>
-        • Labels help others understand what makes each stop special<br>
-        • They're optional but highly recommended!<br><br>
-        <strong>Editing waypoints:</strong><br>
-        • You can add more waypoints while creating/editing<br>
-        • Change labels anytime before saving<br>
-        • Click "Clear Route" to start over<br><br>
-        <em>Pro tip: Good labels make routes way more popular!</em>`;
-    }
-    
-    // Liking routes
-    if ((q.includes('like') || q.includes('heart') || q.includes('favorite')) && q.includes('route')) {
-        return `<strong>Liking Routes:</strong><br><br>
-        Love a route? Show some appreciation! ❤️<br><br>
-        <strong>How to like:</strong><br>
-        1️⃣ Click any route on the Search Routes map<br>
-        2️⃣ The info panel appears below<br>
-        3️⃣ Hit the ❤️ <strong>"Like This Route"</strong> button<br>
-        4️⃣ The count increases and the button changes to "Unlike"<br><br>
-        <strong>Your likes:</strong><br>
-        • View all liked routes in <strong>Dashboard → My Likes & Interests</strong><br>
-        • Click any liked item to view it on the map<br>
-        • Unlike from the dashboard or route view<br><br>
-        <strong>Why like routes?</strong><br>
-        • Helps others discover great walks<br>
-        • Shows creators their routes are appreciated<br>
-        • Build your personal collection of favorite routes<br><br>
-        <em>Likes are public - they help flâneurs find the best routes!</em>`;
-    }
-    
-    // ==================== SWARMS ====================
-    
-    // What is a swarm
-    if (q.includes('swarm')) {
-        return `<strong>Shopping Swarms - Flash Mobs for Local Business!</strong><br><br>
-        A Shopping Swarm is a coordinated group walk where flâneurs explore local shops together! 👥🛍️<br><br>
-        <strong>The concept:</strong><br>
-        • Pick a meeting location (usually a central shopping district)<br>
-        • Set a date and time<br>
-        • Fellow flâneurs show up and explore local businesses as a group<br>
-        • Support small merchants together!<br><br>
-        <strong>Creating a swarm:</strong><br>
-        1️⃣ Click <strong>"Create Shopping Swarm"</strong><br>
-        2️⃣ Pin the meeting location on the map<br>
-        3️⃣ Fill in: Name, description, date, time, duration<br>
-        4️⃣ Save and it goes live!<br><br>
-        <strong>Joining swarms:</strong><br>
-        • Browse swarms in <strong>"View Swarms"</strong><br>
-        • Click a pin to see details<br>
-        • Hit <strong>"I'm Interested"</strong> to RSVP<br>
-        • The creator can see how many people are coming!<br><br>
-        <em>Swarms automatically hide 2 hours after their scheduled time to keep the map clean.</em>`;
-    }
-    
-    // ==================== EVENTS ====================
-    
-    // What is an event
-    if (q.includes('event')) {
-        return `<strong>Local Events - Community Gatherings!</strong><br><br>
-        Events are community celebrations, happenings, and gatherings! 🎉<br><br>
-        <strong>Types of events:</strong><br>
-        • Farmer's markets<br>
-        • Street festivals<br>
-        • Pop-up shops<br>
-        • Art walks<br>
-        • Community celebrations<br>
-        • Food truck gatherings<br>
-        • Outdoor concerts<br><br>
-        <strong>Creating an event:</strong><br>
-        1️⃣ Click <strong>"Promote Your Event"</strong><br>
-        2️⃣ Pin the event location on the map<br>
-        3️⃣ Fill in details: Name, description, date/time (can have start and end dates!)<br>
-        4️⃣ Save and share!<br><br>
-        <strong>Browsing events:</strong><br>
-        • Click <strong>"Browse Events"</strong><br>
-        • See all upcoming events on the map<br>
-        • Click pins for full details<br>
-        • Mark <strong>"I'm Interested"</strong> to save events<br><br>
-        <em>Events automatically hide 2 hours after they end to keep things current!</em>`;
-    }
-    
-    // ==================== ACCOUNT & SETTINGS ====================
-    
-    // Account creation
-    if ((q.includes('sign up') || q.includes('create account') || q.includes('register')) && !q.includes('route')) {
-        return `<strong>Creating Your Flânerie Account:</strong><br><br>
-        <strong>Two ways to sign up:</strong><br><br>
-        <strong>1️⃣ Email & Password:</strong><br>
-        • Click <strong>"Sign In"</strong> → Switch to "Sign Up" tab<br>
-        • Enter: Email, password (6+ characters), username<br>
-        • Check your email for verification link<br>
-        • Click the link to activate your account<br><br>
-        <strong>2️⃣ Google Sign-In:</strong><br>
-        • Click <strong>"Sign in with Google"</strong><br>
-        • Select your Google account<br>
-        • Choose a username<br>
-        • You're in!<br><br>
-        <strong>⚠️ Important:</strong><br>
-        • You must verify your email before posting routes/swarms/events<br>
-        • Check spam folder if you don't see the verification email<br>
-        • Usernames are unique - can only contain letters, numbers, and underscores<br><br>
-        <em>Rate limited to 3 sign-ups per hour per browser to prevent spam.</em>`;
-    }
-    
-    // Account settings general
-    if ((q.includes('account') && q.includes('setting')) || q.includes('account setting')) {
-        return "Looking for account settings? 📝<br><br>You can:<br>• <strong>Change username</strong> - Dashboard → Account tab<br>• <strong>Change email</strong> - Dashboard → Account tab<br>• <strong>Change password</strong> - Dashboard → Account tab<br>• <strong>Delete account</strong> - Dashboard → Account → Danger Zone<br><br>What would you like to do?";
-    }
-    
-    // Delete (general - direct to specific options)
-    if (q.includes('delete') && !q.includes('account') && !q.includes('route')) {
-        return "What would you like to delete?<br><br>• <strong>Delete account</strong> - Dashboard → Account → Danger Zone<br>• <strong>Delete route</strong> - Dashboard → My Routes → Delete button<br>• <strong>Delete swarm</strong> - Dashboard → My Swarms → Delete button<br>• <strong>Delete event</strong> - Dashboard → My Events → Delete button<br><br>Ask me specifically and I'll help! 🗑️";
-    }
-    
-    // Email verification
-    if (q.includes('verify') || q.includes('verification') || (q.includes('email') && !q.includes('change'))) {
-        return `<strong>Email Verification:</strong><br><br>
-        You need to verify your email before creating content! 📧<br><br>
-        <strong>How to verify:</strong><br>
-        1️⃣ Check your email inbox for "Verify your Flânerie account"<br>
-        2️⃣ Click the verification link<br>
-        3️⃣ You'll be redirected and your account is verified! ✅<br><br>
-        <strong>Didn't get the email?</strong><br>
-        • Check spam/junk folders<br>
-        • Wait a few minutes (can take 5-10 min sometimes)<br>
-        • Look for a "Resend Verification" button in your profile<br>
-        • Make sure you entered the correct email<br><br>
-        <strong>Why verification matters:</strong><br>
-        • Prevents spam and fake accounts<br>
-        • Ensures we can contact you about your content<br>
-        • Required by our abuse prevention system<br><br>
-        <em>Once verified, you have full access to create routes, swarms, and events!</em>`;
-    }
-    
-    // Changing email
-    if (q.includes('change') && q.includes('email')) {
-        return `<strong>Changing Your Email:</strong><br><br>
-        1️⃣ Go to <strong>Dashboard → Account</strong> tab<br>
-        2️⃣ Find the 'Email Address' field<br>
-        3️⃣ Enter your new email<br>
-        4️⃣ Click <strong>'Update'</strong><br>
-        5️⃣ Check your NEW email for verification link<br>
-        6️⃣ Click the link to verify<br><br>
-        <strong>⚠️ Important:</strong><br>
-        • Your old email will no longer work for login<br>
-        • You must verify the new email to keep posting<br>
-        • If you don't verify within 24 hours, you'll be locked out<br><br>
-        <em>Make sure you have access to the new email before changing!</em>`;
-    }
-    
-    // Changing password
-    if (q.includes('change') && q.includes('password')) {
-        return `<strong>Changing Your Password:</strong><br><br>
-        1️⃣ Go to <strong>Dashboard → Account</strong> tab<br>
-        2️⃣ Find the 'Password' section<br>
-        3️⃣ Enter your current password<br>
-        4️⃣ Enter your new password (min 6 characters)<br>
-        5️⃣ Confirm new password<br>
-        6️⃣ Click <strong>'Update Password'</strong><br><br>
-        <strong>⚠️ Password requirements:</strong><br>
-        • At least 6 characters<br>
-        • Mix of letters and numbers recommended<br>
-        • Avoid common passwords<br><br>
-        <strong>Forgot your password?</strong><br>
-        Sign out and use '<strong>Forgot Password</strong>' on the sign-in page.<br><br>
-        <em>Keep your password secure and don't share it!</em>`;
-    }
-    
-    // Changing username
-    if (q.includes('change') && q.includes('username')) {
-        return `<strong>Changing Your Username:</strong><br><br>
-        1️⃣ Go to <strong>Dashboard → Account</strong> tab<br>
-        2️⃣ Find the "Username" field<br>
-        3️⃣ Enter your new username<br>
-        4️⃣ Click <strong>"Update"</strong><br><br>
-        <strong>Username rules:</strong><br>
-        • 3-20 characters long<br>
-        • Letters, numbers, and underscores only<br>
-        • Must be unique (not taken by another user)<br>
-        • No spaces or special characters<br><br>
-        <strong>⚠️ Note:</strong><br>
-        • Your username appears on all your routes/swarms/events<br>
-        • After changing, refresh the page to see it updated everywhere<br>
-        • Old username is released and can be taken by others<br><br>
-        <em>Choose wisely - your username represents you to the Flânerie community!</em>`;
-    }
-    
-    // Deleting account
-    if (q.includes('delete') && q.includes('account')) {
-        return `<strong>Deleting Your Account:</strong><br><br>
-        <strong>⚠️ WARNING: This is permanent and cannot be undone!</strong><br><br>
-        <strong>How to delete:</strong><br>
-        1️⃣ Go to <strong>Dashboard → Account</strong> tab<br>
-        2️⃣ Scroll to the "Danger Zone" (red section at bottom)<br>
-        3️⃣ Click <strong>"Delete My Account"</strong><br>
-        4️⃣ Confirm your decision<br><br>
-        <strong>What gets deleted:</strong><br>
-        • Your account and profile<br>
-        • All your routes, swarms, and events<br>
-        • All your messages<br>
-        • All your likes and interests<br>
-        • Your username becomes available again<br><br>
-        <strong>What we keep (for legal/safety):</strong><br>
-        • Activity logs for 3 years (required for investigations)<br>
-        • Reported content (if you were reported)<br>
-        • Deleted usernames list (to prevent impersonation)<br><br>
-        <strong>⚠️ This action is immediate and irreversible!</strong><br><br>
-        <em>Taking a break? Just sign out instead - your account will be here when you return!</em>`;
-    }
-    
-    // ==================== DASHBOARD ====================
-    
-    if (q.includes('dashboard')) {
-        return `<strong>Your Dashboard - Command Center:</strong><br><br>
-        Access your dashboard by clicking the <strong>"Dashboard"</strong> button (only visible when signed in).<br><br>
-        <strong>📑 Tabs:</strong><br><br>
-        <strong>My Routes</strong> - All routes you've created<br>
-        • View, edit, or delete your routes<br>
-        • See likes and creation dates<br><br>
-        <strong>My Swarms</strong> - Your shopping swarms<br>
-        • Only shows active/upcoming swarms<br>
-        • Edit or delete them<br><br>
-        <strong>My Events</strong> - Events you created<br>
-        • Active and upcoming events only<br>
-        • Full edit control<br><br>
-        <strong>My Likes & Interests</strong> - Bookmarked content<br>
-        • All routes/swarms/events you've liked<br>
-        • Quick access to favorites<br><br>
-        <strong>My Drafts</strong> - Unfinished routes<br>
-        • Routes you saved as drafts<br>
-        • Click to finish and publish<br><br>
-        <strong>Messages</strong> - Your inbox<br>
-        • Direct messages from other users<br>
-        • Replies to your content<br>
-        • Delete or respond<br><br>
-        <strong>Account</strong> - Settings & profile<br>
-        • Change username, email, password<br>
-        • Delete account option<br><br>
-        <em>Dashboard is your home base for managing all your Flânerie activity!</em>`;
-    }
-    
-    // ==================== MESSAGES ====================
-    
-    if (q.includes('message') || q.includes('messaging') || q.includes('dm') || q.includes('inbox')) {
-        return `<strong>Messaging System:</strong><br><br>
-        <strong>Sending messages:</strong><br>
-        • Click on any user's username (on routes, swarms, events)<br>
-        • Their profile opens with a <strong>"Send Message"</strong> button<br>
-        • Type your message and send!<br><br>
-        <strong>Receiving messages:</strong><br>
-        • Check <strong>Dashboard → Messages</strong><br>
-        • Unread badge shows count<br>
-        • Click any message to read/reply<br><br>
-        <strong>Message types:</strong><br>
-        • <strong>Direct messages</strong> - One-on-one conversations<br>
-        • <strong>Event/Swarm replies</strong> - Auto-hide after 30 days<br><br>
-        <strong>Privacy & retention:</strong><br>
-        • Messages are private (only you and recipient)<br>
-        • You can delete from your dashboard anytime<br>
-        • Backend keeps logs for 3 years (safety/legal)<br>
-        • Event/swarm messages hide after 30 days but aren't deleted<br><br>
-        <strong>⚠️ Reporting:</strong><br>
-        • Report button on every message<br>
-        • Use if someone sends inappropriate content<br>
-        • Reports go to admin for review<br><br>
-        <em>Be respectful! Messages are monitored for community safety.</em>`;
-    }
-    
-    // ==================== WHAT IS FLANERIE ====================
-    
-    if (q.includes('flanerie') || q.includes('flâneur') || q.includes('what is this') || q.includes('what does')) {
-        return `<strong>What is Flânerie?</strong><br><br>
-        <strong>Flânerie</strong> (flah-nuh-REE) is the art of <em>leisurely urban exploration</em> - mindful wandering through city streets with intention and curiosity. 🚶✨<br><br>
-        <strong>A Flâneur</strong> (flah-NUHR) is someone who:<br>
-        • Strolls slowly, observing city life<br>
-        • Explores without rushing<br>
-        • Discovers hidden gems and local character<br>
-        • Appreciates the everyday beauty of urban spaces<br>
-        • Values the journey as much as the destination<br><br>
-        <strong>Think of it as:</strong><br>
-        • The opposite of power-walking from Point A to B<br>
-        • Mindful tourism in your own city<br>
-        • Exploring neighborhoods with fresh eyes<br>
-        • Slow travel, but local<br><br>
-        <strong>This platform helps you:</strong><br>
-        • Share your favorite walking routes<br>
-        • Discover hidden spots curated by locals<br>
-        • Connect with other urban explorers<br>
-        • Support local businesses through swarms<br>
-        • Find community events<br><br>
-        <em>"Not all those who wander are lost" - but all flâneurs are wanderers! 🗺️</em>`;
-    }
-    
-    // ==================== MOBILE/PWA ====================
-    
-    if (q.includes('app') || q.includes('download') || q.includes('mobile') || q.includes('install') || q.includes('phone')) {
-        return `<strong>Flânerie on Mobile:</strong><br><br>
-        Flânerie works perfectly on your phone as a Progressive Web App (PWA)! 📱<br><br>
-        <strong>iPhone/iPad:</strong><br>
-        1️⃣ Open Flânerie in Safari<br>
-        2️⃣ Tap the <strong>Share button</strong> (box with arrow)<br>
-        3️⃣ Scroll down and tap <strong>"Add to Home Screen"</strong><br>
-        4️⃣ Tap "Add" to confirm<br>
-        5️⃣ The Flânerie icon appears on your home screen!<br><br>
-        <strong>Android:</strong><br>
-        1️⃣ Open Flânerie in Chrome<br>
-        2️⃣ Tap the <strong>menu</strong> (three dots)<br>
-        3️⃣ Tap <strong>"Add to Home screen"</strong> or "Install app"<br>
-        4️⃣ Confirm and you're done!<br><br>
-        <strong>Benefits of PWA:</strong><br>
-        • Opens full-screen like a real app<br>
-        • No App Store download needed<br>
-        • Faster loading (caches content)<br>
-        • Gets updates automatically<br>
-        • Works offline for cached routes<br><br>
-        <em>Pro tip: Pin Flânerie to your home screen for quick access when exploring!</em>`;
-    }
-    
-    // ==================== PRIVACY & SAFETY ====================
-    
-    if (q.includes('privacy') || q.includes('data') || q.includes('information') || q.includes('safe')) {
-        return `<strong>Privacy & Your Data:</strong><br><br>
-        <strong>🔒 Our Core Commitment:</strong><br>
-        <strong>We never sell your personal information. Period.</strong> This will never change.<br><br>
-        <strong>What we collect:</strong><br>
-        • Email and username (for your account)<br>
-        • Routes, swarms, events you create (public)<br>
-        • Messages you send (private)<br>
-        • Likes and interests (helps recommendations)<br>
-        • Device/browser info (for security)<br><br>
-        <strong>What we DON'T collect:</strong><br>
-        • Your location unless you use GPS features<br>
-        • Browsing history outside our site<br>
-        • Third-party tracking data<br><br>
-        <strong>Data security:</strong><br>
-        • Stored on Firebase (industry-standard encryption)<br>
-        • Passwords are encrypted (we can't see them)<br>
-        • Regular security updates<br><br>
-        <strong>Your rights:</strong><br>
-        • View all your data in Dashboard<br>
-        • Delete your account anytime<br>
-        • Request data removal<br>
-        • Opt out of GPS features<br><br>
-        <strong>📄 Full details:</strong> <a href='privacy.html' style='color: var(--accent-color); text-decoration: underline;'>Privacy Policy</a><br><br>
-        <em>Questions? We're transparent about data practices - just ask!</em>`;
-    }
-    
-    if (q.includes('report') || q.includes('abuse') || q.includes('inappropriate')) {
-        return `<strong>Reporting Inappropriate Content:</strong><br><br>
-        <strong>What to report:</strong><br>
-        • Spam or fake content<br>
-        • Harassment or threatening messages<br>
-        • Inappropriate routes/swarms/events<br>
-        • Impersonation<br>
-        • Anything that violates community guidelines<br><br>
-        <strong>How to report:</strong><br>
-        • <strong>Messages:</strong> Click the "Report" button on any message<br>
-        • <strong>Routes/Swarms/Events:</strong> Contact support with the content link<br>
-        • <strong>Users:</strong> Report from their profile or messages<br><br>
-        <strong>What happens:</strong><br>
-        1️⃣ Your report goes to our admin team<br>
-        2️⃣ We review within 24-48 hours<br>
-        3️⃣ Action taken if guidelines violated:<br>
-        &nbsp;&nbsp;&nbsp;• Warning to user<br>
-        &nbsp;&nbsp;&nbsp;• Content removal<br>
-        &nbsp;&nbsp;&nbsp;• Account suspension or ban<br>
-        4️⃣ You'll get a notification of outcome<br><br>
-        <strong>⚠️ False reports:</strong><br>
-        • Don't abuse the report system<br>
-        • Repeated false reports may result in your account being suspended<br><br>
-        <em>Help us keep Flânerie safe and welcoming for everyone!</em>`;
-    }
-    
-    // ==================== TECHNICAL/BUGS ====================
-    
-    if (q.includes('bug') || q.includes('error') || q.includes('broken') || q.includes('not working') || q.includes('problem')) {
-        return `<strong>Having Technical Issues?</strong><br><br>
-        <strong>Common fixes:</strong><br><br>
-        <strong>1️⃣ Refresh the page</strong><br>
-        • Ctrl+R (Windows) or Cmd+R (Mac)<br>
-        • Solves 80% of issues!<br><br>
-        <strong>2️⃣ Clear browser cache</strong><br>
-        • Old cached files can cause problems<br>
-        • Settings → Privacy → Clear browsing data<br><br>
-        <strong>3️⃣ Try a different browser</strong><br>
-        • We support Chrome, Firefox, Safari, Edge<br>
-        • Some features may not work in older browsers<br><br>
-        <strong>4️⃣ Check your internet connection</strong><br>
-        • Maps require stable connection<br>
-        • Try reloading when signal improves<br><br>
-        <strong>Still broken?</strong><br>
-        • Note exactly what's happening<br>
-        • What browser/device you're using<br>
-        • Screenshot if possible<br>
-        • Contact support with details<br><br>
-        <strong>Known issues:</strong><br>
-        • Route editing occasionally requires refresh<br>
-        • Maps load slowly on very slow connections<br><br>
-        <em>We're constantly improving! Report bugs to help us fix them faster.</em>`;
-    }
-    
-    // ==================== FEATURES & TIPS ====================
-    
-    if (q.includes('tip') || q.includes('trick') || q.includes('suggestion') || q.includes('best practice')) {
-        return `<strong>Pro Tips for Flâneurs:</strong><br><br>
-        <strong>🗺️ Creating Better Routes:</strong><br>
-        • Use descriptive waypoint labels<br>
-        • Aim for 3-7 waypoints (not too many!)<br>
-        • Add context in description (best time, difficulty, etc.)<br>
-        • Choose accurate categories<br>
-        • Include hidden gems, not just obvious spots<br><br>
-        <strong>👥 Successful Swarms:</strong><br>
-        • Pick busy shopping districts<br>
-        • Schedule for weekends when shops are open<br>
-        • Set realistic duration (1-2 hours works well)<br>
-        • Promote in the description<br><br>
-        <strong>🎉 Great Events:</strong><br>
-        • Post at least 1 week in advance<br>
-        • Include all important details (parking, cost, etc.)<br>
-        • Use start AND end times<br>
-        • Update if plans change<br><br>
-        <strong>📱 Mobile Use:</strong><br>
-        • Install as PWA for best experience<br>
-        • Download routes before walking (works offline!)<br>
-        • Save battery by lowering map quality<br><br>
-        <strong>🤝 Community:</strong><br>
-        • Like routes you enjoy (helps others discover them)<br>
-        • Send messages to route creators with feedback<br>
-        • Be respectful in all interactions<br>
-        • Share your own perspective - every route is unique!<br><br>
-        <em>The best flâneurs share knowledge and discoveries!</em>`;
-    }
-    
-    if (q.includes('cache') || q.includes('offline') || q.includes('internet')) {
-        return `<strong>Offline & Caching:</strong><br><br>
-        Flânerie uses smart caching to improve performance! ⚡<br><br>
-        <strong>What's cached:</strong><br>
-        • Route data (5 minutes)<br>
-        • Swarm data (5 minutes)<br>
-        • Event data (5 minutes)<br>
-        • Map tiles (varies by browser)<br><br>
-        <strong>Why caching?</strong><br>
-        • Faster loading (you see routes instantly)<br>
-        • Saves data usage<br>
-        • Reduces server costs (keeps the site free!)<br>
-        • Works partially offline<br><br>
-        <strong>When cache refreshes:</strong><br>
-        • Automatically after 5 minutes<br>
-        • When you create new content<br>
-        • When you manually refresh the page<br><br>
-        <strong>Offline capabilities:</strong><br>
-        • View previously loaded routes<br>
-        • See map tiles you've visited<br>
-        • Can't create new content (requires internet)<br>
-        • Can't see real-time updates<br><br>
-        <em>Pro tip: Load routes before going into areas with poor cell signal!</em>`;
-    }
-    
-    // ==================== DEFAULT RESPONSE ====================
-    
-    return `Hmm, I'm not quite sure about that one! 🤔<br><br>
-    <strong>Try asking about:</strong><br>
-    • Creating or editing routes, swarms, events<br>
-    • Account settings and verification<br>
-    • Dashboard features<br>
-    • Messaging system<br>
-    • Mobile app installation<br>
-    • Privacy and safety<br>
-    • Tips and best practices<br>
-    • What flânerie means<br><br>
-    <strong>Still need help?</strong><br>
-    Reach out to our team at <strong>hello@goflanerie.com</strong><br><br>
-    <em>I'm always learning - the more questions you ask, the smarter I get!</em>`;
-}</script><script>// Register service worker for PWA functionality
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -6954,4 +8042,7 @@ function getBobbyResponse(question) {
                     }, 2000); // Show after 2 seconds to not be annoying
                 }
             }
-        });</script>
+        });
+    </script>
+</body>
+</html>
